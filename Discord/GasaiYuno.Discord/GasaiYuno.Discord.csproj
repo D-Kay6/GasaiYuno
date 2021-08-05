@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.InteractivityAddon" Version="2.4.0" />
+    <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Victoria" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
+    <ProjectReference Include="..\GasaiYuno.Discord.Domain\GasaiYuno.Discord.Domain.csproj" />
+    <ProjectReference Include="..\GasaiYuno.Discord.Infrastructure\GasaiYuno.Discord.Infrastructure.csproj" />
+    <ProjectReference Include="..\GasaiYuno.Discord.Persistence\GasaiYuno.Discord.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

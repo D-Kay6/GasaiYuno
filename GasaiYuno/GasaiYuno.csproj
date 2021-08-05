@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PackageId>gasai.yuno.discord</PackageId>
+    <Authors>D-Kay</Authors>
+    <Company>Seven Diamonds</Company>
+    <Product>Gasai Yuno</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
+    <ProjectReference Include="..\Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj" />
+    <ProjectReference Include="..\Localization\GasaiYuno.Localization\GasaiYuno.Localization.csproj" />
+    <ProjectReference Include="..\Logging\GasaiYuno.Logging.Serilog\GasaiYuno.Logging.Serilog.csproj" />
+    <ProjectReference Include="..\Storage\GasaiYuno.Storage.Configuration\GasaiYuno.Storage.Configuration.csproj" />
+    <ProjectReference Include="..\Storage\GasaiYuno.Storage.Image\GasaiYuno.Storage.Image.csproj" />
+    <ProjectReference Include="..\Listing\GasaiYuno.Listing.Discord\GasaiYuno.Listing.Discord.csproj" />
+    <ProjectReference Include="..\Chatbot\GasaiYuno.Chatbot.Cleverbot\GasaiYuno.Chatbot.Cleverbot.csproj" />
+  </ItemGroup>
+
+</Project>
