@@ -195,7 +195,7 @@
           },
           "Chat": {
             "Title": "__Chat__",
-            "Normal": "{0}chat - Engage in a casual, but probably still weird, conversation with me.[enter]{0}chat stop - End the ongoing conversation."
+            "Normal": "{0}chat - Engage in a casual, but probably still weird, conversation with me.[enter]{0}chat <message> - Same as `chat`, but I'll start the conversation with the provided message.[enter]{0}chat stop - End the ongoing conversation."
           },
           "Kill": {
             "Title": "__Kill__",

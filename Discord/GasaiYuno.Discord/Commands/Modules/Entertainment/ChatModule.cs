@@ -18,7 +18,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
         }
 
         [Command]
-        public async Task ChatDefaultAsync()
+        [Priority(-1)]
+        public async Task ChatDefaultAsync([Remainder] string input = null)
         {
             var session = _chatService.GetSession(SessionId);
             if (session != null)
@@ -28,12 +29,20 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             }
 
             session = _chatService.CreateSession(SessionId);
-            await ReplyAsync(Translation.Message("Entertainment.Chat.Start")).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                var response = await session.GetResponseAsync(input);
+                await ReplyAsync(response.Message);
+            }
+            else
+            {
+                await ReplyAsync(Translation.Message("Entertainment.Chat.Start")).ConfigureAwait(false);
+            }
 
             while (session.Active)
             {
                 var userMessage = await Interactivity.NextMessageAsync(x => x.Author.Id == Context.User.Id, timeout: TimeSpan.FromMinutes(2)).ConfigureAwait(false);
-                if (userMessage is not {IsSuccess: true})
+                if (userMessage is not { IsSuccess: true })
                 {
                     await ReplyAsync(Translation.Message("Entertainment.Chat.Timeout")).ConfigureAwait(false);
                     session.Dispose();
