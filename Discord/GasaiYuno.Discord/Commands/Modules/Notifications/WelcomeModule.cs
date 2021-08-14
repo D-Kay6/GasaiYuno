@@ -8,7 +8,6 @@ using GasaiYuno.Discord.Services;
 using GasaiYuno.Interface.Storage;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Notifications
@@ -25,6 +24,12 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             _notificationService = notificationService;
             _repository = repository;
         }
+        
+        [Command]
+        public Task WelcomeDefaultAsync() => ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Missing"));
+
+        [Command]
+        public Task WelcomeDefaultAsync(params SocketGuildUser[] users) => _notificationService.WelcomeUsersAsync(Context.Channel as ITextChannel, users);
 
         [Priority(-1)]
         [Command]
@@ -32,20 +37,6 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         {
             if (string.IsNullOrWhiteSpace(name)) name = string.Empty;
             await ReplyAsync(Translation.Message("Generic.Invalid.User", name)).ConfigureAwait(false);
-        }
-
-        [Command]
-        public async Task WelcomeDefaultAsync(params SocketGuildUser[] users)
-        {
-            if (!users.Any())
-            {
-                var index = Context.Message.Content.IndexOf("welcome", StringComparison.OrdinalIgnoreCase);
-                var param = Context.Message.Content.Substring(index + 8);
-                await WelcomeDefaultAsync(param).ConfigureAwait(false);
-                return;
-            }
-
-            await _notificationService.WelcomeUsersAsync(Context.Channel as ITextChannel, users).ConfigureAwait(false);
         }
 
         [Command("Enable")]
