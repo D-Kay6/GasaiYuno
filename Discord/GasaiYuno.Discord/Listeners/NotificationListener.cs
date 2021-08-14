@@ -1,24 +1,28 @@
 ﻿using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Services;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class NotificationHandler : IHandler
+    internal class NotificationListener
     {
         private readonly DiscordShardedClient _client;
         private readonly NotificationService _notificationService;
-        private readonly ILogger<NotificationHandler> _logger;
+        private readonly ILogger<NotificationListener> _logger;
 
-        public NotificationHandler(DiscordShardedClient client, NotificationService notificationService, ILogger<NotificationHandler> logger)
+        public NotificationListener(Connection connection, NotificationService notificationService, ILogger<NotificationListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _notificationService = notificationService;
             _logger = logger;
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _client.UserJoined += OnUserJoinedAsync;
             return Task.CompletedTask;

@@ -1,25 +1,28 @@
 ﻿using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class GuildHandler : IHandler
+    internal class GuildListener
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork<IServerRepository>> _unitOfWork;
 
-        public GuildHandler(DiscordShardedClient client, Func<IUnitOfWork<IServerRepository>> unitOfWork)
+        public GuildListener(Connection connection, Func<IUnitOfWork<IServerRepository>> unitOfWork)
         {
-            _client = client;
+            _client = connection.Client;
             _unitOfWork = unitOfWork;
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _client.GuildUpdated += GuildUpdated;
             _client.JoinedGuild += GuildJoinedAsync;

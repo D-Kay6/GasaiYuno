@@ -1,25 +1,27 @@
 ﻿using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Interface.Listing;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class ListingHandler : IHandler
+    internal class ListingListener
     {
         private readonly DiscordShardedClient _client;
         private readonly IListingUpdater _listingUpdater;
-        private readonly ILogger<ListingHandler> _logger;
+        private readonly ILogger<ListingListener> _logger;
 
-        public ListingHandler(DiscordShardedClient client, IListingUpdater listingUpdater, ILogger<ListingHandler> logger)
+        public ListingListener(Connection connection, IListingUpdater listingUpdater, ILogger<ListingListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _listingUpdater = listingUpdater;
             _logger = logger;
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
 #if !DEBUG
             _client.JoinedGuild += OnJoinedGuild;

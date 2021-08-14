@@ -3,6 +3,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Extensions;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using Microsoft.Extensions.Logging;
@@ -11,26 +12,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class DynamicChannelHandler : IHandler
+    internal class DynamicChannelListener
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork<IDynamicChannelRepository>> _unitOfWork;
-        private readonly ILogger<DynamicChannelHandler> _logger;
-
+        private readonly ILogger<DynamicChannelListener> _logger;
         private readonly List<ulong> _channelCache;
 
-        public DynamicChannelHandler(DiscordShardedClient client, Func<IUnitOfWork<IDynamicChannelRepository>> unitOfWork, ILogger<DynamicChannelHandler> logger)
+        public DynamicChannelListener(Connection connection, Func<IUnitOfWork<IDynamicChannelRepository>> unitOfWork, ILogger<DynamicChannelListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _unitOfWork = unitOfWork;
             _logger = logger;
-
             _channelCache = new List<ulong>();
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _client.UserVoiceStateUpdated += UserVoiceStateUpdatedAsync;
             _client.ChannelDestroyed += ChannelDestroyed;
@@ -174,7 +175,7 @@ namespace GasaiYuno.Discord.Handlers
 
         private async Task<RestVoiceChannel> DuplicateChannelAsync(SocketVoiceChannel channel, SocketGuildUser user, string name)
         {
-            name = name.Replace("{user}", user.Nickname().ToPossessive());
+            name = name.Replace("{user}", user.ToPossessive());
             var newChannel = await channel.Guild.CreateVoiceChannelAsync(name, p =>
             {
                 p.Bitrate = channel.Bitrate;

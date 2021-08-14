@@ -112,7 +112,7 @@
         "Set": "I'll now use `{0}` on this server.",
         "List": "These are the languages I currently support: {0}[enter]Be wary that some translations may be under construction and may contain messages that still require translating.[enter]If you want your language to be supported or help improve an already existing translation, come to my support server."
       },
-      "Notify": {
+      "Notice": {
         "Invalid": {
           "Message": "You'll have to provide me with some kind of message to be able to send."
         }
@@ -161,6 +161,7 @@
       "Welcome": {
         "Exception": "Something went wrong with the welcome notification for your server `{0}`.[enter] This may be due to the deletion and recreation of the configured channel.[enter] I disabled the notification for now.[enter] You can re-enable it by using the configuring command again.",
         "Invalid": {
+          "Missing": "The name or mention of a user is required as a target.", 
           "Enabled": "The welcome notification is already active on this channel.",
           "Disabled": "The welcome notification is not active."
         },
@@ -230,10 +231,6 @@
           "Ban": {
             "Title": "__Ban__",
             "Admin": "{0}ban - Display information about formatting the command.[enter]{0}ban _<user: name|id|mention>_ _<optional: duration>_ _<optional: reason>_ - Ban a user from the server. If a duration is provided, the ban will be lifted after that time has passed."
-          },
-          "Notify": {
-            "Title": "__Notify__",
-            "Admin": "{0}Notify _<message>_ - Send a private message to all members of the server."
           }
         },
         "Automation": {

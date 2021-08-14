@@ -1,17 +1,15 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using GasaiYuno.Chatbot.Cleverbot.Extensions;
-using GasaiYuno.Discord.Extensions;
-using GasaiYuno.Interface.Bot;
+using GasaiYuno.Discord.Modules;
 using GasaiYuno.Listing.Discord.Extensions;
 using GasaiYuno.Localization.Extensions;
-using GasaiYuno.Logging.Serilog;
 using GasaiYuno.Storage.Configuration.Extensions;
 using GasaiYuno.Storage.Image.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -19,29 +17,55 @@ namespace GasaiYuno
 {
     internal class Program
     {
-        private static IConnection _connection;
-
         private static async Task Main(string[] args)
         {
             Console.Title = "Gasai Yuno - Discord";
-            AppDomain.CurrentDomain.ProcessExit += OnExit;
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
 
-            DownloadPrerequisites();
-
-            var container = GenerateContainer();
-
-            do
+            try
             {
-                await using var scope = container.BeginLifetimeScope();
-                _connection = scope.Resolve<IConnection>();
-                await _connection.ConnectAsync().ConfigureAwait(false);
-            } while (_connection.Restart);
+                DownloadPrerequisites();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Unable to download prerequisites. Application cannot run without. Manual downloading required.");
+                Log.CloseAndFlush();
+                return;
+            }
+
+            try
+            {
+                Log.Information("Booting up...");
+                var host = CreateHostBuilder(args).Build();
+                await host.RunAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Host terminated unexpectedly.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
-        private static async void OnExit(object sender, EventArgs e)
-        {
-            await _connection.DisconnectAsync().ConfigureAwait(false);
-        }
+        private static IHostBuilder CreateHostBuilder(string[] args) => 
+            Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .UseSerilog((context, services, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.RegisterModule(new DiscordModule(context.Configuration));
+                    builder.RegisterLocalization();
+                    builder.RegisterCleverbot();
+                    builder.RegisterListing();
+                    builder.RegisterConfigStorage();
+                    builder.RegisterImageStorage();
+                })
+                .UseConsoleLifetime();
 
         private static void DownloadPrerequisites()
         {
@@ -52,22 +76,6 @@ namespace GasaiYuno
 
             file = "opus.dll";
             if (!File.Exists(file)) client.DownloadFile("https://discord.foxbot.me/binaries/win64/opus.dll", file);
-        }
-
-        private static IContainer GenerateContainer()
-        {
-            var containerBuilder = new ContainerBuilder();
-
-            containerBuilder.Populate(Enumerable.Empty<ServiceDescriptor>());
-            containerBuilder.RegisterDiscord();
-            containerBuilder.RegisterLocalization();
-            containerBuilder.RegisterSerilog();
-            containerBuilder.RegisterCleverbot();
-            containerBuilder.RegisterListing();
-            containerBuilder.RegisterConfigStorage();
-            containerBuilder.RegisterImageStorage();
-
-            return containerBuilder.Build();
         }
     }
 }

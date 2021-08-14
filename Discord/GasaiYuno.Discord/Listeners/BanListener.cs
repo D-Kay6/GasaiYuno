@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Interface.Localization;
@@ -7,27 +8,28 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class BanHandler : IHandler
+    internal class BanListener : IDisposable
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork<IBanRepository>> _banRepository;
         private readonly ILocalization _localization;
-        private readonly ILogger<BanHandler> _logger;
+        private readonly ILogger<BanListener> _logger;
         private readonly Timer _timer;
 
-        public BanHandler(DiscordShardedClient client, Func<IUnitOfWork<IBanRepository>> banRepository, ILocalization localization, ILogger<BanHandler> logger)
+        public BanListener(Connection connection, Func<IUnitOfWork<IBanRepository>> banRepository, ILocalization localization, ILogger<BanListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _banRepository = banRepository;
             _localization = localization;
             _logger = logger;
-
             _timer = new Timer(CheckBans, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _timer.Change(TimeSpan.FromMinutes(10), Timeout.InfiniteTimeSpan);
             return Task.CompletedTask;
@@ -61,6 +63,11 @@ namespace GasaiYuno.Discord.Handlers
             }
 
             _timer.Change(TimeSpan.FromMinutes(10), Timeout.InfiniteTimeSpan);
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

@@ -1,41 +1,42 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Interface.Localization;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class PollHandler : IHandler
+    internal class PollListener : IDisposable
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork<IPollRepository>> _pollRepository;
         private readonly ILocalization _localization;
-        private readonly ILogger<PollHandler> _logger;
+        private readonly ILogger<PollListener> _logger;
         private readonly Timer _timer;
 
-        public PollHandler(DiscordShardedClient client, Func<IUnitOfWork<IPollRepository>> pollRepository, ILocalization localization, ILogger<PollHandler> logger)
+        public PollListener(Connection connection, Func<IUnitOfWork<IPollRepository>> pollRepository, ILocalization localization, ILogger<PollListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _pollRepository = pollRepository;
             _localization = localization;
             _logger = logger;
 
             _timer = new Timer(CheckPolls, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _client.ReactionAdded += OnReactionAdded;
             _client.ChannelDestroyed += OnChannelDestroyed;
             _client.MessageDeleted += OnMessageDeleted;
-            _client.MessagesBulkDeleted += OnMessagesBulkDeleted;
 
             _timer.Change(TimeSpan.FromMinutes(1), Timeout.InfiniteTimeSpan);
             return Task.CompletedTask;
@@ -80,22 +81,6 @@ namespace GasaiYuno.Discord.Handlers
             await repository.SaveAsync().ConfigureAwait(false);
         }
 
-        private async Task OnMessagesBulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, ISocketMessageChannel channel)
-        {
-            if (channel is not SocketGuildChannel guildChannel) return;
-
-            var repository = _pollRepository();
-            var polls = await repository.DataSet.ListAsync(guildChannel.Guild.Id, guildChannel.Id).ConfigureAwait(false);
-            if (!polls.Any()) return;
-
-            polls = polls.Where(x => messages.Any(y => y.Id == x.Message)).ToList();
-            if (!polls.Any()) return;
-
-            await repository.BeginAsync().ConfigureAwait(false);
-            repository.DataSet.RemoveRange(polls);
-            await repository.SaveAsync().ConfigureAwait(false);
-        }
-
         private async void CheckPolls(object stateInfo)
         {
             var repository = _pollRepository();
@@ -136,6 +121,11 @@ namespace GasaiYuno.Discord.Handlers
             }
 
             _timer.Change(TimeSpan.FromMinutes(1), Timeout.InfiniteTimeSpan);
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

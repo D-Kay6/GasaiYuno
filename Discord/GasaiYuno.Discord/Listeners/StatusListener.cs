@@ -1,26 +1,29 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class StatusHandler : IHandler
+    internal class StatusListener : IDisposable
     {
         private readonly DiscordShardedClient _client;
         private readonly Random _random;
         private readonly Timer _timer;
 
-        public StatusHandler(DiscordShardedClient client)
+        public StatusListener(Connection connection)
         {
-            _client = client;
+            _client = connection.Client;
             _timer = new Timer { Interval = TimeSpan.FromMinutes(5).TotalMilliseconds };
             _random = new Random();
+
+            connection.Ready += OnReady;
         }
 
-        public async Task Ready()
+        private async Task OnReady()
         {
             _timer.Elapsed += OnTick;
             _timer.Start();
@@ -65,6 +68,11 @@ namespace GasaiYuno.Discord.Handlers
             }
 
             await _client.SetActivityAsync(activity).ConfigureAwait(false);
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

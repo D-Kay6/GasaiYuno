@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
@@ -44,7 +43,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
         }
 
         [Command]
-        public async Task BanUserAsync(SocketGuildUser user, [Remainder] string message)
+        [Priority(-1)]
+        public Task BanUserAsync(SocketGuildUser user, [Remainder] string message) => BanUserAsync(user, TimeSpan.Zero, message);
+
+        [Command]
+        public async Task BanUserAsync(SocketGuildUser user, TimeSpan duration, [Remainder] string message)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -53,7 +56,6 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
             }
 
             var parts = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var duration = parts[0].GetDuration();
             var endDate = duration > TimeSpan.Zero ? DateTime.Now + duration : (DateTime?)null;
             var time = Translation.Message("Generic.Forever");
             if (endDate != null)

@@ -5,18 +5,14 @@ namespace GasaiYuno.Interface.Bot
     public interface IConnection
     {
         /// <summary>
-        /// Whether the connection needs to be restarted.
-        /// </summary>
-        bool Restart { get; }
-
-        /// <summary>
         /// Starts the connection to the service.
         /// </summary>
-        Task ConnectAsync();
+        /// <returns>A value indicating if the connection has been successfully created.</returns>
+        Task<bool> StartAsync();
 
         /// <summary>
         /// Stops the connection to the service.
         /// </summary>
-        Task DisconnectAsync();
+        Task StopAsync();
     }
 }

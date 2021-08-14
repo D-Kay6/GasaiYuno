@@ -7,25 +7,25 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
     [RequireOwner]
     public class ManageModule : BaseModule<ManageModule>
     {
-        private readonly RestartService _restartService;
+        private readonly LifetimeService _lifetimeService;
 
-        public ManageModule(RestartService restartService)
+        public ManageModule(LifetimeService lifetimeService)
         {
-            _restartService = restartService;
+            _lifetimeService = lifetimeService;
         }
 
         [Command("Restart")]
         public async Task RestartAsync()
         {
             await ReplyAsync(Translation.Message("Moderation.Manage.Restart")).ConfigureAwait(false);
-            _restartService.Restart();
+            await _lifetimeService.RestartAsync();
         }
 
         [Command("Shutdown")]
         public async Task ShutdownAsync()
         {
             await ReplyAsync(Translation.Message("Moderation.Manage.Shutdown")).ConfigureAwait(false);
-            _restartService.Shutdown();
+            await _lifetimeService.StopAsync();
         }
     }
 }

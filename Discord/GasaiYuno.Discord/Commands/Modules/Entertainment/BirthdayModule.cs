@@ -23,9 +23,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 await ReplyAsync(Translation.Message("Generic.Invalid.User", Context.Message));
                 return;
             }
-
-            var name = user.Nickname();
-            await ReplyAsync(Translation.Message("Entertainment.Birthday", name.ToPossessive(), name));
+            
+            await ReplyAsync(Translation.Message("Entertainment.Birthday", user.ToPossessive(), user.Nickname()));
         }
     }
 }

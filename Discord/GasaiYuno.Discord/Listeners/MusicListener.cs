@@ -11,26 +11,29 @@ using Victoria.Node;
 using Victoria.Node.EventArgs;
 using Victoria.Player;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class MusicHandler : IHandler
+    internal class MusicListener
     {
         private readonly DiscordShardedClient _client;
         private readonly LavaNode _lavaNode;
         private readonly ServerService _serverService;
         private readonly ILocalization _localization;
-        private readonly ILogger<MusicHandler> _logger;
+        private readonly ILogger<MusicListener> _logger;
 
-        public MusicHandler(DiscordShardedClient client, LavaNode lavaNode, ServerService serverService, ILocalization localization, ILogger<MusicHandler> logger)
+        public MusicListener(Connection connection, LavaNode lavaNode, ServerService serverService, ILocalization localization, ILogger<MusicListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _lavaNode = lavaNode;
             _serverService = serverService;
             _localization = localization;
             _logger = logger;
+
+            connection.Ready += OnReady;
+            _client.LoggedOut += OnLoggedOut;
         }
 
-        public async Task Ready()
+        private async Task OnReady()
         {
             _client.UserVoiceStateUpdated += ChangeVoiceChannelAsync;
             _lavaNode.OnTrackStart += TrackStartAsync;
@@ -39,6 +42,12 @@ namespace GasaiYuno.Discord.Handlers
             _lavaNode.OnTrackException += TrackExceptionAsync;
             
             await _lavaNode.ConnectAsync().ConfigureAwait(false);
+        }
+
+        private async Task OnLoggedOut()
+        {
+            await _lavaNode.DisconnectAsync().ConfigureAwait(false);
+            await _lavaNode.DisposeAsync().ConfigureAwait(false);
         }
 
         private async Task ChangeVoiceChannelAsync(SocketUser user, SocketVoiceState leaveState, SocketVoiceState joinState)

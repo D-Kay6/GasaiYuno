@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Commands.TypeReaders;
 using GasaiYuno.Discord.Domain;
+using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Services;
@@ -12,9 +13,9 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Handlers
+namespace GasaiYuno.Discord.Listeners
 {
-    public class CommandHandler : IHandler
+    internal class CommandListener
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commandService;
@@ -23,20 +24,22 @@ namespace GasaiYuno.Discord.Handlers
         private readonly Func<IUnitOfWork<ICommandRepository>> _unitOfWork;
         private readonly ILocalization _localization;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<CommandHandler> _logger;
+        private readonly ILogger<CommandListener> _logger;
 
-        public CommandHandler(DiscordShardedClient client, CommandService commandService, ServerService serverService, Func<IUnitOfWork<ICommandRepository>> unitOfWork, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandHandler> logger)
+        public CommandListener(Connection connection, CommandService commandService, ServerService serverService, Func<IUnitOfWork<ICommandRepository>> unitOfWork, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
         {
-            _client = client;
+            _client = connection.Client;
             _commandService = commandService;
             _serverService = serverService;
             _unitOfWork = unitOfWork;
             _localization = localization;
             _serviceProvider = serviceProvider;
             _logger = logger;
+
+            connection.Ready += OnReady;
         }
 
-        public Task Ready()
+        private Task OnReady()
         {
             _client.MessageReceived += HandleCommandAsync;
             _commandService.CommandExecuted += OnCommandExecutedAsync;
