@@ -39,7 +39,6 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
                 embedBuilder.AddField(Translation.Message("Info.Help.Moderation.Language.Title"), Translation.Message("Info.Help.Moderation.Language.Admin", Server.Prefix));
                 embedBuilder.AddField(Translation.Message("Info.Help.Moderation.Kick.Title"), Translation.Message("Info.Help.Moderation.Kick.Admin", Server.Prefix));
                 embedBuilder.AddField(Translation.Message("Info.Help.Moderation.Ban.Title"), Translation.Message("Info.Help.Moderation.Ban.Admin", Server.Prefix));
-                embedBuilder.AddField(Translation.Message("Info.Help.Moderation.Notify.Title"), Translation.Message("Info.Help.Moderation.Notify.Admin", Server.Prefix));
                 pages.Add(PageBuilder.FromEmbed(embedBuilder.Build()));
 
                 embedBuilder = new EmbedBuilder();

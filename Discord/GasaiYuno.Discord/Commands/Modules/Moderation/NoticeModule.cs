@@ -3,14 +3,13 @@ using Discord.Commands;
 using Discord.Net;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation
 {
-    [Group("Notify")]
-    [RequireUserPermission(GuildPermission.Administrator)]
-    public class NotifyModule : BaseModule<NotifyModule>
+    [Group("Notice")]
+    [RequireOwner]
+    internal class NoticeModule : BaseModule<NoticeModule>
     {
         [Command]
         [Priority(-1)]
@@ -18,20 +17,19 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                await ReplyAsync(Translation.Message("Moderation.Notify.Invalid.Message"));
+                await ReplyAsync(Translation.Message("Moderation.Notice.Invalid.Message"));
                 return;
             }
 
             await SendAnnouncementAsync(Context.Guild.Users, message, Context.Guild.Name);
         }
 
-        [Command("Global")]
-        [RequireOwner]
+        [Command("Update")]
         public async Task AnnounceGlobalAsync([Remainder] string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                await ReplyAsync(Translation.Message("Moderation.Notify.Invalid.Message"));
+                await ReplyAsync(Translation.Message("Moderation.Notice.Invalid.Message"));
                 return;
             }
 
