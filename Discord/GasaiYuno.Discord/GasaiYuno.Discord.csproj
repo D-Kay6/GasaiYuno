@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -8,11 +8,17 @@
     <PackageReference Include="Discord.InteractivityAddon" Version="2.4.0" />
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="FluentValidation" Version="10.3.3" />
     <PackageReference Include="Victoria" Version="6.0.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="7.2.0" />
+    <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="7.3.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
   </ItemGroup>
 
   <ItemGroup>

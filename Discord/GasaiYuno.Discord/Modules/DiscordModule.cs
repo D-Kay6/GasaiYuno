@@ -2,10 +2,8 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Services;
 using Interactivity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using System;
 using Victoria.Node;
 
@@ -54,8 +52,7 @@ namespace GasaiYuno.Discord.Modules
             builder.RegisterModule(new ListenerModule());
             builder.RegisterModule(new PersistenceModule());
             builder.RegisterModule(new ServiceModule());
-
-            builder.RegisterType<DiscordService>().As<IHostedService>();
+            builder.RegisterModule(new MediatorModule());
         }
     }
 }

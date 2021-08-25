@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using GasaiYuno.Discord.Services;
 using Interactivity;
+using Microsoft.Extensions.Hosting;
 
 namespace GasaiYuno.Discord.Modules
 {
@@ -8,6 +9,7 @@ namespace GasaiYuno.Discord.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<DiscordService>().As<IHostedService>();
             builder.RegisterType<LifetimeService>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<InteractivityService>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<ServerService>().AsSelf().InstancePerLifetimeScope();
