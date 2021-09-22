@@ -20,11 +20,11 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(200)
                 .IsRequired();
 
             builder.Property(x => x.GenerationName)
-                .HasMaxLength(100)
+                .HasMaxLength(200)
                 .HasDefaultValue("-- channel")
                 .IsRequired();
 

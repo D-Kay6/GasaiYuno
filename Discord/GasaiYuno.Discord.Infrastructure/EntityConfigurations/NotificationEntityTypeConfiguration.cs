@@ -18,7 +18,7 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.Message)
-                .HasMaxLength(2000)
+                .HasMaxLength(4000)
                 .HasDefaultValue("Welcome to the party {0}. Hope you will have a good time with us.")
                 .IsRequired();
 

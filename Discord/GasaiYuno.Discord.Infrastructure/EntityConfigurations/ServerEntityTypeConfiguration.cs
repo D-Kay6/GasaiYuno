@@ -19,12 +19,12 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired(false);
 
             builder.Property(x => x.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(200)
                 .IsRequired();
 
             builder.Property(x => x.Prefix)
                 .HasDefaultValue("!")
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .IsRequired();
 
             builder.HasOne(x => x.Language)

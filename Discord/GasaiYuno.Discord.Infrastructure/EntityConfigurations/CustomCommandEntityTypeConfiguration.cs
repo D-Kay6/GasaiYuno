@@ -14,11 +14,11 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.Command)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .IsRequired();
 
             builder.Property(x => x.Response)
-                .HasMaxLength(2000)
+                .HasMaxLength(4000)
                 .IsRequired();
 
             builder.HasOne(x => x.Server)

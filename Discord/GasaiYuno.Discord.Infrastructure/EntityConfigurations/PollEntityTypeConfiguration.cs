@@ -29,7 +29,7 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired();
 
             builder.Property(x => x.Text)
-                .HasMaxLength(256)
+                .HasMaxLength(500)
                 .IsRequired();
 
             builder.Property(x => x.Options)
