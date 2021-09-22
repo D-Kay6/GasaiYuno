@@ -19,7 +19,8 @@
       "CustomCommand": {
         "Invalid": {
           "Exists": "`{0}` already is a custom command.",
-          "None": "I couldn't find any custom commands named `{0}`."
+          "Missing": "I couldn't find any custom commands named `{0}`.",
+          "None": "There are no custom commands on this server." 
         },
         "Default": "There are {1} custom commands on this server.[enter][enter]To run a custom command, simply use this server's command prefix followed by the command title[enter]Example: `{0}bye` ->_ `Cya`[enter][enter]You can add a custom command with `{0}customcommand add _<command title>_ _<response>_`[enter]If you want the command title to exist of multiple words, combine them withing double quotes (i.e. \"say hi\").[enter]The response will be send in the same channel the custom command is send in.[enter][enter]You can also remove a custom command with `/customcommand remove _<command title>_`.",
         "Title": "Custom Commands",
@@ -52,7 +53,7 @@
             "New": "Music volume was changed to {0}."
           },
           "Inactive": "I'm currently not playing any music.",
-          "Playing": "Now playing `{0}` requested by {1}",
+          "Playing": "Now playing `{0}` (`{1}`)",
           "IsPaused": "The music is already paused.",
           "Paused": "Pausing the music...",
           "IsResumed": "The music is not paused.",
@@ -71,10 +72,14 @@
           "Remaining": "There are {0} more songs in queue."
         },
         "Track": {
+          "Exception": {
+            "Message": "There was an error trying to play `{0}`.",
+            "Reason": "Reason: {0}",
+            "Support": "Come to my support server if this problem persists." 
+          },
+          "Invalid": "I could not find a valid song to play.",
           "Search": "Searching for `{0}`...",
           "Multiple": "I found multiple songs matching `{0}`.[enter]Please select one:",
-          "Invalid": "I could not find a valid song to play.",
-          "Exception": "There was an error trying to play `{0}`. Come to my support server if this problem persists.",
           "Current": "Now playing `{0}`."
         }
       }

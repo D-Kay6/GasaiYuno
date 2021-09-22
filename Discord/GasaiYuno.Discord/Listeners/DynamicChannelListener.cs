@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,14 +16,14 @@ namespace GasaiYuno.Discord.Listeners
     internal class DynamicChannelListener
     {
         private readonly DiscordShardedClient _client;
-        private readonly Func<IUnitOfWork<IDynamicChannelRepository>> _unitOfWork;
+        private readonly Func<IUnitOfWork> _unitOfWorkFactory;
         private readonly ILogger<DynamicChannelListener> _logger;
         private readonly List<ulong> _channelCache;
 
-        public DynamicChannelListener(Connection connection, Func<IUnitOfWork<IDynamicChannelRepository>> unitOfWork, ILogger<DynamicChannelListener> logger)
+        public DynamicChannelListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILogger<DynamicChannelListener> logger)
         {
             _client = connection.Client;
-            _unitOfWork = unitOfWork;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _logger = logger;
             _channelCache = new List<ulong>();
 
@@ -43,9 +42,8 @@ namespace GasaiYuno.Discord.Listeners
             if (channel is not SocketVoiceChannel voiceChannel) return;
             _channelCache.Remove(voiceChannel.Id);
 
-            var repository = _unitOfWork();
-            var dynamicChannels = await repository.DataSet.ListAsync(voiceChannel.Guild.Id).ConfigureAwait(false);
-            await repository.BeginAsync().ConfigureAwait(false);
+            var unitOfWork = _unitOfWorkFactory();
+            var dynamicChannels = await unitOfWork.DynamicChannels.ListAsync(voiceChannel.Guild.Id).ConfigureAwait(false);
             foreach (var dynamicChannel in dynamicChannels)
             {
                 var update = false;
@@ -63,11 +61,11 @@ namespace GasaiYuno.Discord.Listeners
 
                 if (update)
                 {
-                    repository.DataSet.Update(dynamicChannel);
+                    unitOfWork.DynamicChannels.Update(dynamicChannel);
                 }
             }
 
-            await repository.SaveAsync().ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private async Task UserVoiceStateUpdatedAsync(SocketUser user, SocketVoiceState state1, SocketVoiceState state2)
@@ -96,8 +94,8 @@ namespace GasaiYuno.Discord.Listeners
             {
                 if (channel.Users.Count > 0) return;
 
-                var repository = _unitOfWork();
-                var dynamicChannels = await repository.DataSet.ListAsync(channel.Guild.Id, AutomationType.Temporary).ConfigureAwait(false);
+                var unitOfWork = _unitOfWorkFactory();
+                var dynamicChannels = await unitOfWork.DynamicChannels.ListAsync(channel.Guild.Id, AutomationType.Temporary).ConfigureAwait(false);
 
                 while (_channelCache.Contains(channel.Id)) await Task.Delay(100).ConfigureAwait(false);
                 var dynamicChannel = dynamicChannels.FirstOrDefault(x => x.GeneratedChannels.Contains(channel.Id));
@@ -106,10 +104,9 @@ namespace GasaiYuno.Discord.Listeners
                 {
                     await channel.DeleteAsync().ConfigureAwait(false);
                     dynamicChannel.GeneratedChannels.Remove(channel.Id);
-
-                    await repository.BeginAsync().ConfigureAwait(false);
-                    repository.DataSet.Update(dynamicChannel);
-                    await repository.SaveAsync().ConfigureAwait(false);
+                    
+                    unitOfWork.DynamicChannels.Update(dynamicChannel);
+                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -126,13 +123,13 @@ namespace GasaiYuno.Discord.Listeners
         {
             if (channel == null) return;
 
-            var repository = _unitOfWork();
+            var unitOfWork = _unitOfWorkFactory();
             
             RestVoiceChannel newChannel = null;
             DynamicChannel dynamicChannel = null;
             try
             {
-                var dynamicChannels = await repository.DataSet.ListAsync(channel.Guild.Id).ConfigureAwait(false);
+                var dynamicChannels = await unitOfWork.DynamicChannels.ListAsync(channel.Guild.Id).ConfigureAwait(false);
                 dynamicChannel = dynamicChannels.FirstOrDefault(x => x.Channels.Contains(channel.Id));
                 if (dynamicChannel == null) return;
 
@@ -140,10 +137,9 @@ namespace GasaiYuno.Discord.Listeners
                 if (dynamicChannel.Type == AutomationType.Temporary)
                 {
                     dynamicChannel.GeneratedChannels.Add(newChannel.Id);
-
-                    await repository.BeginAsync().ConfigureAwait(false);
-                    repository.DataSet.Update(dynamicChannel);
-                    await repository.SaveAsync().ConfigureAwait(false);
+                    
+                    unitOfWork.DynamicChannels.Update(dynamicChannel);
+                    await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -156,10 +152,9 @@ namespace GasaiYuno.Discord.Listeners
                     {
                         await newChannel.DeleteAsync().ConfigureAwait(false);
                         dynamicChannel.Channels.Remove(newChannel.Id);
-
-                        await repository.BeginAsync().ConfigureAwait(false);
-                        repository.DataSet.Update(dynamicChannel);
-                        await repository.SaveAsync().ConfigureAwait(false);
+                        
+                        unitOfWork.DynamicChannels.Update(dynamicChannel);
+                        await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

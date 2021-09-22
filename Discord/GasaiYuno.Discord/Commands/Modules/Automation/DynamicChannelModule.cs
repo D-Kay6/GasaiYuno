@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
 using System.Linq;
@@ -14,11 +13,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
     [RequireUserPermission(GuildPermission.Administrator)]
     public class DynamicChannelModule : BaseModule<DynamicChannelModule>
     {
-        private readonly IUnitOfWork<IDynamicChannelRepository> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DynamicChannelModule(IUnitOfWork<IDynamicChannelRepository> repository)
+        public DynamicChannelModule(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         [Command]
@@ -28,7 +27,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
         [Priority(-1)]
         public async Task DynamicChannelDefaultAsync(string name)
         {
-            var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
             if (dynamicChannel == null)
             {
                 await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
@@ -52,7 +51,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
         [Alias("Overview")]
         public async Task DynamicChannelListAsync()
         {
-            var dynamicChannels = await _repository.DataSet.ListAsync(Context.Guild.Id).ConfigureAwait(false);
+            var dynamicChannels = await _unitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
             if (!dynamicChannels.Any())
             {
                 await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configurations")).ConfigureAwait(false);
@@ -76,9 +75,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Name")).ConfigureAwait(false);
                 return;
             }
-            if (await _repository.DataSet.AnyAsync(x => x.Server.Id == Context.Guild.Id && x.Name == name).ConfigureAwait(false))
+            if (await _unitOfWork.DynamicChannels.AnyAsync(x => x.Server.Id == Context.Guild.Id && x.Name == name).ConfigureAwait(false))
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.exists", name)).ConfigureAwait(false);
+                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Exists", name)).ConfigureAwait(false);
                 return;
             }
 
@@ -88,10 +87,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 Type = type,
                 Name = name
             };
-
-            await _repository.BeginAsync().ConfigureAwait(false);
-            _repository.DataSet.Add(dynamicChannel);
-            await _repository.SaveAsync().ConfigureAwait(false);
+            
+            _unitOfWork.DynamicChannels.Add(dynamicChannel);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
             await ReplyAsync(Translation.Message("Automation.Channel.Added", name)).ConfigureAwait(false);
         }
@@ -100,17 +98,16 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
         [Alias("Remove")]
         public async Task DynamicChannelDeleteAsync(string name)
         {
-            var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
             if (dynamicChannel == null)
             {
                 await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
                 return;
             }
-
-            await _repository.BeginAsync().ConfigureAwait(false);
-            _repository.DataSet.Remove(dynamicChannel);
-            await _repository.SaveAsync().ConfigureAwait(false);
-
+            
+            _unitOfWork.DynamicChannels.Remove(dynamicChannel);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+                            
             await ReplyAsync(Translation.Message("Automation.Channel.Deleted", name)).ConfigureAwait(false);
         }
 
@@ -119,19 +116,19 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
         public class DynamicChannelModifyModule : BaseModule<DynamicChannelModifyModule>
         {
             private readonly ChannelTypeReader<IVoiceChannel> _typeReader;
-            private readonly IUnitOfWork<IDynamicChannelRepository> _repository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public DynamicChannelModifyModule(IUnitOfWork<IDynamicChannelRepository> repository)
+            public DynamicChannelModifyModule(IUnitOfWork unitOfWork)
             {
                 _typeReader = new ChannelTypeReader<IVoiceChannel>();
-                _repository = repository;
+                _unitOfWork = unitOfWork;
             }
 
             [Command]
             [Priority(-1)]
             public async Task DynamicChannelModifyDefaultAsync(string name, string action, [Remainder] string parameters)
             {
-                var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
                 if (dynamicChannel == null)
                 {
                     await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
@@ -171,7 +168,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
             [Alias("Name")]
             public async Task DynamicChannelModifyNameAsync(string name, string generationName)
             {
-                var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
                 if (dynamicChannel == null)
                 {
                     await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
@@ -190,10 +187,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 }
 
                 dynamicChannel.GenerationName = generationName;
-
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(dynamicChannel);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                
+                _unitOfWork.DynamicChannels.Update(dynamicChannel);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
                 await ReplyAsync(Translation.Message("Automation.Channel.Renamed", dynamicChannel.Name, dynamicChannel.GenerationName));
             }
@@ -202,7 +198,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
             [Alias("Add", "Apply")]
             public async Task DynamicChannelModifyAssignAsync(string name, IVoiceChannel voiceChannel)
             {
-                var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
                 if (dynamicChannel == null)
                 {
                     await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
@@ -214,7 +210,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
 
             private async Task DynamicChannelModifyAssignAsync(DynamicChannel dynamicChannel, IVoiceChannel voiceChannel)
             {
-                var dynamicChannels = await _repository.DataSet.ListAsync(Context.Guild.Id).ConfigureAwait(false);
+                var dynamicChannels = await _unitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
                 var conflictingConfiguration = dynamicChannels.FirstOrDefault(x => x.Channels.Contains(voiceChannel.Id));
                 if (conflictingConfiguration != null)
                 {
@@ -223,10 +219,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 }
 
                 dynamicChannel.Channels.Add(voiceChannel.Id);
-
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(dynamicChannel);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                
+                _unitOfWork.DynamicChannels.Update(dynamicChannel);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
                 await ReplyAsync(Translation.Message("Automation.Channel.Assigned", dynamicChannel.Name, voiceChannel.Name));
             }
@@ -235,7 +230,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
             [Alias("Delete")]
             public async Task DynamicChannelModifyRemoveAsync(string name, IVoiceChannel voiceChannel)
             {
-                var dynamicChannel = await _repository.DataSet.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
                 if (dynamicChannel == null)
                 {
                     await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
@@ -254,10 +249,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 }
 
                 dynamicChannel.Channels.Remove(voiceChannel.Id);
-
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(dynamicChannel);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                
+                _unitOfWork.DynamicChannels.Update(dynamicChannel);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
                 await ReplyAsync(Translation.Message("Automation.Channel.Removed", dynamicChannel.Name, voiceChannel.Name));
             }

@@ -1,8 +1,9 @@
 ﻿using Discord.WebSocket;
 using GasaiYuno.Discord.Extensions;
+using GasaiYuno.Discord.Mediator.Requests;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Services;
 using GasaiYuno.Interface.Localization;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -17,15 +18,15 @@ namespace GasaiYuno.Discord.Listeners
     {
         private readonly DiscordShardedClient _client;
         private readonly LavaNode _lavaNode;
-        private readonly ServerService _serverService;
+        private readonly IMediator _mediator;
         private readonly ILocalization _localization;
         private readonly ILogger<MusicListener> _logger;
 
-        public MusicListener(Connection connection, LavaNode lavaNode, ServerService serverService, ILocalization localization, ILogger<MusicListener> logger)
+        public MusicListener(Connection connection, LavaNode lavaNode, IMediator mediator, ILocalization localization, ILogger<MusicListener> logger)
         {
             _client = connection.Client;
             _lavaNode = lavaNode;
-            _serverService = serverService;
+            _mediator = mediator;
             _localization = localization;
             _logger = logger;
 
@@ -60,9 +61,8 @@ namespace GasaiYuno.Discord.Listeners
                 if (!_lavaNode.TryGetPlayer(voiceChannel.Guild, out var player)) return;
                 if (voiceChannel.Users.Count != 1) return;
                 if (!voiceChannel.Users.First().Id.Equals(_client.CurrentUser.Id)) return;
-
-                var server = await _serverService.Load(voiceChannel.Guild).ConfigureAwait(false);
-                var translation = _localization.GetTranslation(server.Language?.Name);
+                
+                var translation = await _mediator.Send(new GetTranslationRequest(voiceChannel.Guild));
                 if (player.TextChannel != null)
                     await player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Channel.Stop")).ConfigureAwait(false);
 
@@ -71,29 +71,27 @@ namespace GasaiYuno.Discord.Listeners
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to handle voice channel change for music handler.");
+                _logger.LogError(e, "Failed to handle voice channel change. {@user}, {@leaveState}, {@joinState}", user, leaveState, joinState);
             }
         }
 
         private async Task TrackStartAsync(TrackStartEventArg<LavaPlayer> e)
         {
-            var server = await _serverService.Load(e.Player.VoiceChannel.Guild).ConfigureAwait(false);
-            var translation = _localization.GetTranslation(server.Language?.Name);
-
-            if (e.Player.Track is not PlayableTrack track) return;
-            await track.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Player.Playing", track.Title, track.Requester.Nickname())).ConfigureAwait(false);
+            var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild));
+            await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Player.Playing", e.Track.Title, e.Track.Duration)).ConfigureAwait(false);
         }
 
         private async Task TrackEndAsync(TrackEndEventArg<LavaPlayer> e)
         {
             switch (e.Reason)
             {
+                case TrackEndReason.Replaced:
+                    break;
                 case TrackEndReason.Finished:
                     await PlayNextAsync(e.Player).ConfigureAwait(false);
                     break;
                 case TrackEndReason.LoadFailed:
-                    var server = await _serverService.Load(e.Player.VoiceChannel.Guild).ConfigureAwait(false);
-                    var translation = _localization.GetTranslation(server.Language?.Name);
+                    var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild));
                     if (e.Player.TextChannel != null)
                         await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
 
@@ -111,11 +109,14 @@ namespace GasaiYuno.Discord.Listeners
         private async Task TrackExceptionAsync(TrackExceptionEventArg<LavaPlayer> e)
         {
             _logger.LogError("Could not play track {PlayableTrack}. Reason: {Message}. Player {Player}", e.Track, e.Exception, e.Player);
-
-            var server = await _serverService.Load(e.Player.VoiceChannel.Guild).ConfigureAwait(false);
-            var translation = _localization.GetTranslation(server.Language?.Name);
+            
+            var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild));
             if (e.Player.TextChannel != null)
-                await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Song.Exception", e.Track.Title)).ConfigureAwait(false);
+            {
+                var message = translation.Message("Entertainment.Music.Track.Exception.Message", e.Track.Title);
+                if (!string.IsNullOrEmpty(e.Exception)) message += Environment.NewLine + translation.Message("Entertainment.Music.Track.Exception.Reason", e.Exception);
+                await e.Player.TextChannel.SendMessageAsync(message).ConfigureAwait(false);
+            }
 
             await PlayNextAsync(e.Player).ConfigureAwait(false);
         }
@@ -134,7 +135,8 @@ namespace GasaiYuno.Discord.Listeners
                 await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
                 return;
             }
-
+            
+            player.SetTextChannel(track.TextChannel);
             await player.PlayAsync(track).ConfigureAwait(false);
         }
     }

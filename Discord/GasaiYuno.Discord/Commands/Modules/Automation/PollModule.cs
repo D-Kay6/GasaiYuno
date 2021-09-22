@@ -2,7 +2,6 @@
 using Discord.Commands;
 using GasaiYuno.Discord.Commands.TypeReaders;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
 using System.Linq;
@@ -11,18 +10,18 @@ using System.Threading.Tasks;
 namespace GasaiYuno.Discord.Commands.Modules.Automation
 {
     [Group("Poll")]
-    [Alias("p")]
+    //[Alias("p")]
     [RequireUserPermission(GuildPermission.Administrator)]
     [RequireOwner]
     public class PollModule : BaseModule<PollModule>
     {
         private readonly PollOptionTypeReader _pollOptionTypeReader;
-        private readonly IUnitOfWork<IPollRepository> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PollModule(IUnitOfWork<IPollRepository> repository)
+        public PollModule(IUnitOfWork unitOfWork)
         {
             _pollOptionTypeReader = new PollOptionTypeReader();
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         [Command]
@@ -95,10 +94,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 Text = text,
                 Options = options.ToList()
             };
-
-            await _repository.BeginAsync().ConfigureAwait(false);
-            _repository.DataSet.Add(poll);
-            await _repository.SaveAsync().ConfigureAwait(false);
+            
+            _unitOfWork.Polls.Add(poll);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

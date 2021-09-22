@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Interface.Localization;
 using Microsoft.Extensions.Logging;
@@ -13,11 +12,11 @@ namespace GasaiYuno.Discord.Services
 {
     public class NotificationService
     {
-        private readonly Func<IUnitOfWork<INotificationRepository>> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILocalization _localization;
         private readonly ILogger<NotificationService> _logger;
 
-        public NotificationService(Func<IUnitOfWork<INotificationRepository>> unitOfWork, ILocalization localization, ILogger<NotificationService> logger)
+        public NotificationService(IUnitOfWork unitOfWork, ILocalization localization, ILogger<NotificationService> logger)
         {
             _unitOfWork = unitOfWork;
             _localization = localization;
@@ -27,8 +26,7 @@ namespace GasaiYuno.Discord.Services
         public Task WelcomeUserAsync(SocketGuildUser user) => WelcomeUsersAsync(user.Guild, user);
         public async Task WelcomeUsersAsync(SocketGuild guild, params SocketGuildUser[] users)
         {
-            var unitOfWork = _unitOfWork();
-            var notification = await unitOfWork.DataSet.GetOrAddAsync(guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+            var notification = await _unitOfWork.Notifications.GetOrAddAsync(guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification?.Channel == null) return;
 
             var translation = _localization.GetTranslation(notification.Server.Language.Name);
@@ -59,9 +57,8 @@ namespace GasaiYuno.Discord.Services
         public async Task WelcomeUsersAsync(ITextChannel channel, params SocketGuildUser[] users)
         {
             if (channel == null) return;
-
-            var unitOfWork = _unitOfWork();
-            var notification = await unitOfWork.DataSet.GetOrAddAsync(channel.GuildId, NotificationType.Welcome).ConfigureAwait(false);
+            
+            var notification = await _unitOfWork.Notifications.GetOrAddAsync(channel.GuildId, NotificationType.Welcome).ConfigureAwait(false);
             var mentions = string.Join(", ", users.Select(x => x.Mention));
 
             try

@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Interface.Localization;
 using Microsoft.Extensions.Logging;
@@ -15,15 +14,15 @@ namespace GasaiYuno.Discord.Listeners
     internal class PollListener : IDisposable
     {
         private readonly DiscordShardedClient _client;
-        private readonly Func<IUnitOfWork<IPollRepository>> _pollRepository;
+        private readonly Func<IUnitOfWork> _unitOfWorkFactory;
         private readonly ILocalization _localization;
         private readonly ILogger<PollListener> _logger;
         private readonly Timer _timer;
 
-        public PollListener(Connection connection, Func<IUnitOfWork<IPollRepository>> pollRepository, ILocalization localization, ILogger<PollListener> logger)
+        public PollListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<PollListener> logger)
         {
             _client = connection.Client;
-            _pollRepository = pollRepository;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _localization = localization;
             _logger = logger;
 
@@ -46,8 +45,8 @@ namespace GasaiYuno.Discord.Listeners
         {
             if (channel is not SocketGuildChannel guildChannel) return;
 
-            var repository = _pollRepository();
-            var poll = await repository.DataSet.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id);
+            var unitOfWork = _unitOfWorkFactory();
+            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id);
             if (poll == null || poll.MultiSelect) return;
 
             var userMessage = await message.DownloadAsync();
@@ -59,33 +58,31 @@ namespace GasaiYuno.Discord.Listeners
         {
             if (channel is not SocketGuildChannel guildChannel) return;
 
-            var repository = _pollRepository();
-            var polls = await repository.DataSet.ListAsync(guildChannel.Guild.Id, guildChannel.Id).ConfigureAwait(false);
+            var unitOfWork = _unitOfWorkFactory();
+            var polls = await unitOfWork.Polls.ListAsync(guildChannel.Guild.Id, guildChannel.Id).ConfigureAwait(false);
             if (!polls.Any()) return;
-
-            await repository.BeginAsync().ConfigureAwait(false);
-            repository.DataSet.RemoveRange(polls);
-            await repository.SaveAsync().ConfigureAwait(false);
+            
+            unitOfWork.Polls.RemoveRange(polls);
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
             if (channel is not SocketGuildChannel guildChannel) return;
 
-            var repository = _pollRepository();
-            var poll = await repository.DataSet.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id).ConfigureAwait(false);
+            var unitOfWork = _unitOfWorkFactory();
+            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id).ConfigureAwait(false);
             if (poll == null) return;
-
-            await repository.BeginAsync().ConfigureAwait(false);
-            repository.DataSet.Remove(poll);
-            await repository.SaveAsync().ConfigureAwait(false);
+            
+            unitOfWork.Polls.Remove(poll);
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private async void CheckPolls(object stateInfo)
         {
-            var repository = _pollRepository();
+            var unitOfWork = _unitOfWorkFactory();
 
-            var polls = await repository.DataSet.ListAsync(expired: true).ConfigureAwait(false);
+            var polls = await unitOfWork.Polls.ListAsync(expired: true).ConfigureAwait(false);
             if (polls.Any())
             {
                 foreach (var poll in polls)
@@ -114,10 +111,9 @@ namespace GasaiYuno.Discord.Listeners
                     embedBuilder.AddField(poll.Text, string.Join(Environment.NewLine, poll.Options.Where(x => selectedEmojis.Contains(x.Emote)).Select(x => x.Message)));
                     await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id));
                 }
-
-                await repository.BeginAsync().ConfigureAwait(false);
-                repository.DataSet.RemoveRange(polls);
-                await repository.SaveAsync().ConfigureAwait(false);
+                
+                unitOfWork.Polls.RemoveRange(polls);
+                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
 
             _timer.Change(TimeSpan.FromMinutes(1), Timeout.InfiniteTimeSpan);

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation
@@ -8,6 +9,13 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
     [RequireUserPermission(GuildPermission.Administrator)]
     public class PrefixModule : BaseModule<PrefixModule>
     {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PrefixModule(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         [Command]
         public Task CommandPrefixDefault() => ReplyAsync(Translation.Message("Moderation.Prefix.Current", Server.Prefix));
 
@@ -21,9 +29,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
             }
 
             Server.Prefix = prefix.Trim();
-            await ServerRepository.BeginAsync().ConfigureAwait(false);
-            ServerRepository.DataSet.Update(Server);
-            await ServerRepository.SaveAsync().ConfigureAwait(false);
+            _unitOfWork.Servers.Update(Server);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
             await ReplyAsync(Translation.Message("Moderation.Prefix.New", Server.Prefix)).ConfigureAwait(false);
         }

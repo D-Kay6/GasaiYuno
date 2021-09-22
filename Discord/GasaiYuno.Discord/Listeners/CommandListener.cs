@@ -3,11 +3,11 @@ using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Commands.TypeReaders;
 using GasaiYuno.Discord.Domain;
+using GasaiYuno.Discord.Mediator.Events;
+using GasaiYuno.Discord.Mediator.Requests;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.Repositories;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
-using GasaiYuno.Discord.Services;
 using GasaiYuno.Interface.Localization;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
@@ -19,19 +19,16 @@ namespace GasaiYuno.Discord.Listeners
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commandService;
-
-        private readonly ServerService _serverService;
-        private readonly Func<IUnitOfWork<ICommandRepository>> _unitOfWork;
+        private readonly IMediator _mediator;
         private readonly ILocalization _localization;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CommandListener> _logger;
 
-        public CommandListener(Connection connection, CommandService commandService, ServerService serverService, Func<IUnitOfWork<ICommandRepository>> unitOfWork, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
+        public CommandListener(Connection connection, CommandService commandService, IMediator mediator, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
         {
             _client = connection.Client;
             _commandService = commandService;
-            _serverService = serverService;
-            _unitOfWork = unitOfWork;
+            _mediator = mediator;
             _localization = localization;
             _serviceProvider = serviceProvider;
             _logger = logger;
@@ -58,25 +55,16 @@ namespace GasaiYuno.Discord.Listeners
                 if (s.Author.IsBot) return;
                 if (s is not SocketUserMessage { Channel: SocketGuildChannel channel } msg) return;
 
-                var server = await _serverService.Load(channel.Guild).ConfigureAwait(false);
+                var server = await _mediator.Send(new GetServerRequest(channel.Guild.Id, channel.Guild.Name)).ConfigureAwait(false);
                 var argPos = 0;
                 if (!msg.HasStringPrefix(server.Prefix, ref argPos) &&
                     !msg.HasMentionPrefix(_client.CurrentUser, ref argPos)) return;
-#if DEBUG
-                if (!s.Author.Id.Equals(255453041531158538))
-                {
-                    await msg.Channel.SendMessageAsync("Sorry, I cannot do that right now. I'm under development").ConfigureAwait(false);
-                    return;
-                }
-#endif
-                var context = new ShardedCommandContext(_client, msg);
-                _logger.LogInformation("{Server}({ServerId}): {User}({UserId}) executed command '{Command}'.", context.Guild.Name, context.Guild.Id, context.User.Username, context.User.Id, context.Message.Content);
-                var result = await _commandService.ExecuteAsync(context, argPos, _serviceProvider).ConfigureAwait(false);
-                if (result.IsSuccess) return;
+
+                await _mediator.Publish(new CommandStartedEvent(argPos, msg, channel));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Unhandled exception occurred in the command handler.");
+                _logger.LogError(e, "Unhandled exception occurred in the command listener.");
             }
         }
 
@@ -84,7 +72,7 @@ namespace GasaiYuno.Discord.Listeners
         {
             if (result.IsSuccess) return;
 
-            var server = await _serverService.Load(context.Guild).ConfigureAwait(false);
+            var server = await _mediator.Send(new GetServerRequest(context.Guild.Id, context.Guild.Name)).ConfigureAwait(false);
             var translation = _localization.GetTranslation(server.Language?.Name);
 
             switch (result.Error)
@@ -100,7 +88,7 @@ namespace GasaiYuno.Discord.Listeners
                         await context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Argument", server.Prefix)).ConfigureAwait(false);
                     break;
                 default:
-                    if (await SendCustomCommandAsync(context, server)) return;
+                    if (await _mediator.Send(new SendCustomCommandRequest(context, server))) return;
                     await context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Command", server.Prefix)).ConfigureAwait(false);
                     break;
             }
@@ -111,26 +99,11 @@ namespace GasaiYuno.Discord.Listeners
         {
             if (logMessage.Exception is not CommandException exception) return;
 
-            var server = await _serverService.Load(exception.Context.Guild).ConfigureAwait(false);
+            var server = await _mediator.Send(new GetServerRequest(exception.Context.Guild.Id, exception.Context.Guild.Name)).ConfigureAwait(false);
             var translation = _localization.GetTranslation(server.Language?.Name);
 
             _logger.LogError(exception, "Unhandled exception occurred during the handling of {Module} {Command}", exception.Command.Module.Name, exception.Command.Name);
             await exception.Context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Generic", server.Prefix)).ConfigureAwait(false);
-        }
-
-        private async Task<bool> SendCustomCommandAsync(ICommandContext context, Server server)
-        {
-            var repository = _unitOfWork();
-            var argPos = 0;
-            if (!context.Message.HasStringPrefix(server.Prefix, ref argPos) &&
-                !context.Message.HasMentionPrefix(_client.CurrentUser, ref argPos)) return false;
-
-            var command = context.Message.Content[argPos..];
-            var customCommand = await repository.DataSet.GetAsync(context.Guild.Id, command).ConfigureAwait(false);
-            if (customCommand == null) return false;
-
-            await context.Channel.SendMessageAsync(customCommand.Response).ConfigureAwait(false);
-            return true;
         }
     }
 }

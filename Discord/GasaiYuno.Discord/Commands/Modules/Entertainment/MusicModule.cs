@@ -180,27 +180,27 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 return;
             }
 
-
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
-            {
                 player = await _lavaNode.JoinAsync(user.VoiceChannel, Context.Channel as ITextChannel).ConfigureAwait(false);
-            }
+
             tracks.ForEach(player.Vueue.Enqueue);
-            if (tracks.Count == 1)
+            if (tracks.Count == 1 && player.PlayerState is PlayerState.Playing or PlayerState.Paused)
                 await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Song", player.Vueue.Count, tracks[0].Title, tracks[0].Duration)).ConfigureAwait(false);
-            else
+            else if (tracks.Count > 1)
                 await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Playlist", searchResponse.Tracks.Count)).ConfigureAwait(false);
 
             if (player.PlayerState is PlayerState.Playing or PlayerState.Paused) return;
 
             LavaTrack lavaTrack;
-            while (!player.Vueue.TryDequeue(out lavaTrack)) Logger.LogError("Unable to get item from player {player} queue {queue}", player, player.Vueue);
+            while (!player.Vueue.TryDequeue(out lavaTrack)) Logger.LogError("Unable to get item from {@player} {@queue}", player, player.Vueue);
             if (lavaTrack is not PlayableTrack track)
             {
                 await player.StopAsync().ConfigureAwait(false);
                 await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
                 return;
             }
+
+            player.SetTextChannel(track.TextChannel);
             await player.PlayAsync(track).ConfigureAwait(false);
         }
 

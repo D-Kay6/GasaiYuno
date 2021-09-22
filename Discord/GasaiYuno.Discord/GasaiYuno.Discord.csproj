@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -9,16 +9,16 @@
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="FluentValidation" Version="10.3.3" />
-    <PackageReference Include="Victoria" Version="6.0.0" />
+    <PackageReference Include="Victoria" Version="6.0.2" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="7.3.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +26,10 @@
     <ProjectReference Include="..\GasaiYuno.Discord.Domain\GasaiYuno.Discord.Domain.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Infrastructure\GasaiYuno.Discord.Infrastructure.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Persistence\GasaiYuno.Discord.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mediator\Validators\" />
   </ItemGroup>
 
 </Project>

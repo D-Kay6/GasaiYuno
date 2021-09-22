@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Services;
 using GasaiYuno.Interface.Storage;
@@ -17,12 +16,12 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
     public class WelcomeModule : BaseModule<WelcomeModule>
     {
         private readonly NotificationService _notificationService;
-        private readonly IUnitOfWork<INotificationRepository> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public WelcomeModule(NotificationService notificationService, IUnitOfWork<INotificationRepository> repository)
+        public WelcomeModule(NotificationService notificationService, IUnitOfWork unitOfWork)
         {
             _notificationService = notificationService;
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
         
         [Command]
@@ -43,7 +42,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         [Alias("Activate", "On")]
         public async Task WelcomeEnableAsync(SocketTextChannel channel)
         {
-            var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+            var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification == null)
             {
                 await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -57,9 +56,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             }
 
             notification.Channel = channel.Id;
-            await _repository.BeginAsync().ConfigureAwait(false);
-            _repository.DataSet.Update(notification);
-            await _repository.SaveAsync().ConfigureAwait(false);
+            _unitOfWork.Notifications.Update(notification);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
             await ReplyAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention));
         }
@@ -68,7 +66,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         [Alias("Deactivate", "Off")]
         public async Task WelcomeDisableAsync()
         {
-            var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+            var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification?.Channel == null)
             {
                 await ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Disabled")).ConfigureAwait(false);
@@ -76,9 +74,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             }
 
             notification.Channel = null;
-            await _repository.BeginAsync().ConfigureAwait(false);
-            _repository.DataSet.Update(notification);
-            await _repository.SaveAsync().ConfigureAwait(false);
+            _unitOfWork.Notifications.Update(notification);
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
             await ReplyAsync(Translation.Message("Notification.Welcome.Disabled")).ConfigureAwait(false);
         }
@@ -86,17 +83,17 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         [Group("Message")]
         public class WelcomeMessageModule : BaseModule<WelcomeMessageModule>
         {
-            private readonly IUnitOfWork<INotificationRepository> _repository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public WelcomeMessageModule(IUnitOfWork<INotificationRepository> repository)
+            public WelcomeMessageModule(IUnitOfWork unitOfWork)
             {
-                _repository = repository;
+                _unitOfWork = unitOfWork;
             }
 
             [Command]
             public async Task WelcomeMessageDefaultAsync()
             {
-                var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+                var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
                     await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -115,7 +112,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                     return;
                 }
 
-                var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+                var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
                     await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -123,9 +120,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 }
 
                 notification.Message = message;
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(notification);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                _unitOfWork.Notifications.Update(notification);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
                 await ReplyAsync(Translation.Message("Notification.Welcome.Message.Changed", notification.Message, Context.Guild.Name)).ConfigureAwait(false);
             }
@@ -135,11 +131,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         public class WelcomeImageModule : BaseModule<WelcomeImageModule>
         {
             private readonly IImageStorage _imageStorage;
-            private readonly IUnitOfWork<INotificationRepository> _repository;
+            private readonly IUnitOfWork _repository;
 
             private const string DefaultImage = "GasaiYunoWelcome.jpg";
 
-            public WelcomeImageModule(IImageStorage imageStorage, IUnitOfWork<INotificationRepository> repository)
+            public WelcomeImageModule(IImageStorage imageStorage, IUnitOfWork repository)
             {
                 _imageStorage = imageStorage;
                 _repository = repository;
@@ -148,7 +144,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             [Command]
             public async Task WelcomeImageDefaultAsync()
             {
-                var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+                var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
                     await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -165,7 +161,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             [Alias("On", "Change")]
             public async Task WelcomeImageEnableAsync(string imageUrl = null)
             {
-                var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+                var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
                     await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -189,10 +185,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                         return;
                     }
                 }
-
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(notification);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                
+                _repository.Notifications.Update(notification);
+                await _repository.SaveChangesAsync().ConfigureAwait(false);
                 
                 await Context.Channel.SendFileAsync(notification.Image, Translation.Message("Notification.Welcome.Image.Enabled")).ConfigureAwait(false);
             }
@@ -201,7 +196,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             [Alias("Off")]
             public async Task WelcomeImageDisableAsync()
             {
-                var notification = await _repository.DataSet.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+                var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
                     await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
@@ -224,9 +219,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 }
 
                 notification.Image = null;
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Update(notification);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                _repository.Notifications.Update(notification);
+                await _repository.SaveChangesAsync().ConfigureAwait(false);
 
                 await ReplyAsync(Translation.Message("Notification.Welcome.Image.Disabled")).ConfigureAwait(false);
             }

@@ -12,7 +12,6 @@ namespace GasaiYuno.Discord.Modules
             builder.RegisterType<DiscordService>().As<IHostedService>();
             builder.RegisterType<LifetimeService>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<InteractivityService>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<ServerService>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<NotificationService>().AsSelf().InstancePerLifetimeScope();
         }
     }

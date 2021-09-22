@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
 using System.Linq;
@@ -14,11 +13,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
     [RequireUserPermission(GuildPermission.BanMembers)]
     public class BanModule : BaseModule<BanModule>
     {
-        private readonly IUnitOfWork<IBanRepository> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BanModule(IUnitOfWork<IBanRepository> repository)
+        public BanModule(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         [Command]
@@ -74,10 +73,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
                     EndDate = endDate.Value,
                     Reason = reason
                 };
-
-                await _repository.BeginAsync().ConfigureAwait(false);
-                _repository.DataSet.Add(ban);
-                await _repository.SaveAsync().ConfigureAwait(false);
+                
+                _unitOfWork.Bans.Add(ban);
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
 
             await user.BanAsync(0, reason).ConfigureAwait(false);

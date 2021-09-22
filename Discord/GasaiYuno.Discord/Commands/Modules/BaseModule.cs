@@ -1,9 +1,9 @@
 ﻿using Discord.Commands;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Mediator.Requests;
 using GasaiYuno.Interface.Localization;
 using Interactivity;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace GasaiYuno.Discord.Commands.Modules
     {
         public InteractivityService Interactivity { get; init; }
 
-        public IUnitOfWork<IServerRepository> ServerRepository { get; init; }
+        public IMediator Mediator { get; init; }
         public ILocalization Localization { get; init; }
 
         protected Server Server { get; private set; }
@@ -32,7 +32,7 @@ namespace GasaiYuno.Discord.Commands.Modules
 
         protected virtual async Task Prepare()
         {
-            Server = await ServerRepository.DataSet.GetOrAddAsync(Context.Guild.Id, Context.Guild.Name).ConfigureAwait(false);
+            Server = await Mediator.Send(new GetServerRequest(Context.Guild.Id, Context.Guild.Name)).ConfigureAwait(false);
             Translation = Localization.GetTranslation(Server.Language?.Name);
         }
     }

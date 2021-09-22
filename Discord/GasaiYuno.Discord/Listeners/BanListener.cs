@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.Repositories;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Interface.Localization;
 using Microsoft.Extensions.Logging;
@@ -13,15 +12,15 @@ namespace GasaiYuno.Discord.Listeners
     internal class BanListener : IDisposable
     {
         private readonly DiscordShardedClient _client;
-        private readonly Func<IUnitOfWork<IBanRepository>> _banRepository;
+        private readonly Func<IUnitOfWork> _unitOfWorkFactory;
         private readonly ILocalization _localization;
         private readonly ILogger<BanListener> _logger;
         private readonly Timer _timer;
 
-        public BanListener(Connection connection, Func<IUnitOfWork<IBanRepository>> banRepository, ILocalization localization, ILogger<BanListener> logger)
+        public BanListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<BanListener> logger)
         {
             _client = connection.Client;
-            _banRepository = banRepository;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _localization = localization;
             _logger = logger;
             _timer = new Timer(CheckBans, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
@@ -37,8 +36,8 @@ namespace GasaiYuno.Discord.Listeners
 
         private async void CheckBans(object stateInfo)
         {
-            var repository = _banRepository();
-            var bans = await repository.DataSet.ListAsync(expired: true).ConfigureAwait(false);
+            var unitOfWork = _unitOfWorkFactory();
+            var bans = await unitOfWork.Bans.ListAsync(expired: true).ConfigureAwait(false);
             foreach (var ban in bans)
             {
                 var server = _client.GetGuild(ban.Server.Id);
@@ -56,10 +55,9 @@ namespace GasaiYuno.Discord.Listeners
                         _logger.LogError(e, "Unable to remove ban {ban} from server {serverName}({serverId})", ban, server.Name, server.Id);
                     }
                 }
-
-                await repository.BeginAsync().ConfigureAwait(false);
-                repository.DataSet.Remove(ban);
-                await repository.SaveAsync().ConfigureAwait(false);
+                
+                unitOfWork.Bans.Remove(ban);
+                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
 
             _timer.Change(TimeSpan.FromMinutes(10), Timeout.InfiniteTimeSpan);
