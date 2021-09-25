@@ -7,7 +7,7 @@ using System.IO;
 
 namespace GasaiYuno.Localization
 {
-    public class LocalizationService : ILocalization
+    internal class LocalizationService : ILocalization
     {
         public string DefaultLanguage { get; } = "English";
 

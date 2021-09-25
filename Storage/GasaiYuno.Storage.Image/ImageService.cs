@@ -1,6 +1,4 @@
 ﻿using GasaiYuno.Interface.Storage;
-using GasaiYuno.Storage.Image.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,22 +7,17 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Storage.Image
 {
-    public class ImageService : IImageStorage
+    internal class ImageService : IImageStorage
     {
-        private readonly ILogger<ImageService> _logger;
-
         private readonly string _baseDirectory;
         private readonly string _coreDirectory;
         private readonly string[] _supportedFormats;
 
-        public ImageService(IConfigStorage configStorage, ILogger<ImageService> logger)
+        public ImageService(string baseDirectory, string coreDirectory, string[] supportedFormats)
         {
-            _logger = logger;
-
-            var config = configStorage.Read<ImageConfig>();
-            _baseDirectory = config.Directory;
-            _coreDirectory = config.CoreSubDirectory;
-            _supportedFormats = config.SupportedFormats;
+            _baseDirectory = baseDirectory;
+            _coreDirectory = coreDirectory;
+            _supportedFormats = supportedFormats;
         }
 
         public Task<string> GetImageAsync(string name, string directory = null) => Task.FromResult(Path.Combine(_baseDirectory, string.IsNullOrWhiteSpace(directory) ? _coreDirectory : directory, name));

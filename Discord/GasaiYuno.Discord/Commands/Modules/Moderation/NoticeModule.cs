@@ -55,7 +55,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
                 if (user.IsBot) continue;
                 try
                 {
-                    var channel = await user.GetOrCreateDMChannelAsync().ConfigureAwait(false);
+                    var channel = await user.CreateDMChannelAsync().ConfigureAwait(false);
                     if (channel == null) continue;
                     
                     await channel.SendMessageAsync(embed: embed);

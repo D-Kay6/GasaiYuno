@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using GasaiYuno.Interface.Storage;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -14,7 +13,7 @@ namespace GasaiYuno.Discord.Models
         public event Func<Task> Ready;
 
         public readonly DiscordShardedClient Client;
-        private readonly IConfigStorage _configStorage;
+        private readonly string _token;
         private readonly ILogger<Connection> _logger;
 
         private int _shardsReady = 0;
@@ -23,12 +22,12 @@ namespace GasaiYuno.Discord.Models
         /// Creates a new <see cref="Connection"/>.
         /// </summary>
         /// <param name="client">The <see cref="DiscordShardedClient"/> that will be used.</param>
-        /// <param name="configStorage">The <see cref="IConfigStorage"/> that will be used for reading the configuration file.</param>
+        /// <param name="token">The token to connect with to the discord api.</param>
         /// <param name="logger">The <see cref="ILogger{T}"/> that will log all the log messages.</param>
-        public Connection(DiscordShardedClient client, IConfigStorage configStorage, ILogger<Connection> logger)
+        public Connection(DiscordShardedClient client, string token, ILogger<Connection> logger)
         {
             Client = client;
-            _configStorage = configStorage;
+            _token = token;
             _logger = logger;
 
             Client.ShardReady += OnShardReady;
@@ -43,8 +42,7 @@ namespace GasaiYuno.Discord.Models
         {
             try
             {
-                var config = _configStorage.Read<Configuration.DiscordConfig>();
-                await Client.LoginAsync(TokenType.Bot, config.Token).ConfigureAwait(false);
+                await Client.LoginAsync(TokenType.Bot, _token).ConfigureAwait(false);
                 await Client.StartAsync().ConfigureAwait(false);
                 return true;
             }

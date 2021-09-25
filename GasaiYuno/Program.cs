@@ -1,11 +1,7 @@
 ﻿using Autofac;
+using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
-using GasaiYuno.Chatbot.Cleverbot.Extensions;
-using GasaiYuno.Discord.Modules;
-using GasaiYuno.Listing.Discord.Extensions;
-using GasaiYuno.Localization.Extensions;
-using GasaiYuno.Storage.Configuration.Extensions;
-using GasaiYuno.Storage.Image.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
@@ -39,8 +35,13 @@ namespace GasaiYuno
             try
             {
                 Log.Information("Booting up...");
-                var host = CreateHostBuilder(args).Build();
-                await host.RunAsync();
+                await Host.CreateDefaultBuilder(args)
+                    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                    .UseSerilog((context, services, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
+                    .ConfigureServices(ConfigureServices)
+                    .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
+                    .UseConsoleLifetime()
+                    .RunConsoleAsync();
             }
             catch (Exception e)
             {
@@ -52,20 +53,15 @@ namespace GasaiYuno
             }
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) => 
-            Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .UseSerilog((context, services, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
-                .ConfigureContainer<ContainerBuilder>((context, builder) =>
-                {
-                    builder.RegisterModule(new DiscordModule(context.Configuration));
-                    builder.RegisterLocalization();
-                    builder.RegisterCleverbot();
-                    builder.RegisterListing();
-                    builder.RegisterConfigStorage();
-                    builder.RegisterImageStorage();
-                })
-                .UseConsoleLifetime();
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+        }
+
+        private static void ConfigureContainer(HostBuilderContext hostBuilderContext, ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterModule(new ConfigurationModule(hostBuilderContext.Configuration));
+        }
 
         private static void DownloadPrerequisites()
         {

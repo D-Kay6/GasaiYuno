@@ -1,13 +1,11 @@
-﻿using GasaiYuno.Chatbot.Cleverbot.Configuration;
-using GasaiYuno.Chatbot.Cleverbot.Models;
+﻿using GasaiYuno.Chatbot.Cleverbot.Models;
 using GasaiYuno.Interface.Chatbot;
-using GasaiYuno.Interface.Storage;
 using System;
 using System.Collections.Concurrent;
 
 namespace GasaiYuno.Chatbot.Cleverbot
 {
-    public class SessionService : IChatService
+    internal class SessionService : IChatService
     {
         private readonly ConcurrentDictionary<string, ISession> _sessions;
 
@@ -18,15 +16,14 @@ namespace GasaiYuno.Chatbot.Cleverbot
         /// Creates a new instance of <see cref="Session"/>.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown when the api key is not valid.</exception>
-        public SessionService(IConfigStorage configStorage)
+        public SessionService(string apiKey, double idleDuration)
         {
-            var config = configStorage.Read<CleverbotConfig>();
-            if (string.IsNullOrWhiteSpace(config.ApiKey))
+            if (string.IsNullOrWhiteSpace(apiKey))
                 throw new ArgumentException("Can't connect without a API key.");
             
             _sessions = new ConcurrentDictionary<string, ISession>();
-            _endPoint = new EndPoint(config.ApiKey);
-            _sessionDuration = TimeSpan.FromSeconds(config.IdleDuration);
+            _endPoint = new EndPoint(apiKey);
+            _sessionDuration = TimeSpan.FromSeconds(idleDuration);
         }
 
         /// <inheritdoc/>

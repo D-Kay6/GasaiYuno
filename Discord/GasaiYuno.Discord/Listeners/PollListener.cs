@@ -41,15 +41,16 @@ namespace GasaiYuno.Discord.Listeners
             return Task.CompletedTask;
         }
 
-        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
         {
+            var channel = await cachedChannel.GetOrDownloadAsync().ConfigureAwait(false);
             if (channel is not SocketGuildChannel guildChannel) return;
 
             var unitOfWork = _unitOfWorkFactory();
-            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id);
+            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, cachedMessage.Id);
             if (poll == null || poll.MultiSelect) return;
 
-            var userMessage = await message.DownloadAsync();
+            var userMessage = await cachedMessage.DownloadAsync();
             var user = reaction.User.IsSpecified ? reaction.User.Value : guildChannel.Guild.GetUser(reaction.UserId);
             await userMessage.RemoveReactionsAsync(user, userMessage.Reactions.Where(x => !x.Key.Equals(reaction.Emote)).Select(x => x.Key).ToArray());
         }
@@ -66,12 +67,13 @@ namespace GasaiYuno.Discord.Listeners
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
+        private async Task OnMessageDeleted(Cacheable<IMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel)
         {
+            var channel = await cachedChannel.GetOrDownloadAsync().ConfigureAwait(false);
             if (channel is not SocketGuildChannel guildChannel) return;
 
             var unitOfWork = _unitOfWorkFactory();
-            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, message.Id).ConfigureAwait(false);
+            var poll = await unitOfWork.Polls.GetAsync(guildChannel.Guild.Id, guildChannel.Id, cachedMessage.Id).ConfigureAwait(false);
             if (poll == null) return;
             
             unitOfWork.Polls.Remove(poll);

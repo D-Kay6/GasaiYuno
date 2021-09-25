@@ -3,7 +3,6 @@ using Discord.WebSocket;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,15 +12,13 @@ namespace GasaiYuno.Discord.Mediator.Events
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commandService;
-        private readonly IMediator _mediator;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CommandStartedEventHandler> _logger;
 
-        public CommandStartedEventHandler(DiscordShardedClient client, CommandService commandService, IMediator mediator, IServiceProvider serviceProvider, ILogger<CommandStartedEventHandler> logger)
+        public CommandStartedEventHandler(DiscordShardedClient client, CommandService commandService, IServiceProvider serviceProvider, ILogger<CommandStartedEventHandler> logger)
         {
             _client = client;
             _commandService = commandService;
-            _mediator = mediator;
             _serviceProvider = serviceProvider;
             _logger = logger;
         }
@@ -37,7 +34,7 @@ namespace GasaiYuno.Discord.Mediator.Events
 #endif
             var context = new ShardedCommandContext(_client, request.Message);
             _logger.LogInformation("{Server}({ServerId}): {User}({UserId}) executed command '{Command}'.", context.Guild.Name, context.Guild.Id, context.User.Username, context.User.Id, context.Message.Content);
-            var result = await _commandService.ExecuteAsync(context, request.ArgumentPosition, _serviceProvider).ConfigureAwait(false);
+            await _commandService.ExecuteAsync(context, request.ArgumentPosition, _serviceProvider).ConfigureAwait(false);
         }
     }
 }

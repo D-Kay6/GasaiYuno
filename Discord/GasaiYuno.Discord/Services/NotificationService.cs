@@ -33,7 +33,7 @@ namespace GasaiYuno.Discord.Services
             var channel = guild.GetTextChannel(notification.Channel.Value);
             if (channel == null)
             {
-                var ownerDm = await guild.Owner.GetOrCreateDMChannelAsync().ConfigureAwait(false);
+                var ownerDm = await guild.Owner.CreateDMChannelAsync().ConfigureAwait(false);
                 if (ownerDm != null)
                     await ownerDm.SendMessageAsync(translation.Message("Notification.Welcome.Exception", guild.Name)).ConfigureAwait(false);
 

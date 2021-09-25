@@ -9,7 +9,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
         [Command]
         public async Task DefaultInvite()
         {
-            var dmChannel = await Context.User.GetOrCreateDMChannelAsync().ConfigureAwait(false);
+            var dmChannel = await Context.User.CreateDMChannelAsync().ConfigureAwait(false);
             await dmChannel.SendMessageAsync(Translation.Message("Info.Invite"));
         }
     }

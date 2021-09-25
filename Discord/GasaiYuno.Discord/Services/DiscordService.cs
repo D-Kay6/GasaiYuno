@@ -35,7 +35,7 @@ namespace GasaiYuno.Discord.Services
                 await lifetimeService.StartAsync(cancellationToken);
                 keepAlive = lifetimeService.KeepAlive;
             } while (keepAlive);
-            _hostApplicationLifetime.StopApplication();
+            //_hostApplicationLifetime.StopApplication();
         }
     }
 }

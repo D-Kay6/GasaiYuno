@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using MediatR;
-using System.Runtime.Serialization;
 
 namespace GasaiYuno.Discord.Mediator.Events
 {

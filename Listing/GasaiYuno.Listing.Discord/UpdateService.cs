@@ -1,5 +1,4 @@
 ﻿using GasaiYuno.Interface.Listing;
-using GasaiYuno.Interface.Storage;
 using GasaiYuno.Listing.Discord.Configuration;
 using GasaiYuno.Listing.Discord.Models;
 using Microsoft.Extensions.Logging;
@@ -9,19 +8,17 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Listing.Discord
 {
-    public class UpdateService : IListingUpdater
+    internal class UpdateService : IListingUpdater
     {
         private readonly BlockingCollection<IEndpoint> _endpoints;
         private readonly ILogger<UpdateService> _logger;
 
-        public UpdateService(IConfigStorage configStorage, ILogger<UpdateService> logger)
+        public UpdateService(ListingConfig listingConfig, ILogger<UpdateService> logger)
         {
             _endpoints = new BlockingCollection<IEndpoint>();
             _logger = logger;
 
-            var config = configStorage.Read<ListingConfig>();
-            _endpoints.TryAdd(new TopGg(config.TopGg));
-
+            _endpoints.TryAdd(new TopGg(listingConfig.TopGg));
             _endpoints.CompleteAdding();
         }
 

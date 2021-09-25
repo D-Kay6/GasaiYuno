@@ -1,7 +1,5 @@
 ﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Infrastructure.Configuration;
 using GasaiYuno.Discord.Infrastructure.EntityConfigurations;
-using GasaiYuno.Interface.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -12,7 +10,7 @@ namespace GasaiYuno.Discord.Infrastructure
 {
     public class DataContext : DbContext
     {
-        private readonly IConfigStorage _configStorage;
+        private readonly string _connectionString;
 
         /// <summary>Table containing all the languages.</summary>
         public DbSet<Language> Languages { get; set; }
@@ -45,21 +43,16 @@ namespace GasaiYuno.Discord.Infrastructure
         /// <value><c>true</c> if there is an active transaction; otherwise, <c>false</c>.</value>
         public bool HasActiveTransaction => _currentTransaction != null;
 
-        public DataContext() { }
-
-        public DataContext(IConfigStorage configStorage)
+        public DataContext(string connectionString)
         {
-            _configStorage = configStorage;
+            _connectionString = connectionString;
         }
 
         /// <inheritdoc/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (_configStorage != null)
-            {
-                var config = _configStorage.Read<DatabaseConfig>();
-                optionsBuilder.UseSqlServer($"Server={config.Ip},{config.Port};Database={config.Database};User Id={config.UserId};Password={config.Password};");
-            }
+            optionsBuilder.UseSqlServer(_connectionString);
+            //optionsBuilder.UseSqlServer($"Server={config.Ip},{config.Port};Database={config.Database};User Id={config.UserId};Password={config.Password};");
         }
 
         /// <inheritdoc/>
