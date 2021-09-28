@@ -82,22 +82,22 @@ namespace GasaiYuno.Discord.Models
             switch (log.Severity)
             {
                 case LogSeverity.Critical:
-                    _logger.LogCritical(log.Exception, log.Message);
+                    _logger.LogCritical(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 case LogSeverity.Error:
-                    _logger.LogError(log.Exception, log.Message);
+                    _logger.LogError(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 case LogSeverity.Warning:
-                    _logger.LogWarning(log.Exception, log.Message);
+                    _logger.LogWarning(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 case LogSeverity.Info:
-                    _logger.LogInformation(log.Exception, log.Message);
+                    _logger.LogInformation(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 case LogSeverity.Verbose:
-                    _logger.LogTrace(log.Exception, log.Message);
+                    _logger.LogTrace(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 case LogSeverity.Debug:
-                    _logger.LogDebug(log.Exception, log.Message);
+                    _logger.LogDebug(log.Exception, "{@Source}: {@Message}", log.Source, log.Message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
