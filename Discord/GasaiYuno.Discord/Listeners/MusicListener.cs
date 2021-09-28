@@ -1,4 +1,4 @@
-﻿using Discord.WebSocket;
+using Discord.WebSocket;
 using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Mediator.Requests;
 using GasaiYuno.Discord.Models;
@@ -78,7 +78,7 @@ namespace GasaiYuno.Discord.Listeners
         private async Task TrackStartAsync(TrackStartEventArg<LavaPlayer> e)
         {
             var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild));
-            await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Player.Playing", e.Track.Title, e.Track.Duration)).ConfigureAwait(false);
+            await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Track.Current", e.Track.Title, e.Track.Duration)).ConfigureAwait(false);
         }
 
         private async Task TrackEndAsync(TrackEndEventArg<LavaPlayer> e)

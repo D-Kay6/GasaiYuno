@@ -296,7 +296,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 return;
             }
 
-            await ReplyAsync(Translation.Message("Entertainment.Music.Track.Current", player.Track.Title)).ConfigureAwait(false);
+            await ReplyAsync(Translation.Message("Entertainment.Music.Track.Current", player.Track.Title, player.Track.Duration)).ConfigureAwait(false);
         }
 
         [Command("Queue")]

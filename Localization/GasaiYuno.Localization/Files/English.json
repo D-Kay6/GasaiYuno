@@ -53,7 +53,6 @@
             "New": "Music volume was changed to {0}."
           },
           "Inactive": "I'm currently not playing any music.",
-          "Playing": "Now playing `{0}` (`{1}`)",
           "IsPaused": "The music is already paused.",
           "Paused": "Pausing the music...",
           "IsResumed": "The music is not paused.",
@@ -75,12 +74,12 @@
           "Exception": {
             "Message": "There was an error trying to play `{0}`.",
             "Reason": "Reason: {0}",
-            "Support": "Come to my support server if this problem persists." 
+            "Support": "Come to my support server if this problem persists."
           },
           "Invalid": "I could not find a valid song to play.",
           "Search": "Searching for `{0}`...",
           "Multiple": "I found multiple songs matching `{0}`.[enter]Please select one:",
-          "Current": "Now playing `{0}`."
+          "Current": "Now playing `{0}` `({1})`."
         }
       }
     },
