@@ -28,9 +28,9 @@ namespace GasaiYuno.Discord.Listeners
             return Task.CompletedTask;
         }
 
-        private async Task OnUserJoinedAsync(SocketGuildUser user)
+        private Task OnUserJoinedAsync(SocketGuildUser user)
         {
-            await _notificationService.WelcomeUserAsync(user).ConfigureAwait(false);
+            return _notificationService.WelcomeUserAsync(user);
         }
     }
 }

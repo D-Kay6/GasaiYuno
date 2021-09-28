@@ -11,6 +11,8 @@ namespace GasaiYuno.Discord.Modules
     public class DiscordModule : Module
     {
         public string Token { get; init; }
+        public int ConnectionTimeout { get; init; }
+        public int HandlerTimeout { get; init; }
         public int TotalShards { get; init; }
         public string ConnectionString { get; init; }
 
@@ -22,8 +24,8 @@ namespace GasaiYuno.Discord.Modules
                 TotalShards = TotalShards,
 #endif
                 LogLevel = LogSeverity.Verbose,
-                ConnectionTimeout = 120000,
-                HandlerTimeout = 6000,
+                ConnectionTimeout = ConnectionTimeout,
+                HandlerTimeout = HandlerTimeout,
                 GatewayIntents = GatewayIntents.Guilds |
                                  GatewayIntents.GuildMembers |
                                  GatewayIntents.GuildPresences |
