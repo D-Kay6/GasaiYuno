@@ -2,7 +2,6 @@
 using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Services;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listeners
@@ -13,13 +12,13 @@ namespace GasaiYuno.Discord.Listeners
         private readonly NotificationService _notificationService;
         private readonly ILogger<NotificationListener> _logger;
 
-        public NotificationListener(Connection connection, NotificationService notificationService, ILogger<NotificationListener> logger)
+        public NotificationListener(DiscordConnectionClient client, NotificationService notificationService, ILogger<NotificationListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _notificationService = notificationService;
             _logger = logger;
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

@@ -19,16 +19,16 @@ namespace GasaiYuno.Discord.Listeners
         private readonly ILogger<PollListener> _logger;
         private readonly Timer _timer;
 
-        public PollListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<PollListener> logger)
+        public PollListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<PollListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
             _localization = localization;
             _logger = logger;
 
             _timer = new Timer(CheckPolls, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

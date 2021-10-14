@@ -8,42 +8,40 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Models
 {
-    public class Connection
+    public class DiscordConnectionClient : DiscordShardedClient
     {
         public event Func<Task> Ready;
-
-        public readonly DiscordShardedClient Client;
+        
         private readonly string _token;
-        private readonly ILogger<Connection> _logger;
+        private readonly ILogger<DiscordConnectionClient> _logger;
 
         private int _shardsReady = 0;
 
         /// <summary>
-        /// Creates a new <see cref="Connection"/>.
+        /// Creates a new <see cref="DiscordConnectionClient"/>.
         /// </summary>
-        /// <param name="client">The <see cref="DiscordShardedClient"/> that will be used.</param>
+        /// <param name="config">The  <see cref="DiscordSocketConfig"/> for the connection.</param>
         /// <param name="token">The token to connect with to the discord api.</param>
         /// <param name="logger">The <see cref="ILogger{T}"/> that will log all the log messages.</param>
-        public Connection(DiscordShardedClient client, string token, ILogger<Connection> logger)
+        public DiscordConnectionClient(DiscordSocketConfig config, string token, ILogger<DiscordConnectionClient> logger) : base(config)
         {
-            Client = client;
             _token = token;
             _logger = logger;
 
-            Client.ShardReady += OnShardReady;
-            Client.Log += OnLog;
+            ShardReady += OnShardReady;
+            Log += OnLog;
         }
 
         /// <summary>
         /// Starts the connection to the service.
         /// </summary>
         /// <returns>A value indicating if the connection has been successfully created.</returns>
-        public async Task<bool> StartAsync()
+        public override async Task<bool> StartAsync()
         {
             try
             {
-                await Client.LoginAsync(TokenType.Bot, _token).ConfigureAwait(false);
-                await Client.StartAsync().ConfigureAwait(false);
+                await base.LoginAsync(TokenType.Bot, _token).ConfigureAwait(false);
+                await base.StartAsync().ConfigureAwait(false);
                 return true;
             }
             catch (HttpException e) when (e.HttpCode == HttpStatusCode.Unauthorized)
@@ -61,15 +59,15 @@ namespace GasaiYuno.Discord.Models
         /// <summary>
         /// Stops the connection to the service.
         /// </summary>
-        public async Task StopAsync()
+        public override async Task StopAsync()
         {
-            await Client.StopAsync().ConfigureAwait(false);
-            Client.Dispose();
+            await base.StopAsync().ConfigureAwait(false);
+            Dispose();
         }
 
         private Task OnShardReady(DiscordSocketClient arg)
         {
-            if (++_shardsReady == Client.Shards.Count)
+            if (++_shardsReady == Shards.Count)
             {
                 Ready?.Invoke().ConfigureAwait(false);
             }

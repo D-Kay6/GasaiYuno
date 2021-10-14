@@ -13,12 +13,12 @@ namespace GasaiYuno.Discord.Listeners
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork> _unitOfWorkFactory;
 
-        public GuildListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory)
+        public GuildListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory)
         {
-            _client = connection.Client;
+            _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

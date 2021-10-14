@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Extensions;
 using Interactivity;
 using Interactivity.Pagination;
 using System;
@@ -73,7 +74,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
                 .WithFooter(PaginatorFooter.PageNumber | PaginatorFooter.Users)
                 .WithDefaultEmotes()
                 .Build();
-            return Interactivity.SendPaginatorAsync(paginator, Context.Channel, TimeSpan.FromMinutes(2));
+
+            return Interactivity.SendPaginatorComponentAsync(Context.Client, paginator, Context.Channel, TimeSpan.FromMinutes(2));
         }
 
         [Command]

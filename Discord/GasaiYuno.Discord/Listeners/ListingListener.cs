@@ -12,13 +12,13 @@ namespace GasaiYuno.Discord.Listeners
         private readonly IListingUpdater _listingUpdater;
         private readonly ILogger<ListingListener> _logger;
 
-        public ListingListener(Connection connection, IListingUpdater listingUpdater, ILogger<ListingListener> logger)
+        public ListingListener(DiscordConnectionClient client, IListingUpdater listingUpdater, ILogger<ListingListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _listingUpdater = listingUpdater;
             _logger = logger;
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

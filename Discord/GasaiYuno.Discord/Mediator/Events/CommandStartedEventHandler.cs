@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +16,7 @@ namespace GasaiYuno.Discord.Mediator.Events
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CommandStartedEventHandler> _logger;
 
-        public CommandStartedEventHandler(DiscordShardedClient client, CommandService commandService, IServiceProvider serviceProvider, ILogger<CommandStartedEventHandler> logger)
+        public CommandStartedEventHandler(DiscordConnectionClient client, CommandService commandService, IServiceProvider serviceProvider, ILogger<CommandStartedEventHandler> logger)
         {
             _client = client;
             _commandService = commandService;

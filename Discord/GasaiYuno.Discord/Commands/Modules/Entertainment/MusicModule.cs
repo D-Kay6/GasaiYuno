@@ -1,10 +1,7 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Models;
-using Interactivity;
-using Interactivity.Selection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -124,6 +121,23 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
         }
 
 
+        [Command("Status")]
+        [RequireOwner]
+        public async Task MusicStatusAsync()
+        {
+            await Context.Message.DeleteAsync().ConfigureAwait(false);
+            var dm = await Context.User.CreateDMChannelAsync().ConfigureAwait(false);
+            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
+            {
+                await dm.SendMessageAsync("No player for that server.").ConfigureAwait(false);
+                return;
+            }
+
+            var msg = $"State: {player.PlayerState} \nVoice: {player.VoiceChannel.Name} \nText: {player.TextChannel?.Name ?? "none"} \nTrack: {player.Track?.Title ?? "none"}";
+            await dm.SendMessageAsync(msg).ConfigureAwait(false);
+        }
+
+
         [Command("Play")]
         [Alias("Request")]
         [Summary("Requests a song to be played")]
@@ -133,8 +147,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
 
             var message = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Search", query)).ConfigureAwait(false);
             var searchResponse = await _lavaNode.SearchAsync(SearchType.Direct, query).ConfigureAwait(false);
-            if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.YouTubeMusic, query).ConfigureAwait(false);
             if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.YouTube, query).ConfigureAwait(false);
+            if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.YouTubeMusic, query).ConfigureAwait(false);
             if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.SoundCloud, query).ConfigureAwait(false);
 
             await message.DeleteAsync().ConfigureAwait(false);
@@ -149,21 +163,27 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                     var resultTrack = searchResponse.Tracks.FirstOrDefault(t => query.Equals(t.Id));
                     if (resultTrack == null)
                     {
-                        var reactions = new Dictionary<IEmote, LavaTrack>();
-                        for (var i = 0; i < Math.Min(searchResponse.Tracks.Count, 5); i++)
-                            reactions.Add(EmojiExtensions.GetNumber(i + 1), searchResponse.Tracks.ElementAt(i));
-                        var reactionBuilder = new ReactionSelectionBuilder<LavaTrack>()
-                            .WithTitle(Translation.Message("Entertainment.Music.Track.Multiple", query))
-                            .WithStringConverter(x => x.Title)
-                            .WithSelectables(reactions)
-                            .WithUsers(Context.User)
-                            .WithDeletion(DeletionOptions.AfterCapturedContext | DeletionOptions.Invalids);
-                        var reactionResult = await Interactivity.SendSelectionAsync(reactionBuilder.Build(), Context.Channel);
-                        if (!reactionResult.IsSuccess) return;
+                        var menuBuilder = new SelectMenuBuilder().WithPlaceholder(Translation.Message("Entertainment.Music.Track.Selection")).WithCustomId(query).WithMinValues(1).WithMaxValues(1);
+                        for (var i = 0; i < Math.Min(searchResponse.Tracks.Count, 10); i++)
+                        {
+                            var responseTrack = searchResponse.Tracks.ElementAt(i);
+                            menuBuilder.AddOption(responseTrack.Title, responseTrack.Id, responseTrack.Author);
+                        }
 
-                        resultTrack = reactionResult.Value;
+                        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
+                        var reactionResult = await Interactivity.NextMessageComponentAsync(x =>
+                            x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
+                        if (!reactionResult.IsSuccess)
+                        {
+                            await selectionMessage.DeleteAsync().ConfigureAwait(false);
+                            return;
+                        }
+
+                        await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
+                        resultTrack = searchResponse.Tracks.First(x => x.Id == reactionResult.Value.Data.Values.First());
+                        await selectionMessage.DeleteAsync().ConfigureAwait(false);
                     }
-                    tracks.Add(new PlayableTrack(resultTrack ?? searchResponse.Tracks.First(), user, Context.Channel as ITextChannel));
+                    tracks.Add(new PlayableTrack(resultTrack, user, Context.Channel as ITextChannel));
                     break;
                 case SearchStatus.TrackLoaded:
                     tracks.Add(new PlayableTrack(searchResponse.Tracks.First(), user, Context.Channel as ITextChannel));
@@ -182,26 +202,33 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
 
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
                 player = await _lavaNode.JoinAsync(user.VoiceChannel, Context.Channel as ITextChannel).ConfigureAwait(false);
-
-            tracks.ForEach(player.Vueue.Enqueue);
-            if (tracks.Count == 1 && player.PlayerState is PlayerState.Playing or PlayerState.Paused)
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Song", player.Vueue.Count, tracks[0].Title, tracks[0].Duration)).ConfigureAwait(false);
-            else if (tracks.Count > 1)
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Playlist", searchResponse.Tracks.Count)).ConfigureAwait(false);
-
+            
+            var maxQueueItems = 5;
+            var embedBuilder = new EmbedBuilder().WithTitle(Translation.Message("Entertainment.Music.Queue.Added"));
+            for (var i = 0; i < tracks.Count; i++)
+            {
+                var track = tracks[i];
+                player.Vueue.Enqueue(track);
+                if (i < maxQueueItems)
+                    embedBuilder.AddField(track.Title.Trim(), Translation.Message("Entertainment.Music.Queue.Details", player.Vueue.Count, track.Duration));
+            }
+            if (tracks.Count > maxQueueItems)
+                embedBuilder.WithFooter(Translation.Message("Entertainment.Music.Queue.Remaining", tracks.Count - maxQueueItems));
+            if (tracks.Count > 1 || player.PlayerState is PlayerState.Playing or PlayerState.Paused)
+                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
             if (player.PlayerState is PlayerState.Playing or PlayerState.Paused) return;
 
             LavaTrack lavaTrack;
             while (!player.Vueue.TryDequeue(out lavaTrack)) Logger.LogError("Unable to get item from {@player} {@queue}", player, player.Vueue);
-            if (lavaTrack is not PlayableTrack track)
+            if (lavaTrack is not PlayableTrack playableTrack)
             {
                 await player.StopAsync().ConfigureAwait(false);
                 await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
                 return;
             }
 
-            player.SetTextChannel(track.TextChannel);
-            await player.PlayAsync(track).ConfigureAwait(false);
+            player.SetTextChannel(playableTrack.TextChannel);
+            await player.PlayAsync(playableTrack).ConfigureAwait(false);
         }
 
         [Command("Pause")]
@@ -314,20 +341,17 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 return;
             }
 
-            int queueSize = 15;
-            var items = new List<string>();
-            for (var i = 0; i < player.Vueue.Count; i++)
+            var maxQueueItems = 10;
+            var embedBuilder = new EmbedBuilder().WithTitle(Translation.Message("Entertainment.Music.Queue.List"));
+            for (var i = 1; i <= Math.Min(player.Vueue.Count, maxQueueItems); i++)
             {
-                if (i == queueSize)
-                {
-                    items.Add(Translation.Message("Entertainment.Music.Queue.Remaining", player.Vueue.Count - queueSize));
-                    break;
-                }
                 var track = player.Vueue.ElementAt(i);
-                items.Add(Translation.Message("Entertainment.Music.Queue.Item", i + 1, track.Title, track.Duration));
+                embedBuilder.AddField(track.Title.Trim(), Translation.Message("Entertainment.Music.Queue.Details", i, track.Duration));
             }
+            if (player.Vueue.Count > maxQueueItems)
+                embedBuilder.WithFooter(Translation.Message("Entertainment.Music.Queue.Remaining", player.Vueue.Count - maxQueueItems));
 
-            await ReplyAsync(string.Join(Environment.NewLine, items)).ConfigureAwait(false);
+            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
 
 

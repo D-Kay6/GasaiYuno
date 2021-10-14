@@ -17,9 +17,7 @@ namespace GasaiYuno.Discord.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(x => new DiscordShardedClient(x.Resolve<DiscordSocketConfig>())).InstancePerLifetimeScope();
-
-            builder.RegisterType<Connection>().WithParameter("token", _token).InstancePerLifetimeScope();
+            builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", _token).InstancePerLifetimeScope();
             builder.RegisterType<CommandService>().InstancePerLifetimeScope();
             builder.RegisterType<LavaNode>().InstancePerLifetimeScope();
         }

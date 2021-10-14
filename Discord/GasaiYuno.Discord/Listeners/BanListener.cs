@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
-using GasaiYuno.Interface.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -13,19 +12,17 @@ namespace GasaiYuno.Discord.Listeners
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork> _unitOfWorkFactory;
-        private readonly ILocalization _localization;
         private readonly ILogger<BanListener> _logger;
         private readonly Timer _timer;
 
-        public BanListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<BanListener> logger)
+        public BanListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory, ILogger<BanListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
-            _localization = localization;
             _logger = logger;
             _timer = new Timer(CheckBans, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

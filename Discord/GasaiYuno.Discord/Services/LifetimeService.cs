@@ -10,7 +10,7 @@ namespace GasaiYuno.Discord.Services
     {
         public bool KeepAlive { get; private set; }
 
-        private readonly Connection _connection;
+        private readonly DiscordConnectionClient _connection;
         private readonly ILogger<LifetimeService> _logger;
         
         private CancellationTokenSource _stopTokenSource;
@@ -18,9 +18,9 @@ namespace GasaiYuno.Discord.Services
         /// <summary>
         /// Creates a new <see cref="LifetimeService"/>.
         /// </summary>
-        /// <param name="connection">The <see cref="Connection"/> used during this lifetime.</param>
+        /// <param name="connection">The <see cref="DiscordConnectionClient"/> used during this lifetime.</param>
         /// <param name="logger">The <see cref="ILogger{T}"/> that will log all the log messages.</param>
-        public LifetimeService(Connection connection, ILogger<LifetimeService> logger)
+        public LifetimeService(DiscordConnectionClient connection, ILogger<LifetimeService> logger)
         {
             _connection = connection;
             _logger = logger;

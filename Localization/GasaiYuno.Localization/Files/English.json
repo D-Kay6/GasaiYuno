@@ -60,15 +60,15 @@
           "Stop": "Stopped playing music."
         },
         "Queue": {
-          "Song": "Queued #{0} **{1}** (`{2}`).",
-          "Playlist": "Queued {0} songs.",
+          "Added": "Added to queue:",
+          "List": "Next up:",
+          "Details": "Position in queue: {0} | Duration: {1}",
+          "Remaining": "And {0} more songs.",
+          "Empty": "There is no music in the queue. Add a song to start listening to music.",
           "Shuffling": "Shuffling...",
           "Shuffled": "The queue has been shuffled.",
           "Cleared": "Queue cleared :ok_hand:.",
-          "Skipped": "Skipped `{0}` song(s).",
-          "Empty": "There is no music in the queue. Add a song to start listening to music.",
-          "Item": "#{0}  **{1}** (`{2}`).",
-          "Remaining": "There are {0} more songs in queue."
+          "Skipped": "Skipped __{0}__ song(s)."
         },
         "Track": {
           "Exception": {
@@ -76,10 +76,12 @@
             "Reason": "Reason: {0}",
             "Support": "Come to my support server if this problem persists."
           },
+          "Current": "Now playing:",
+          "Item": "**{0}** {1}",
           "Invalid": "I could not find a valid song to play.",
-          "Search": "Searching for `{0}`...",
-          "Multiple": "I found multiple songs matching `{0}`.[enter]Please select one:",
-          "Current": "Now playing `{0}` `({1})`."
+          "Search": "Searching for **{0}**...",
+          "Multiple": "I found multiple songs matching **{0}**.",
+          "Selection": "Please select a song:"
         }
       }
     },

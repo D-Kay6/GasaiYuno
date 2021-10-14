@@ -1,0 +1,3 @@
+[submodule "Discord/GasaiYuno.Discord.Victoria"]
+	path = Discord/GasaiYuno.Discord.Victoria
+	url = https://github.com/Yucked/Victoria.git

@@ -14,13 +14,13 @@ namespace GasaiYuno.Discord.Listeners
         private readonly Random _random;
         private readonly Timer _timer;
 
-        public StatusListener(Connection connection)
+        public StatusListener(DiscordConnectionClient client)
         {
-            _client = connection.Client;
+            _client = client;
             _timer = new Timer { Interval = TimeSpan.FromMinutes(5).TotalMilliseconds };
             _random = new Random();
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private async Task OnReady()

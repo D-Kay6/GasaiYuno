@@ -10,6 +10,7 @@ using GasaiYuno.Interface.Localization;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -24,16 +25,16 @@ namespace GasaiYuno.Discord.Listeners
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CommandListener> _logger;
 
-        public CommandListener(Connection connection, CommandService commandService, IMediator mediator, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
+        public CommandListener(DiscordConnectionClient client, CommandService commandService, IMediator mediator, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _commandService = commandService;
             _mediator = mediator;
             _localization = localization;
             _serviceProvider = serviceProvider;
             _logger = logger;
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

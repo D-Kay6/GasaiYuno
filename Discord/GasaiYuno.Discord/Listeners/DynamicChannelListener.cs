@@ -20,14 +20,14 @@ namespace GasaiYuno.Discord.Listeners
         private readonly ILogger<DynamicChannelListener> _logger;
         private readonly List<ulong> _channelCache;
 
-        public DynamicChannelListener(Connection connection, Func<IUnitOfWork> unitOfWorkFactory, ILogger<DynamicChannelListener> logger)
+        public DynamicChannelListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory, ILogger<DynamicChannelListener> logger)
         {
-            _client = connection.Client;
+            _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
             _logger = logger;
             _channelCache = new List<ulong>();
 
-            connection.Ready += OnReady;
+            client.Ready += OnReady;
         }
 
         private Task OnReady()

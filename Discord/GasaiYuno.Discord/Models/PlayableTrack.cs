@@ -1,29 +1,20 @@
 ﻿using Discord;
+using GasaiYuno.Discord.Extensions;
 using Victoria.Player;
 
 namespace GasaiYuno.Discord.Models
 {
-    public interface IPlayable
+    public class PlayableTrack : LavaTrack
     {
-        IGuild Guild { get; }
-        IGuildUser Requester { get; }
-        ITextChannel TextChannel { get; }
-        int Volume { get; }
-    }
-
-    public class PlayableTrack : LavaTrack, IPlayable
-    {
-        public IGuild Guild { get; }
-        public IGuildUser Requester { get; }
         public ITextChannel TextChannel { get; }
-        public int Volume { get; }
+        public string Requester { get; }
 
-        public PlayableTrack(LavaTrack lavaTrack, IGuildUser requester, ITextChannel textChannel, int volume = 25) : base(lavaTrack)
+        public PlayableTrack(LavaTrack lavaTrack, IGuildUser requester, ITextChannel textChannel) : this(lavaTrack, requester.Nickname(), textChannel) { }
+
+        public PlayableTrack(LavaTrack lavaTrack, string requester, ITextChannel textChannel) : base(lavaTrack)
         {
-            Guild = requester.Guild;
             Requester = requester;
             TextChannel = textChannel;
-            Volume = volume;
         }
     }
 }
