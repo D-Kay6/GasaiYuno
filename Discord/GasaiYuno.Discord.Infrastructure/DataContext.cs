@@ -52,7 +52,6 @@ namespace GasaiYuno.Discord.Infrastructure
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
-            //optionsBuilder.UseSqlServer($"Server={config.Ip},{config.Port};Database={config.Database};User Id={config.UserId};Password={config.Password};");
         }
 
         /// <inheritdoc/>

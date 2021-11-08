@@ -1,26 +1,24 @@
 ﻿using Autofac;
+using GasaiYuno.Discord.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Services
+namespace GasaiYuno.Discord.Hosting
 {
     public class DiscordService : BackgroundService
     {
-        private readonly IHostApplicationLifetime _hostApplicationLifetime;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger<DiscordService> _logger;
 
         /// <summary>
         /// Creates a new <see cref="DiscordService"/>.
         /// </summary>
-        /// <param name="hostApplicationLifetime">The <see cref="IHostApplicationLifetime"/> that is used to shut the application down.</param>
         /// <param name="lifetimeScope">The <see cref="ILifetimeScope"/> that will create child scopes.</param>
         /// <param name="logger">The <see cref="ILogger{T}"/> that will log all the log messages.</param>
-        public DiscordService(IHostApplicationLifetime hostApplicationLifetime, ILifetimeScope lifetimeScope, ILogger<DiscordService> logger)
+        public DiscordService(ILifetimeScope lifetimeScope, ILogger<DiscordService> logger)
         {
-            _hostApplicationLifetime = hostApplicationLifetime;
             _lifetimeScope = lifetimeScope;
             _logger = logger;
         }
@@ -35,7 +33,6 @@ namespace GasaiYuno.Discord.Services
                 await lifetimeService.StartAsync(cancellationToken);
                 keepAlive = lifetimeService.KeepAlive;
             } while (keepAlive);
-            //_hostApplicationLifetime.StopApplication();
         }
     }
 }

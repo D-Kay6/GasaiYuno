@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using GasaiYuno.Discord.Hosting;
 using GasaiYuno.Discord.Services;
 using Interactivity;
 using Microsoft.Extensions.Hosting;

@@ -104,7 +104,7 @@ namespace GasaiYuno.Discord.Listeners
             var translation = _localization.GetTranslation(server.Language?.Name);
 
             _logger.LogError(exception, "Unhandled exception occurred during the handling of {Module} {Command}", exception.Command.Module.Name, exception.Command.Name);
-            await exception.Context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Generic", server.Prefix)).ConfigureAwait(false);
+            await exception.Context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Command", server.Prefix)).ConfigureAwait(false);
         }
     }
 }

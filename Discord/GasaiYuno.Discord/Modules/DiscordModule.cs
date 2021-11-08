@@ -22,8 +22,10 @@ namespace GasaiYuno.Discord.Modules
             {
 #if !DEBUG
                 TotalShards = TotalShards,
-#endif
+                LogLevel = LogSeverity.Verbose,
+#else
                 LogLevel = LogSeverity.Debug,
+#endif
                 ConnectionTimeout = ConnectionTimeout,
                 HandlerTimeout = HandlerTimeout,
                 GatewayIntents = GatewayIntents.Guilds |

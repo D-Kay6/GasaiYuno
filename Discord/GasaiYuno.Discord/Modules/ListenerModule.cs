@@ -14,6 +14,7 @@ namespace GasaiYuno.Discord.Modules
             builder.RegisterType<StatusListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<GuildListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<CommandListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
+            builder.RegisterType<SlashCommandListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<NotificationListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<BanListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<DynamicChannelListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
@@ -34,6 +35,7 @@ namespace GasaiYuno.Discord.Modules
                         c.Resolve<StatusListener>();
                         c.Resolve<GuildListener>();
                         c.Resolve<CommandListener>();
+                        c.Resolve<SlashCommandListener>();
                         c.Resolve<NotificationListener>();
                         c.Resolve<BanListener>();
                         c.Resolve<DynamicChannelListener>();
