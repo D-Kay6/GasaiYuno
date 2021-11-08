@@ -70,6 +70,15 @@
           "Cleared": "Queue cleared :ok_hand:.",
           "Skipped": "Skipped __{0}__ song(s)."
         },
+        "Lyrics": {
+          "Invalid": {
+            "None": "Sorry, I was unable to find any lyrics.",
+            "Format": "I was unable to understand the lyrics. Maybe try again later?",
+            "Length": "The lyrics is too long for me to be able to send it."
+          },
+          "Multiple": "I found multiple results for **{0}**.",
+          "Selection": "Please select the song:"
+        },
         "Track": {
           "Exception": {
             "Message": "There was an error trying to play `{0}`.",
@@ -202,20 +211,24 @@
           },
           "Chat": {
             "Title": "__Chat__",
-            "Normal": "{0}chat - Engage in a casual, but probably still weird, conversation with me.[enter]{0}chat <message> - Same as `chat`, but I'll start the conversation with the provided message.[enter]{0}chat stop - End the ongoing conversation."
+            "Normal": "{0}chat - Engage in a casual, but probably still weird, conversation with me.[enter]{0}chat _<message>_ - Same as `chat`, but I'll start the conversation with the provided message.[enter]{0}chat stop - End the ongoing conversation."
           },
           "Kill": {
             "Title": "__Kill__",
-            "Normal": "{0}kill _<username>_ - Make me kill that user."
+            "Normal": "{0}kill _<username>_ - Have me kill a user."
           },
           "CustomCommand": {
             "Title": "__Custom Commands__",
             "Normal": "{0}customcommands - Display some information about the usage of custom commands.[enter]{0}customcommands list - Display all custom commands of this server.",
             "Admin": "{0}customcommands add _<command title>_ _<response>_ - Add a custom command for this server.[enter]{0}customcommands remove _<command title>_ - Remove one of this server's custom commands."
           },
-          "Music": {
-            "Title": "__Music__",
-            "Normal": "{0}music join - Join your voice channel.[enter]{0}music move - Move to your voice channel.[enter]{0}music leave - Leave the voice channel.[enter]{0}music play _<name>_ - Search for a song by its name and add it to the queue.[enter]{0}music play _<song url: youtube|soundcloud>_ - Add a song to the queue.[enter]{0}music play _<playlist url: youtube|soundcloud>_ - Add an entire playlist to the queue.[enter]{0}music pause - Pause the current song.[enter]{0}music unpause - Un-pause the current song.[enter]{0}music playing - Show what song is being played.[enter]{0}music queue - List the songs in the queue.[enter]{0}music shuffle - Shuffle all the songs in the queue.[enter]{0}music skip - Skip the song currently playing.[enter]{0}music skip _<amount>_ - Skip the given amount of songs.[enter]{0}music clear - Remove all songs from the queue.[enter]{0}music stop - Stop playing music and remove all songs from the queue.",
+          "Music1": {
+            "Title": "__Music (1/2)__",
+            "Normal": "{0}music join - Join your voice channel.[enter]{0}music move - Move to your voice channel.[enter]{0}music leave - Leave the voice channel.[enter]{0}music play _<name>_ - Search for a song by its name and add it to the queue.[enter]{0}music play _<song url: youtube|soundcloud>_ - Add a song to the queue.[enter]{0}music play _<playlist url: youtube|soundcloud>_ - Add an entire playlist to the queue.[enter]{0}music playing - Show what song is being played.[enter]{0}music queue - List the songs in the queue."
+          },
+          "Music2": {
+            "Title": "__Music (2/2)__",
+            "Normal": "{0}music pause - Pause the current song.[enter]{0}music unpause - Un-pause the current song.[enter]{0}music shuffle - Shuffle all the songs in the queue.[enter]{0}music skip - Skip the song currently playing.[enter]{0}music skip _<amount>_ - Skip the given amount of songs.[enter]{0}music clear - Remove all songs from the queue.[enter]{0}music stop - Stop playing music and remove all songs from the queue.",
             "Admin": "{0}music volume _<value>_ - Change the music volume."
           }
         },
@@ -264,7 +277,7 @@
           },
           "Invite": {
             "Title": "__Invite__",
-            "Normal": "{0}invite - Ask me for my invite link so you, or someone else, can add me to a server."
+            "Normal": "{0}invite - My invite link, so you, or someone else, can add me to a server."
           },
           "Support": {
             "Title": "__Support__",
@@ -304,8 +317,8 @@
   ],
   "UserPraises": [
     "Good job, {0}. You deserve a :cookie:.",
-    "{0}, you’re off to great places, today is your day. Your mountain is waiting, so get on your way.",
-    "{0}, you’re braver than you believe, and stronger than you seem, and smarter than you think.",
+    "{0}, youâ€™re off to great places, today is your day. Your mountain is waiting, so get on your way.",
+    "{0}, youâ€™re braver than you believe, and stronger than you seem, and smarter than you think.",
     "If the world had more people like you {0}, it would be a better place. You do make a difference.",
     "you're a gift to those around you, {0}.",
     "{0}, you're a smart cookie.",

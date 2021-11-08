@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Domain\GasaiYuno.Discord.Domain.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Infrastructure\GasaiYuno.Discord.Infrastructure.csproj" />
+    <ProjectReference Include="..\GasaiYuno.Discord.Music\GasaiYuno.Discord.Music.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Persistence\GasaiYuno.Discord.Persistence.csproj" />
     <ProjectReference Include="..\GasaiYuno.Discord.Victoria\src\Victoria.csproj" />
   </ItemGroup>

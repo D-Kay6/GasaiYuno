@@ -28,7 +28,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
             embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.Chat.Title"), Translation.Message("Info.Help.Entertainment.Chat.Normal", Server.Prefix));
             embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.Kill.Title"), Translation.Message("Info.Help.Entertainment.Kill.Normal", Server.Prefix));
             embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.CustomCommand.Title"), Translation.Message("Info.Help.Entertainment.CustomCommand.Normal", Server.Prefix) + (isAdmin ? Environment.NewLine + Translation.Message("Info.Help.Entertainment.CustomCommand.Admin", Server.Prefix) : string.Empty));
-            embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.Music.Title"), Translation.Message("Info.Help.Entertainment.Music.Normal", Server.Prefix) + (isAdmin ? Environment.NewLine + Translation.Message("Info.Help.Entertainment.Music.Admin", Server.Prefix) : string.Empty));
+            embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.Music1.Title"), Translation.Message("Info.Help.Entertainment.Music1.Normal", Server.Prefix));
+            embedBuilder.AddField(Translation.Message("Info.Help.Entertainment.Music2.Title"), Translation.Message("Info.Help.Entertainment.Music2.Normal", Server.Prefix) + (isAdmin ? Environment.NewLine + Translation.Message("Info.Help.Entertainment.Music2.Admin", Server.Prefix) : string.Empty));
             pages.Add(PageBuilder.FromEmbed(embedBuilder.Build()));
 
             if (isAdmin)

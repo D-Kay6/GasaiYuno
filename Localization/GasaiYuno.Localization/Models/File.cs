@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Text;
 
 namespace GasaiYuno.Localization.Models
 {
@@ -11,7 +12,7 @@ namespace GasaiYuno.Localization.Models
             if (!file.Exists)
                 throw new InvalidOperationException("The file does not exist.");
 
-            var json = File.ReadAllText(file.FullName);
+            var json = File.ReadAllText(file.FullName, Encoding.UTF8);
             return JsonConvert.DeserializeObject<T>(json, new DictionaryConverter());
         }
 

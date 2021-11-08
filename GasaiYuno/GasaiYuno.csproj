@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj" />
     <ProjectReference Include="..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
+    <ProjectReference Include="..\Discord\GasaiYuno.Discord.Music\GasaiYuno.Discord.Music.csproj" />
     <ProjectReference Include="..\Localization\GasaiYuno.Localization\GasaiYuno.Localization.csproj" />
     <ProjectReference Include="..\Storage\GasaiYuno.Storage.Image\GasaiYuno.Storage.Image.csproj" />
     <ProjectReference Include="..\Chatbot\GasaiYuno.Chatbot.Cleverbot\GasaiYuno.Chatbot.Cleverbot.csproj" />

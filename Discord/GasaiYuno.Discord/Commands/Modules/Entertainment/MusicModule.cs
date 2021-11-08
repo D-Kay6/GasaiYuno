@@ -2,6 +2,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
+using GasaiYuno.Interface.Music;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
     public class MusicModule : BaseModule<MusicModule>
     {
         private readonly LavaNode _lavaNode;
+        private readonly ILyricsService _lyricsService;
 
-        public MusicModule(LavaNode lavaNode)
+        public MusicModule(LavaNode lavaNode, ILyricsService lyricsService)
         {
             _lavaNode = lavaNode;
+            _lyricsService = lyricsService;
         }
 
         [Priority(-1)]
@@ -171,8 +174,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                         }
 
                         var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
-                        var reactionResult = await Interactivity.NextMessageComponentAsync(x =>
-                            x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
+                        var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
                         if (!reactionResult.IsSuccess)
                         {
                             await selectionMessage.DeleteAsync().ConfigureAwait(false);
@@ -323,7 +325,10 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 return;
             }
 
-            await ReplyAsync(Translation.Message("Entertainment.Music.Track.Current", player.Track.Title, player.Track.Duration)).ConfigureAwait(false);
+            var embedBuilder = new EmbedBuilder()
+                .WithTitle(Translation.Message("Entertainment.Music.Track.Current"))
+                .WithDescription(Translation.Message("Entertainment.Music.Track.Item", player.Track.Title.Trim(), player.Track.Duration));
+            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
 
         [Command("Queue")]
@@ -480,6 +485,213 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             {
                 Logger.LogError(e, "Something went wrong trying to change the volume of the player {player}.", player);
                 await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+            }
+        }
+
+        [Command("Lyrics")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task MusicLyricsAsync()
+        {
+            if (!await CanPerformAsync()) return;
+
+            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
+            {
+                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                return;
+            }
+
+            ILyricsOption selectedOption = null;
+            var typingState = Context.Channel.EnterTypingState();
+            try
+            {
+                async Task<ILyricsOption> FindMatch(string input)
+                {
+                    input = input.Replace('’', '\'');
+                    var options = await _lyricsService.Search(input, 50).ConfigureAwait(false);
+                    if (options == null || options.Length == 0) return null;
+                    return (from lyricsOption in options
+                        let artist = lyricsOption.Artist.Replace('’', '\'')
+                        let title = lyricsOption.Title.Replace('’', '\'')
+                        let fullTitle = lyricsOption.FullTitle.Replace('’', '\'')
+                        let possibleTitles = new[] { $"{artist} - {title}", $"{title} - {artist}", fullTitle, title }
+                        from possibleTitle in possibleTitles
+                        where input.Contains(possibleTitle, StringComparison.OrdinalIgnoreCase)
+                        select lyricsOption).FirstOrDefault();
+                }
+
+                var inputParts = player.Track.Title.Contains(" - ")
+                    ? player.Track.Title.Split("-", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    : new[] { player.Track.Title };
+                for (var i = 0; i < inputParts.Length && (selectedOption == null); i++) selectedOption = await FindMatch(inputParts[i]);
+                if (selectedOption == null)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                    return;
+                }
+            }
+            catch
+            {
+                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                return;
+            }
+            finally
+            {
+                typingState.Dispose();
+            }
+
+            typingState = Context.Channel.EnterTypingState();
+            try
+            {
+                var lyrics = await _lyricsService.Get(selectedOption).ConfigureAwait(false);
+                if (lyrics == null)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    return;
+                }
+
+                var embedBuilder = new EmbedBuilder()
+                    .WithTitle(selectedOption.FullTitle);
+                if (!string.IsNullOrWhiteSpace(lyrics.Content))
+                {
+                    if (lyrics.Content.Length > 4096)
+                    {
+                        await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Length")).ConfigureAwait(false);
+                        return;
+                    }
+
+                    embedBuilder.WithDescription(lyrics.Content);
+                    await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+                    return;
+                }
+
+                if (lyrics.Parts == null || lyrics.Parts.Length == 0)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    return;
+                }
+
+                foreach (var lyricsPart in lyrics.Parts)
+                {
+                    var title = lyricsPart.Title;
+                    var content = lyricsPart.Content;
+                    if (string.IsNullOrWhiteSpace(title))
+                    {
+                        if (string.IsNullOrWhiteSpace(lyricsPart.Content)) continue;
+                        title = "-";
+                    }
+                    if (string.IsNullOrWhiteSpace(content)) content = "-";
+                    embedBuilder.AddField(title, content);
+                }
+                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Unable to process the lyrics for {@lyrics}", selectedOption);
+                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+            }
+            finally
+            {
+                typingState.Dispose();
+            }
+        }
+
+        [Command("Lyrics")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task MusicLyricsAsync([Remainder] string input)
+        {
+            SelectMenuBuilder menuBuilder;
+            ILyricsOption[] options;
+            var typingState = Context.Channel.EnterTypingState();
+            try
+            {
+                options = await _lyricsService.Search(input).ConfigureAwait(false);
+                if (options == null || options.Length == 0)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                    return;
+                }
+
+                menuBuilder = new SelectMenuBuilder().WithPlaceholder(Translation.Message("Entertainment.Music.Lyrics.Selection")).WithCustomId(input).WithMinValues(1).WithMaxValues(1);
+                for (var i = 0; i < Math.Min(options.Length, 10); i++)
+                {
+                    var option = options[i];
+                    menuBuilder.AddOption(option.FullTitle, option.Id);
+                }
+            }
+            catch
+            {
+                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                return;
+            }
+            finally
+            {
+                typingState.Dispose();
+            }
+
+            var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
+            var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
+            if (!reactionResult.IsSuccess)
+            {
+                await selectionMessage.DeleteAsync().ConfigureAwait(false);
+                return;
+            }
+
+            await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
+            var result = options.First(x => x.Id == reactionResult.Value.Data.Values.First());
+            await selectionMessage.DeleteAsync().ConfigureAwait(false);
+            typingState = Context.Channel.EnterTypingState();
+            try
+            {
+                var lyrics = await _lyricsService.Get(result).ConfigureAwait(false);
+                if (lyrics == null)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    return;
+                }
+
+                var embedBuilder = new EmbedBuilder()
+                    .WithTitle(result.FullTitle);
+                if (!string.IsNullOrWhiteSpace(lyrics.Content))
+                {
+                    if (lyrics.Content.Length > 4096)
+                    {
+                        await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Length")).ConfigureAwait(false);
+                        return;
+                    }
+
+                    embedBuilder.WithDescription(lyrics.Content);
+                    await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+                    return;
+                }
+
+                if (lyrics.Parts == null || lyrics.Parts.Length == 0)
+                {
+                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    return;
+                }
+
+                foreach (var lyricsPart in lyrics.Parts)
+                {
+                    var title = lyricsPart.Title;
+                    var content = lyricsPart.Content;
+                    if (string.IsNullOrWhiteSpace(title))
+                    {
+                        if (string.IsNullOrWhiteSpace(lyricsPart.Content)) continue;
+                        title = "-";
+                    }
+                    if (string.IsNullOrWhiteSpace(content)) content = "-";
+                    embedBuilder.AddField(title, content);
+                }
+                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Unable to process the lyrics for {@lyrics}", result);
+                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+            }
+            finally
+            {
+                typingState.Dispose();
             }
         }
 
