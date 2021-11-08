@@ -25,7 +25,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
         public async Task LanguageListAsync()
         {
             var languages = await _unitOfWork.Languages.ListAsync().ConfigureAwait(false);
-            await ReplyAsync(Translation.Message("Moderation.Language.List", string.Join(", ", languages.Select(x => x.Name)))).ConfigureAwait(false);
+            await ReplyAsync(Translation.Message("Moderation.Language.List", string.Join(", ", languages.Select(x => x.LocalizedName)))).ConfigureAwait(false);
         }
 
         [Command("Set")]
@@ -43,7 +43,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
             await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
             Translation = Localization.GetTranslation(language.Name);
-            await ReplyAsync(Translation.Message("Moderation.Language.Set", language)).ConfigureAwait(false);
+            await ReplyAsync(Translation.Message("Moderation.Language.Set", language.LocalizedName)).ConfigureAwait(false);
         }
     }
 }
