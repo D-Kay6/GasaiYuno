@@ -170,7 +170,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                         for (var i = 0; i < Math.Min(searchResponse.Tracks.Count, 10); i++)
                         {
                             var responseTrack = searchResponse.Tracks.ElementAt(i);
-                            menuBuilder.AddOption(responseTrack.Title, responseTrack.Id, responseTrack.Author);
+                            menuBuilder.AddOption(responseTrack.Title, i.ToString(), responseTrack.Author);
                         }
 
                         var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
@@ -182,7 +182,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                         }
 
                         await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
-                        resultTrack = searchResponse.Tracks.First(x => x.Id == reactionResult.Value.Data.Values.First());
+                        resultTrack = searchResponse.Tracks.ElementAt(int.Parse(reactionResult.Value.Data.Values.First()));
                         await selectionMessage.DeleteAsync().ConfigureAwait(false);
                     }
                     tracks.Add(new PlayableTrack(resultTrack, user, Context.Channel as ITextChannel));
@@ -506,13 +506,13 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             {
                 async Task<ILyricsOption> FindMatch(string input)
                 {
-                    input = input.Replace('’', '\'');
+                    input = input.Replace('ï¿½', '\'');
                     var options = await _lyricsService.Search(input, 50).ConfigureAwait(false);
                     if (options == null || options.Length == 0) return null;
                     return (from lyricsOption in options
-                        let artist = lyricsOption.Artist.Replace('’', '\'')
-                        let title = lyricsOption.Title.Replace('’', '\'')
-                        let fullTitle = lyricsOption.FullTitle.Replace('’', '\'')
+                        let artist = lyricsOption.Artist.Replace('ï¿½', '\'')
+                        let title = lyricsOption.Title.Replace('ï¿½', '\'')
+                        let fullTitle = lyricsOption.FullTitle.Replace('ï¿½', '\'')
                         let possibleTitles = new[] { $"{artist} - {title}", $"{title} - {artist}", fullTitle, title }
                         from possibleTitle in possibleTitles
                         where input.Contains(possibleTitle, StringComparison.OrdinalIgnoreCase)
