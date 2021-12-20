@@ -76,7 +76,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
                 .WithDefaultEmotes()
                 .Build();
 
-            return Interactivity.SendPaginatorComponentAsync(Context.Client, paginator, Context.Channel, TimeSpan.FromMinutes(2));
+            return Interactivity.SendPaginatorAsync(Context.Client, paginator, Context.Channel, TimeSpan.FromMinutes(2));
         }
 
         [Command]

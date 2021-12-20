@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
 using Victoria.Node;
+using Victoria.Player;
 
 namespace GasaiYuno.Discord.Modules
 {
@@ -19,7 +20,7 @@ namespace GasaiYuno.Discord.Modules
         {
             builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", _token).InstancePerLifetimeScope();
             builder.RegisterType<CommandService>().InstancePerLifetimeScope();
-            builder.RegisterType<LavaNode>().InstancePerLifetimeScope();
+            builder.RegisterType<LavaNode<LavaPlayer<PlayableTrack>, PlayableTrack>>().InstancePerLifetimeScope();
         }
     }
 }

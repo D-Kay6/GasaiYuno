@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Chatbot\" />
-    <Folder Include="Listing\" />
-    <Folder Include="Storage\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Chatbot\" />
+		<Folder Include="Listing\" />
+		<Folder Include="Storage\" />
+	</ItemGroup>
 
 </Project>

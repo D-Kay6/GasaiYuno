@@ -16,11 +16,11 @@ namespace GasaiYuno.Discord.Listeners
     internal class MusicListener
     {
         private readonly DiscordShardedClient _client;
-        private readonly LavaNode _lavaNode;
+        private readonly LavaNode<LavaPlayer<PlayableTrack>, PlayableTrack> _lavaNode;
         private readonly IMediator _mediator;
         private readonly ILogger<MusicListener> _logger;
 
-        public MusicListener(DiscordConnectionClient client, LavaNode lavaNode, IMediator mediator, ILogger<MusicListener> logger)
+        public MusicListener(DiscordConnectionClient client, LavaNode<LavaPlayer<PlayableTrack>, PlayableTrack> lavaNode, IMediator mediator, ILogger<MusicListener> logger)
         {
             _client = client;
             _lavaNode = lavaNode;
@@ -72,7 +72,7 @@ namespace GasaiYuno.Discord.Listeners
             }
         }
 
-        private async Task TrackStartAsync(TrackStartEventArg<LavaPlayer<LavaTrack>, LavaTrack> e)
+        private async Task TrackStartAsync(TrackStartEventArg<LavaPlayer<PlayableTrack>, PlayableTrack> e)
         {
             var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild));
             var embedBuilder = new EmbedBuilder()
@@ -81,7 +81,7 @@ namespace GasaiYuno.Discord.Listeners
             await e.Player.TextChannel.SendMessageAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
 
-        private async Task TrackEndAsync(TrackEndEventArg<LavaPlayer<LavaTrack>, LavaTrack> e)
+        private async Task TrackEndAsync(TrackEndEventArg<LavaPlayer<PlayableTrack>, PlayableTrack> e)
         {
             switch (e.Reason)
             {
@@ -100,13 +100,13 @@ namespace GasaiYuno.Discord.Listeners
             }
         }
 
-        private async Task TrackStuckAsync(TrackStuckEventArg<LavaPlayer<LavaTrack>, LavaTrack> e)
+        private async Task TrackStuckAsync(TrackStuckEventArg<LavaPlayer<PlayableTrack>, PlayableTrack> e)
         {
             _logger.LogError("PlayableTrack {PlayableTrack} got stuck. Time: {Duration} Player {Player}", e.Track, e.Threshold, e.Player);
             await PlayNextAsync(e.Player).ConfigureAwait(false);
         }
 
-        private async Task TrackExceptionAsync(TrackExceptionEventArg<LavaPlayer<LavaTrack>, LavaTrack> e)
+        private async Task TrackExceptionAsync(TrackExceptionEventArg<LavaPlayer<PlayableTrack>, PlayableTrack> e)
         {
             _logger.LogError("Could not play track {PlayableTrack}. Reason: {Message}. Player {Player}", e.Track, e.Exception, e.Player);
 
@@ -121,11 +121,11 @@ namespace GasaiYuno.Discord.Listeners
             await PlayNextAsync(e.Player).ConfigureAwait(false);
         }
 
-        private async Task PlayNextAsync(LavaPlayer<LavaTrack> player)
+        private async Task PlayNextAsync(LavaPlayer<PlayableTrack> player)
         {
             try
             {
-                if (!player.Vueue.TryDequeue(out var lavaTrack) || lavaTrack is not PlayableTrack track)
+                if (!player.Vueue.TryDequeue(out var lavaTrack))
                 {
                     if (player.Vueue.Count != 0)
                     {
@@ -138,8 +138,8 @@ namespace GasaiYuno.Discord.Listeners
                     return;
                 }
                 
-                player.SetTextChannel(track.TextChannel);
-                await player.PlayAsync(track).ConfigureAwait(false);
+                player.SetTextChannel(lavaTrack.TextChannel);
+                await player.PlayAsync(lavaTrack).ConfigureAwait(false);
             }
             catch (Exception e)
             {

@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Models;
 using GasaiYuno.Interface.Music;
 using Microsoft.Extensions.Logging;
@@ -18,10 +19,10 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
     [Alias("m")]
     public class MusicModule : BaseModule<MusicModule>
     {
-        private readonly LavaNode _lavaNode;
+        private readonly LavaNode<LavaPlayer<PlayableTrack>, PlayableTrack> _lavaNode;
         private readonly ILyricsService _lyricsService;
 
-        public MusicModule(LavaNode lavaNode, ILyricsService lyricsService)
+        public MusicModule(LavaNode<LavaPlayer<PlayableTrack>, PlayableTrack> lavaNode, ILyricsService lyricsService)
         {
             _lavaNode = lavaNode;
             _lyricsService = lyricsService;
@@ -173,26 +174,26 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                             menuBuilder.AddOption(responseTrack.Title, i.ToString(), responseTrack.Author);
                         }
 
-                        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
-                        var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
-                        if (!reactionResult.IsSuccess)
+                        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
+                        var reactionResult = await Interactivity.NextMessageComponentAsync(Context.Client, x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
+                        if (reactionResult == null) 
                         {
                             await selectionMessage.DeleteAsync().ConfigureAwait(false);
                             return;
                         }
 
-                        await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
-                        resultTrack = searchResponse.Tracks.ElementAt(int.Parse(reactionResult.Value.Data.Values.First()));
+                        await reactionResult.DeferAsync(true).ConfigureAwait(false);
+                        resultTrack = searchResponse.Tracks.ElementAt(int.Parse(reactionResult.Data.Values.First()));
                         await selectionMessage.DeleteAsync().ConfigureAwait(false);
                     }
-                    tracks.Add(new PlayableTrack(resultTrack, user, Context.Channel as ITextChannel));
+                    tracks.Add(new PlayableTrack(resultTrack, user.Nickname(), Context.Channel as ITextChannel));
                     break;
                 case SearchStatus.TrackLoaded:
-                    tracks.Add(new PlayableTrack(searchResponse.Tracks.First(), user, Context.Channel as ITextChannel));
+                    tracks.Add(new PlayableTrack(searchResponse.Tracks.First(), user.Nickname(), Context.Channel as ITextChannel));
                     break;
                 case SearchStatus.PlaylistLoaded:
-                    if (searchResponse.Playlist.SelectedTrack >= 0) tracks.Add(new PlayableTrack(searchResponse.Tracks.ElementAt(searchResponse.Playlist.SelectedTrack), user, Context.Channel as ITextChannel));
-                    else tracks.AddRange(searchResponse.Tracks.Select(x => new PlayableTrack(x, user, Context.Channel as ITextChannel)));
+                    if (searchResponse.Playlist.SelectedTrack >= 0) tracks.Add(new PlayableTrack(searchResponse.Tracks.ElementAt(searchResponse.Playlist.SelectedTrack), user.Nickname(), Context.Channel as ITextChannel));
+                    else tracks.AddRange(searchResponse.Tracks.Select(x => new PlayableTrack(x, user.Nickname(), Context.Channel as ITextChannel)));
                     break;
             }
 
@@ -220,14 +221,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
             if (player.PlayerState is PlayerState.Playing or PlayerState.Paused) return;
 
-            LavaTrack lavaTrack;
-            while (!player.Vueue.TryDequeue(out lavaTrack)) Logger.LogError("Unable to get item from {@player} {@queue}", player, player.Vueue);
-            if (lavaTrack is not PlayableTrack playableTrack)
-            {
-                await player.StopAsync().ConfigureAwait(false);
-                await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
-                return;
-            }
+            PlayableTrack playableTrack;
+            while (!player.Vueue.TryDequeue(out playableTrack)) Logger.LogError("Unable to get item from {@player} {@queue}", player, player.Vueue);
 
             player.SetTextChannel(playableTrack.TextChannel);
             await player.PlayAsync(playableTrack).ConfigureAwait(false);
@@ -506,13 +501,13 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             {
                 async Task<ILyricsOption> FindMatch(string input)
                 {
-                    input = input.Replace('ï¿½', '\'');
+                    input = input.Replace('’', '\'');
                     var options = await _lyricsService.Search(input, 50).ConfigureAwait(false);
                     if (options == null || options.Length == 0) return null;
                     return (from lyricsOption in options
-                        let artist = lyricsOption.Artist.Replace('ï¿½', '\'')
-                        let title = lyricsOption.Title.Replace('ï¿½', '\'')
-                        let fullTitle = lyricsOption.FullTitle.Replace('ï¿½', '\'')
+                        let artist = lyricsOption.Artist.Replace('’', '\'')
+                        let title = lyricsOption.Title.Replace('’', '\'')
+                        let fullTitle = lyricsOption.FullTitle.Replace('’', '\'')
                         let possibleTitles = new[] { $"{artist} - {title}", $"{title} - {artist}", fullTitle, title }
                         from possibleTitle in possibleTitles
                         where input.Contains(possibleTitle, StringComparison.OrdinalIgnoreCase)
@@ -628,16 +623,16 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 typingState.Dispose();
             }
 
-            var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), component: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
-            var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
-            if (!reactionResult.IsSuccess)
+            var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
+            var reactionResult = await Interactivity.NextMessageComponentAsync(Context.Client, x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
+            if (reactionResult == null)
             {
                 await selectionMessage.DeleteAsync().ConfigureAwait(false);
                 return;
             }
 
-            await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
-            var result = options.First(x => x.Id == reactionResult.Value.Data.Values.First());
+            await reactionResult.DeferAsync(true).ConfigureAwait(false);
+            var result = options.First(x => x.Id == reactionResult.Data.Values.First());
             await selectionMessage.DeleteAsync().ConfigureAwait(false);
             typingState = Context.Channel.EnterTypingState();
             try

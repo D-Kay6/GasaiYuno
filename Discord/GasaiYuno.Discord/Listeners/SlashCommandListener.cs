@@ -29,16 +29,16 @@ namespace GasaiYuno.Discord.Listeners
             {
                 await client.BulkOverwriteGlobalApplicationCommandsAsync(slashCommands.ToArray());
             }
-            catch (ApplicationCommandException exception)
+            catch (HttpException exception)
             {
-                var json = JsonConvert.SerializeObject(exception.Error, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
                 _logger.LogError(exception, json);
             }
         }
 
-        private List<SlashCommandProperties> GenerateSlashCommands()
+        private List<ApplicationCommandProperties> GenerateSlashCommands()
         {
-            var result = new List<SlashCommandProperties>();
+            var result = new List<ApplicationCommandProperties>();
 
             var globalCommand = new SlashCommandBuilder()
                 .WithName("help")

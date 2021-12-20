@@ -10,7 +10,6 @@ using GasaiYuno.Interface.Localization;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
