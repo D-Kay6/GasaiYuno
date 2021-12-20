@@ -103,7 +103,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Info
 
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithTitle(Translation.Message("Info.Help.Entertainment.Music.Title"));
-            embedBuilder.WithDescription(Translation.Message("Info.Help.Entertainment.Music.Normal", Server.Prefix) + (isAdmin ? Environment.NewLine + Translation.Message("Info.Help.Entertainment.Music.Admin", Server.Prefix) : string.Empty));
+            embedBuilder.WithDescription(Translation.Message("Info.Help.Entertainment.Music1.Normal", Server.Prefix) +
+                                         Environment.NewLine + Translation.Message("Info.Help.Entertainment.Music2.Normal", Server.Prefix) +
+                                         (isAdmin ? Environment.NewLine + Translation.Message("Info.Help.Entertainment.Music2.Admin", Server.Prefix) : string.Empty));
             await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
 
