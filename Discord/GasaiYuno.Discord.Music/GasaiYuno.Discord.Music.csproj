@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -6,21 +6,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Autofac" Version="6.3.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-		<PackageReference Include="RestSharp" Version="106.15.0" />
+		<PackageReference Include="RestSharp" Version="107.0.3" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<!--<PackageReference Include="Victoria" Version="5.2.5" />-->
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Events\" />
-		<Folder Include="Interfaces\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
-		<ProjectReference Include="..\GasaiYuno.Discord.Victoria\src\Victoria.csproj" />
+		<ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
+		<ProjectReference Include="..\..\..\Victoria\src\Victoria.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using GasaiYuno.Discord.Models;
+﻿using GasaiYuno.Discord.Listeners;
+using GasaiYuno.Discord.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace GasaiYuno.Discord.Services
         public bool KeepAlive { get; private set; }
 
         private readonly DiscordConnectionClient _connection;
+        private readonly ConnectionListener _connectionListener;
         private readonly ILogger<LifetimeService> _logger;
         
         private CancellationTokenSource _stopTokenSource;
@@ -19,10 +21,12 @@ namespace GasaiYuno.Discord.Services
         /// Creates a new <see cref="LifetimeService"/>.
         /// </summary>
         /// <param name="connection">The <see cref="DiscordConnectionClient"/> used during this lifetime.</param>
+        /// <param name="connectionListener">The <see cref="ConnectionListener"/> to start.</param>
         /// <param name="logger">The <see cref="ILogger{T}"/> that will log all the log messages.</param>
-        public LifetimeService(DiscordConnectionClient connection, ILogger<LifetimeService> logger)
+        public LifetimeService(DiscordConnectionClient connection, ConnectionListener connectionListener, ILogger<LifetimeService> logger)
         {
             _connection = connection;
+            _connectionListener = connectionListener;
             _logger = logger;
 
             KeepAlive = true;
@@ -38,6 +42,7 @@ namespace GasaiYuno.Discord.Services
                 return;
             }
 
+            _connectionListener.Start();
             var result = await _connection.StartAsync().ConfigureAwait(false);
             if (!result)
             {

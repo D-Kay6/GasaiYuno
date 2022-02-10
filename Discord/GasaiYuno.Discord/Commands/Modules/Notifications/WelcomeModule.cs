@@ -1,10 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Mediator.Commands;
+using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Services;
-using GasaiYuno.Interface.Storage;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
             _notificationService = notificationService;
             _unitOfWork = unitOfWork;
         }
-        
+
         [Command]
         public Task WelcomeDefaultAsync() => ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Missing"));
 
@@ -130,14 +132,12 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
         [Group("Image")]
         public class WelcomeImageModule : BaseModule<WelcomeImageModule>
         {
-            private readonly IImageStorage _imageStorage;
             private readonly IUnitOfWork _repository;
 
             private const string DefaultImage = "GasaiYunoWelcome.jpg";
 
-            public WelcomeImageModule(IImageStorage imageStorage, IUnitOfWork repository)
+            public WelcomeImageModule(IUnitOfWork repository)
             {
-                _imageStorage = imageStorage;
                 _repository = repository;
             }
 
@@ -154,7 +154,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 if (string.IsNullOrEmpty(notification.Image))
                     await ReplyAsync(Translation.Message("Notification.Welcome.Image.None")).ConfigureAwait(false);
                 else
-                    await Context.Channel.SendFileAsync(notification.Image, Translation.Message("Notification.Welcome.Image.Current")).ConfigureAwait(false);
+                    await Context.Channel.SendFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Current")).ConfigureAwait(false);
             }
 
             [Command("Enable")]
@@ -169,14 +169,14 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 }
 
                 if (!string.IsNullOrWhiteSpace(notification.Image))
-                    await _imageStorage.DeleteImageAsync(notification.Image).ConfigureAwait(false);
+                    await Mediator.Send(new DeleteImageCommand(notification.Image)).ConfigureAwait(false);
 
-                notification.Image = await _imageStorage.GetImageAsync(DefaultImage).ConfigureAwait(false);
+                notification.Image = await Mediator.Send(new GetImageRequest(DefaultImage)).ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(imageUrl))
                 {
                     try
                     {
-                        notification.Image = await _imageStorage.SaveImageAsync(imageUrl, Context.Guild.Id.ToString()).ConfigureAwait(false);
+                        notification.Image = await Mediator.Send(new SaveImageCommand(imageUrl, Context.Guild.Id.ToString())).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -185,11 +185,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                         return;
                     }
                 }
-                
+
                 _repository.Notifications.Update(notification);
                 await _repository.SaveChangesAsync().ConfigureAwait(false);
-                
-                await Context.Channel.SendFileAsync(notification.Image, Translation.Message("Notification.Welcome.Image.Enabled")).ConfigureAwait(false);
+
+                await Context.Channel.SendFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Enabled")).ConfigureAwait(false);
             }
 
             [Command("Disable")]
@@ -211,11 +211,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
 
                 try
                 {
-                    await _imageStorage.DeleteImageAsync(notification.Image).ConfigureAwait(false);
+                    await Mediator.Send(new DeleteImageCommand(notification.Image)).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e, "The notification {notification} image {name} could not be deleted.", notification,  notification.Image);
+                    Logger.LogError(e, "The notification {notification} image {name} could not be deleted.", notification, notification.Image);
                 }
 
                 notification.Image = null;

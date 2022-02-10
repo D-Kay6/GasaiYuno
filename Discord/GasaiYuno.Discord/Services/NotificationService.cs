@@ -1,8 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
-using GasaiYuno.Interface.Localization;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -13,13 +14,13 @@ namespace GasaiYuno.Discord.Services
     public class NotificationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILocalization _localization;
+        private readonly IMediator _mediator;
         private readonly ILogger<NotificationService> _logger;
 
-        public NotificationService(IUnitOfWork unitOfWork, ILocalization localization, ILogger<NotificationService> logger)
+        public NotificationService(IUnitOfWork unitOfWork, IMediator mediator, ILogger<NotificationService> logger)
         {
             _unitOfWork = unitOfWork;
-            _localization = localization;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -29,7 +30,7 @@ namespace GasaiYuno.Discord.Services
             var notification = await _unitOfWork.Notifications.GetOrAddAsync(guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification?.Channel == null) return;
 
-            var translation = _localization.GetTranslation(notification.Server.Language.Name);
+            var translation = await _mediator.Send(new GetTranslationRequest(notification.Server.Language.Name)).ConfigureAwait(false);
             var channel = guild.GetTextChannel(notification.Channel.Value);
             if (channel == null)
             {
@@ -44,7 +45,7 @@ namespace GasaiYuno.Discord.Services
             {
                 var mentions = string.Join(", ", users.Select(x => x.Mention));
                 if (!string.IsNullOrEmpty(notification.Image))
-                    await channel.SendFileAsync(notification.Image, notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
+                    await channel.SendFileAsync(new FileAttachment(notification.Image), notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
                 else
                     await channel.SendMessageAsync(notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
             }
@@ -64,7 +65,7 @@ namespace GasaiYuno.Discord.Services
             try
             {
                 if (!string.IsNullOrEmpty(notification.Image))
-                    await channel.SendFileAsync(notification.Image, notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
+                    await channel.SendFileAsync(new FileAttachment(notification.Image), notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
                 else
                     await channel.SendMessageAsync(notification.Message.Replace("[user]", mentions)).ConfigureAwait(false);
             }

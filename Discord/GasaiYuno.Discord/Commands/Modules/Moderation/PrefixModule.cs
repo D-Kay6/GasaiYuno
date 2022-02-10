@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System.Threading.Tasks;
 

@@ -1,8 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
+using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
+using Interactivity;
+using Interactivity.Pagination;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,12 +41,51 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
                 return;
             }
 
-            var commandMsg = string.Join(Environment.NewLine, commands.Select(x => $"{Server.Prefix}{x.Command}"));
-            var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
-            embedBuilder.WithDescription(commandMsg);
+            var fieldMessages = new List<string>();
+            var commandMessages = commands.Select(x => $"{Server.Prefix}{x.Command}").ToList();
+            var commandsPerField = 20;
+            bool retry;
+            do
+            {
+                retry = false;
+                fieldMessages.Clear();
+                for (var i = 0; i < commandMessages.Count; i += commandsPerField)
+                {
+                    fieldMessages.Add(string.Join(Environment.NewLine, commandMessages.Skip(i).Take(commandsPerField)));
+                }
+                if (fieldMessages.Any(x => x.Length > 1000))
+                {
+                    retry = true;
+                    commandsPerField -= 5;
+                }
+            } while (retry);
 
-            await ReplyAsync(embed: embedBuilder.Build());
+            if (fieldMessages.Count > 1)
+            {
+                var pages = new List<PageBuilder>();
+                foreach (var fieldMessage in fieldMessages)
+                {
+                    var embedBuilder = new EmbedBuilder();
+                    embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
+                    embedBuilder.WithDescription(fieldMessage);
+                    pages.Add(PageBuilder.FromEmbedBuilder(embedBuilder));
+                }
+
+                var paginator = new StaticPaginatorBuilder()
+                    .WithUsers(Context.User)
+                    .WithPages(pages)
+                    .WithFooter(PaginatorFooter.PageNumber | PaginatorFooter.Users)
+                    .WithDefaultEmotes()
+                    .Build();
+                await Interactivity.SendPaginatorAsync(Context.Client, paginator, Context.Channel, TimeSpan.FromMinutes(2)).ConfigureAwait(false);
+            }
+            else
+            {
+                var embedBuilder = new EmbedBuilder();
+                embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
+                embedBuilder.WithDescription(fieldMessages[0]);
+                await ReplyAsync(embed: embedBuilder.Build());
+            }
         }
         
         [Command("Add")]

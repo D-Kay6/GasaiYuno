@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Commands.Modules;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation

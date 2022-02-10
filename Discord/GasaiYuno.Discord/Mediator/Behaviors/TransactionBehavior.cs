@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Extensions;
+﻿using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Behaviors
 {
-    public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly DataContext _dbContext;
         private readonly ILogger<TransactionBehavior<TRequest, TResponse>> _logger;

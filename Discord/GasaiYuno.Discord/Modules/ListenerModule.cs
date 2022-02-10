@@ -11,6 +11,8 @@ namespace GasaiYuno.Discord.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<ConnectionListener>().AsSelf().InstancePerLifetimeScope();
+
             builder.RegisterType<StatusListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<GuildListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<CommandListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
@@ -19,8 +21,7 @@ namespace GasaiYuno.Discord.Modules
             builder.RegisterType<BanListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<DynamicChannelListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
             builder.RegisterType<PollListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<MusicListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<ListingListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
+            builder.RegisterType<RaffleListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
         }
 
         protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
@@ -40,8 +41,7 @@ namespace GasaiYuno.Discord.Modules
                         c.Resolve<BanListener>();
                         c.Resolve<DynamicChannelListener>();
                         c.Resolve<PollListener>();
-                        c.Resolve<MusicListener>();
-                        c.Resolve<ListingListener>();
+                        c.Resolve<RaffleListener>();
                     }
                 });
             };

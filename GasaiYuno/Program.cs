@@ -23,7 +23,7 @@ namespace GasaiYuno
 
             try
             {
-                DownloadPrerequisites();
+                CheckPrerequisites();
             }
             catch (Exception e)
             {
@@ -63,15 +63,15 @@ namespace GasaiYuno
             containerBuilder.RegisterModule(new ConfigurationModule(hostBuilderContext.Configuration));
         }
 
-        private static void DownloadPrerequisites()
+        private static void CheckPrerequisites()
         {
-            using var client = new WebClient();
             var file = "libsodium.dll";
             if (!File.Exists(file))
-                client.DownloadFile("https://discord.foxbot.me/binaries/win64/libsodium.dll", file);
+                throw new FileNotFoundException("The required dependency could not be found.", file);
 
             file = "opus.dll";
-            if (!File.Exists(file)) client.DownloadFile("https://discord.foxbot.me/binaries/win64/opus.dll", file);
+            if (!File.Exists(file))
+                throw new FileNotFoundException("The required dependency could not be found.", file);
         }
     }
 }

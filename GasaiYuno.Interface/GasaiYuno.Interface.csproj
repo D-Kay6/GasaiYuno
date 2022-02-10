@@ -5,10 +5,4 @@
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Folder Include="Chatbot\" />
-		<Folder Include="Listing\" />
-		<Folder Include="Storage\" />
-	</ItemGroup>
-
 </Project>

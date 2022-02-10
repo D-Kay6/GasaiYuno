@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Extensions;
 using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using Microsoft.Extensions.Logging;

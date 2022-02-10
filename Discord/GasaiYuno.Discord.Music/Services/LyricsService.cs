@@ -1,9 +1,9 @@
-﻿using GasaiYuno.Discord.Music.Models;
-using GasaiYuno.Interface.Music;
+﻿using GasaiYuno.Discord.Music.Interfaces.Lyrics;
+using GasaiYuno.Discord.Music.Models.Lyrics;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Authenticators;
+using RestSharp.Authenticators.OAuth2;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;

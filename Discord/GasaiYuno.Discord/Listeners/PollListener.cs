@@ -1,8 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
-using GasaiYuno.Interface.Localization;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -15,15 +16,15 @@ namespace GasaiYuno.Discord.Listeners
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork> _unitOfWorkFactory;
-        private readonly ILocalization _localization;
+        private readonly IMediator _mediator;
         private readonly ILogger<PollListener> _logger;
         private readonly Timer _timer;
 
-        public PollListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory, ILocalization localization, ILogger<PollListener> logger)
+        public PollListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory, IMediator mediator, ILogger<PollListener> logger)
         {
             _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
-            _localization = localization;
+            _mediator = mediator;
             _logger = logger;
 
             _timer = new Timer(CheckPolls, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
@@ -99,7 +100,7 @@ namespace GasaiYuno.Discord.Listeners
                     var highestCount = userMessage.Reactions.Max(x => x.Value.ReactionCount);
                     var selectedEmojis = userMessage.Reactions.Where(x => x.Value.ReactionCount == highestCount).Select(x => x.Key.Name).ToList();
 
-                    var translation = _localization.GetTranslation(poll.Server.Language.Name);
+                    var translation = await _mediator.Send(new GetTranslationRequest(poll.Server.Language.Name)).ConfigureAwait(false);
                     var embedBuilder = new EmbedBuilder();
                     embedBuilder.WithTitle(poll.Text);
                     embedBuilder.WithDescription(string.Join(Environment.NewLine, poll.Options.Select(x => $"{(selectedEmojis.Contains(x.Emote) ? "\u2714" : "\u274C")} {x.Message}")));

@@ -4,7 +4,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Interactivity;
 using System;
-using Victoria.Node;
 
 namespace GasaiYuno.Discord.Modules
 {
@@ -35,6 +34,8 @@ namespace GasaiYuno.Discord.Modules
                                  GatewayIntents.GuildVoiceStates |
                                  GatewayIntents.GuildMessages |
                                  GatewayIntents.GuildMessageReactions |
+                                 GatewayIntents.GuildScheduledEvents |
+                                 GatewayIntents.GuildInvites |
                                  GatewayIntents.DirectMessages
 
             }).InstancePerDependency();
@@ -47,7 +48,6 @@ namespace GasaiYuno.Discord.Modules
             {
                 DefaultTimeout = TimeSpan.FromMinutes(1)
             }).InstancePerDependency();
-            builder.Register(x => new NodeConfiguration()).InstancePerDependency();
 
             builder.RegisterModule(new ConnectionModule(Token));
             builder.RegisterModule(new ListenerModule());

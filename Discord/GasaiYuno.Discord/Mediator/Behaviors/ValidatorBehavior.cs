@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Domain.Exceptions;
-using GasaiYuno.Discord.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Behaviors
 {
-    public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<ValidatorBehavior<TRequest, TResponse>> _logger;
         private readonly IValidator<TRequest>[] _validators;

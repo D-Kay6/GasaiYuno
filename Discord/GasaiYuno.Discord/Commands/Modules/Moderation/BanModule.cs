@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;

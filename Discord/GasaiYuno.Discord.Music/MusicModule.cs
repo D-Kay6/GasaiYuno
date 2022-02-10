@@ -1,6 +1,11 @@
 ﻿using Autofac;
+using GasaiYuno.Discord.Music.Interfaces.Lyrics;
+using GasaiYuno.Discord.Music.Listeners;
 using GasaiYuno.Discord.Music.Services;
-using GasaiYuno.Interface.Music;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using System.Reflection;
+using Victoria;
+using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Music
 {
@@ -10,6 +15,13 @@ namespace GasaiYuno.Discord.Music
 
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterMediatR(Assembly.GetExecutingAssembly());
+
+            builder.Register(x => new LavaConfig()).InstancePerDependency();
+            builder.RegisterType<LavaNode>().InstancePerLifetimeScope();
+
+            builder.RegisterType<MusicListener>().AsSelf().InstancePerLifetimeScope();
+
             builder.RegisterType<LyricsService>().As<ILyricsService>().WithParameter("token", Token).InstancePerDependency();
         }
     }

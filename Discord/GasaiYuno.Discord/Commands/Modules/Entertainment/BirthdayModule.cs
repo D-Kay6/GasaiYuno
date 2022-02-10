@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Extensions;
+using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Extensions;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Entertainment

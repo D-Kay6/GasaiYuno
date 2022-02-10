@@ -17,6 +17,7 @@ namespace GasaiYuno.Discord.Infrastructure
         private LanguageRepository _languageRepository;
         private NotificationRepository _notificationRepository;
         private PollRepository _pollRepository;
+        private RaffleRepository _raffleRepository;
         private ServerRepository _serverRepository;
 
         public IBanRepository Bans => _banRepository ??= new BanRepository(_context);
@@ -26,6 +27,7 @@ namespace GasaiYuno.Discord.Infrastructure
         public ILanguageRepository Languages => _languageRepository ??= new LanguageRepository(_context);
         public INotificationRepository Notifications => _notificationRepository ??= new NotificationRepository(_context);
         public IPollRepository Polls => _pollRepository ??= new PollRepository(_context);
+        public IRaffleRepository Raffles => _raffleRepository ??= new RaffleRepository(_context);
         public IServerRepository Servers => _serverRepository ??= new ServerRepository(_context);
 
         public UnitOfWork(DataContext context)

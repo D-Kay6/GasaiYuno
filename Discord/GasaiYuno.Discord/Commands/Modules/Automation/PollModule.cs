@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
-using GasaiYuno.Discord.Commands.TypeReaders;
+using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Commands.TypeReaders;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace GasaiYuno.Discord.Commands.Modules.Automation
 {
     [Group("Poll")]
-    //[Alias("p")]
+//[Alias("p")]
     [RequireUserPermission(GuildPermission.Administrator)]
     [RequireOwner]
     public class PollModule : BaseModule<PollModule>

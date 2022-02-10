@@ -1,9 +1,7 @@
 ﻿using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Infrastructure.Repositories

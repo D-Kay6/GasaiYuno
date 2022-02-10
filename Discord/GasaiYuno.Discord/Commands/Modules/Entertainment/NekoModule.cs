@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using GasaiYuno.Discord.Core.Commands.Modules;
 using HtmlAgilityPack;
 using RestSharp;
 using System.IO;
@@ -68,9 +69,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             try
             {
                 var extension = Path.GetExtension(url);
-                var imageData = _restClient.DownloadData(new RestRequest(url));
-                var stream = new MemoryStream(imageData);
-                await Context.Channel.SendFileAsync(stream, $"Neko{extension}").ConfigureAwait(false);
+                var imageData = await _restClient.DownloadStreamAsync(new RestRequest(url)).ConfigureAwait(false);
+                await Context.Channel.SendFileAsync(imageData, $"Neko{extension}").ConfigureAwait(false);
             }
             catch
             {

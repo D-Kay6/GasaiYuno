@@ -27,17 +27,16 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj" />
-		<ProjectReference Include="..\GasaiYuno.Interface\GasaiYuno.Interface.csproj" />
-		<ProjectReference Include="..\Discord\GasaiYuno.Discord.Music\GasaiYuno.Discord.Music.csproj" />
-		<ProjectReference Include="..\Localization\GasaiYuno.Localization\GasaiYuno.Localization.csproj" />
-		<ProjectReference Include="..\Storage\GasaiYuno.Storage.Image\GasaiYuno.Storage.Image.csproj" />
-		<ProjectReference Include="..\Chatbot\GasaiYuno.Chatbot.Cleverbot\GasaiYuno.Chatbot.Cleverbot.csproj" />
-		<ProjectReference Include="..\Listing\GasaiYuno.Listing.Discord\GasaiYuno.Listing.Discord.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Chatbot\GasaiYuno.Discord.Chatbot.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Listing\GasaiYuno.Discord.Listing.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Localization\GasaiYuno.Discord.Localization.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Music\GasaiYuno.Discord.Music.csproj" />
+	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Storage\GasaiYuno.Discord.Storage.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,11 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Extensions;
+using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Extensions;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation
@@ -126,10 +127,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
                     return;
                 }
 
-                using var webClient = new WebClient();
-                var file = await webClient.DownloadDataTaskAsync(new Uri(attachment.Url)).ConfigureAwait(false);
-                await using var memoryStream = new MemoryStream(file);
-                await channel.SendFileAsync(memoryStream, attachment.Filename, string.Empty, embed: embedBuilder.Build()).ConfigureAwait(false);
+                using var httpClient = new HttpClient();
+                var file = await httpClient.GetStreamAsync(new Uri(attachment.Url)).ConfigureAwait(false);
+                await channel.SendFileAsync(file, attachment.Filename, string.Empty, embed: embedBuilder.Build()).ConfigureAwait(false);
             }
 
             private async Task MoveMessageTextAsync(IMessage message, SocketTextChannel channel)
@@ -144,10 +144,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
                     return;
                 }
 
-                using var webClient = new WebClient();
-                var file = await webClient.DownloadDataTaskAsync(new Uri(attachment.Url)).ConfigureAwait(false);
-                await using var memoryStream = new MemoryStream(file);
-                await channel.SendFileAsync(memoryStream, attachment.Filename, msg).ConfigureAwait(false);
+                using var httpClient = new HttpClient();
+                var file = await httpClient.GetStreamAsync(new Uri(attachment.Url)).ConfigureAwait(false);
+                await channel.SendFileAsync(file, attachment.Filename, msg).ConfigureAwait(false);
             }
         }
     }

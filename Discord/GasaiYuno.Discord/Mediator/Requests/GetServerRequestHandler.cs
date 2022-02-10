@@ -1,4 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Core.Mediator.Requests;
+using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Persistence.UnitOfWork;
 using MediatR;
 using System;

@@ -14,6 +14,7 @@ namespace GasaiYuno.Discord.Persistence.UnitOfWork
         ILanguageRepository Languages { get; }
         INotificationRepository Notifications { get; }
         IPollRepository Polls { get; }
+        IRaffleRepository Raffles { get; }
         IServerRepository Servers { get; }
 
         /// <summary>

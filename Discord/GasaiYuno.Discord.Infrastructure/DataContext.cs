@@ -36,13 +36,16 @@ namespace GasaiYuno.Discord.Infrastructure
         /// <summary>Table containing all the polls.</summary>
         public DbSet<Poll> Polls { get; set; }
 
+        /// <summary>Table containing all the polls.</summary>
+        public DbSet<Raffle> Raffles { get; set; }
+
         /// <summary>The current transaction.</summary>
         private IDbContextTransaction _currentTransaction;
 
         /// <summary>Whether there is an active transaction.</summary>
         /// <value><c>true</c> if there is an active transaction; otherwise, <c>false</c>.</value>
         public bool HasActiveTransaction => _currentTransaction != null;
-
+    
         public DataContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -67,6 +70,7 @@ namespace GasaiYuno.Discord.Infrastructure
             modelBuilder.ApplyConfiguration(new DynamicChannelEntityTypeConfiguration());
             //modelBuilder.ApplyConfiguration(new DynamicRoleEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PollEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RaffleEntityTypeConfiguration());
         }
 
         /// <summary>

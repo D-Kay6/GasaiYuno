@@ -1,12 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Commands.TypeReaders;
+using GasaiYuno.Discord.Core.Commands.TypeReaders;
+using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Domain;
 using GasaiYuno.Discord.Mediator.Events;
 using GasaiYuno.Discord.Mediator.Requests;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Interface.Localization;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,16 +20,14 @@ namespace GasaiYuno.Discord.Listeners
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commandService;
         private readonly IMediator _mediator;
-        private readonly ILocalization _localization;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<CommandListener> _logger;
 
-        public CommandListener(DiscordConnectionClient client, CommandService commandService, IMediator mediator, ILocalization localization, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
+        public CommandListener(DiscordConnectionClient client, CommandService commandService, IMediator mediator, IServiceProvider serviceProvider, ILogger<CommandListener> logger)
         {
             _client = client;
             _commandService = commandService;
             _mediator = mediator;
-            _localization = localization;
             _serviceProvider = serviceProvider;
             _logger = logger;
 
@@ -73,7 +71,7 @@ namespace GasaiYuno.Discord.Listeners
             if (result.IsSuccess) return;
 
             var server = await _mediator.Send(new GetServerRequest(context.Guild.Id, context.Guild.Name)).ConfigureAwait(false);
-            var translation = _localization.GetTranslation(server.Language?.Name);
+            var translation = await _mediator.Send(new GetTranslationRequest(server.Language?.Name)).ConfigureAwait(false);
 
             switch (result.Error)
             {
@@ -100,7 +98,7 @@ namespace GasaiYuno.Discord.Listeners
             if (logMessage.Exception is not CommandException exception) return;
 
             var server = await _mediator.Send(new GetServerRequest(exception.Context.Guild.Id, exception.Context.Guild.Name)).ConfigureAwait(false);
-            var translation = _localization.GetTranslation(server.Language?.Name);
+            var translation = await _mediator.Send(new GetTranslationRequest(server.Language?.Name)).ConfigureAwait(false);
 
             _logger.LogError(exception, "Unhandled exception occurred during the handling of {Module} {Command}", exception.Command.Module.Name, exception.Command.Name);
             await exception.Context.Channel.SendMessageAsync(translation.Message("Generic.Invalid.Command", server.Prefix)).ConfigureAwait(false);

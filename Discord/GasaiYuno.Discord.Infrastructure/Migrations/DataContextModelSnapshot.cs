@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace GasaiYuno.Discord.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
@@ -15,10 +17,11 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:Collation", "Latin1_General_CI_AS")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .UseCollation("Latin1_General_CI_AS")
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.HasSequence("languageseq")
                 .IncrementsBy(10);
@@ -40,7 +43,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("ServerId", "User");
 
-                    b.ToTable("Bans");
+                    b.ToTable("Bans", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.CustomCommand", b =>
@@ -59,7 +62,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("ServerId", "Command");
 
-                    b.ToTable("CustomCommands");
+                    b.ToTable("CustomCommands", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.DynamicChannel", b =>
@@ -90,16 +93,16 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("ServerId", "Name");
 
-                    b.ToTable("DynamicChannels");
+                    b.ToTable("DynamicChannels", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Language", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:HiLoSequenceName", "languageseq")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.SequenceHiLo);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "languageseq");
 
                     b.Property<string>("LocalizedName")
                         .IsRequired()
@@ -113,7 +116,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Notification", b =>
@@ -139,7 +142,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("ServerId", "Type");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Poll", b =>
@@ -171,7 +174,34 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasKey("ServerId", "Channel", "Message");
 
-                    b.ToTable("Polls");
+                    b.ToTable("Polls", (string)null);
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Raffle", b =>
+                {
+                    b.Property<decimal>("ServerId")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal>("Channel")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal>("Message")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Users")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ServerId", "Channel", "Message");
+
+                    b.ToTable("Raffles", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Server", b =>
@@ -200,7 +230,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("Servers");
+                    b.ToTable("Servers", (string)null);
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Ban", b =>
@@ -248,6 +278,17 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("GasaiYuno.Discord.Domain.Poll", b =>
+                {
+                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Raffle", b =>
                 {
                     b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
                         .WithMany()
