@@ -39,8 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{156F7E5F-6F03-44E4-B166-3E2E827C858D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Victoria", "..\Victoria\src\Victoria.csproj", "{B1E03F45-C725-400E-99FA-D73193EE851C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,10 +89,6 @@ Global
 		{8D68E910-A32C-47CE-BD30-FFCFF1C017B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D68E910-A32C-47CE-BD30-FFCFF1C017B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D68E910-A32C-47CE-BD30-FFCFF1C017B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1E03F45-C725-400E-99FA-D73193EE851C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1E03F45-C725-400E-99FA-D73193EE851C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1E03F45-C725-400E-99FA-D73193EE851C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1E03F45-C725-400E-99FA-D73193EE851C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,7 +106,6 @@ Global
 		{8D68E910-A32C-47CE-BD30-FFCFF1C017B9} = {6EC58D46-BAA5-47A9-B1A8-24DE57F471A6}
 		{E5EFC96B-31A2-4D55-921A-3AEF329DDAFB} = {6EC58D46-BAA5-47A9-B1A8-24DE57F471A6}
 		{156F7E5F-6F03-44E4-B166-3E2E827C858D} = {6EC58D46-BAA5-47A9-B1A8-24DE57F471A6}
-		{B1E03F45-C725-400E-99FA-D73193EE851C} = {E5EFC96B-31A2-4D55-921A-3AEF329DDAFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECC2482A-84DF-4A62-A069-2C5D22B102E6}
