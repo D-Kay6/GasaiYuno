@@ -9,12 +9,11 @@
 		<PackageReference Include="RestSharp" Version="107.0.3" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<!--<PackageReference Include="Victoria" Version="5.2.5" />-->
+		<PackageReference Include="Victoria" Version="5.2.7" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
-		<ProjectReference Include="..\..\..\Victoria\src\Victoria.csproj" />
 	</ItemGroup>
 
 </Project>
