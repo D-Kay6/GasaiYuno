@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+﻿using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using HtmlAgilityPack;
 using RestSharp;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Entertainment
 {
-    [Group("Neko")]
-    public class NekoModule : BaseModule<NekoModule>
+    [Group("neko", "Get a random image of a neko.")]
+    public class NekoModule : BaseInteractionModule<NekoModule>
     {
         private readonly RestClient _restClient;
 
@@ -17,8 +17,8 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             _restClient = new RestClient("https://nekos.life/");
         }
 
-        [Command]
-        public async Task DefaultNekoAsync()
+        [SlashCommand("normal", "Get a random image of a neko.")]
+        public async Task NormalNekoCommand()
         {
             var typingState = Context.Channel.EnterTypingState();
             try
@@ -32,9 +32,9 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             }
         }
 
-        [Command("lewd")]
+        [SlashCommand("lewd", "Get a random lewd image of a neko. Only usable in NSFW channels.")]
         [RequireNsfw]
-        public async Task LewdNekoAsync()
+        public async Task LewdNekoCommand()
         {
             var typingState = Context.Channel.EnterTypingState();
             try
@@ -55,14 +55,14 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             var imageNode = htmlDocument.DocumentNode.SelectSingleNode("//img[@alt='neko']");
             if (imageNode == null)
             {
-                await ReplyAsync("Error");
+                await RespondAsync("Error", ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             var url = imageNode.GetAttributeValue("src", null);
             if (url == null)
             {
-                await ReplyAsync("Error");
+                await RespondAsync("Error", ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -70,11 +70,11 @@ namespace GasaiYuno.Discord.Commands.Modules.Entertainment
             {
                 var extension = Path.GetExtension(url);
                 var imageData = await _restClient.DownloadStreamAsync(new RestRequest(url)).ConfigureAwait(false);
-                await Context.Channel.SendFileAsync(imageData, $"Neko{extension}").ConfigureAwait(false);
+                await RespondWithFileAsync(imageData, $"Neko{extension}").ConfigureAwait(false);
             }
             catch
             {
-                await ReplyAsync(url).ConfigureAwait(false);
+                await RespondAsync(url).ConfigureAwait(false);
             }
         }
     }

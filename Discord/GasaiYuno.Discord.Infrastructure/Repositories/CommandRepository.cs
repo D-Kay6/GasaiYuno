@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,6 +36,15 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
                 .Include(x => x.Server)
                 .FirstOrDefaultAsync(x => x.Server.Id == serverId && x.Command == command)
                 .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public Task<List<CustomCommand>> SearchAsync(ulong serverId, string command)
+        {
+            return Context.CustomCommands
+                .Include(x => x.Server)
+                .Where(x => x.Server.Id == serverId && EF.Functions.Like(x.Command, $"%{command}%"))
+                .ToListAsync();
         }
 
         /// <inheritdoc/>

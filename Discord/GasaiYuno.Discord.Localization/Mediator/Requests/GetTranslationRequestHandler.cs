@@ -1,8 +1,9 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Requests;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Localization.Interfaces;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,11 +22,11 @@ namespace GasaiYuno.Discord.Localization.Mediator.Requests
 
         public async Task<ITranslation> Handle(GetTranslationRequest request, CancellationToken cancellationToken)
         {
-            var language = request.Language ?? _localization.DefaultLanguage;
+            var language = request.Language;
             if (request.ServerId != 0)
             {
                 var server = await _unitOfWork.Servers.GetAsync(request.ServerId);
-                language = server?.Language?.Name ?? language;
+                language = server?.Language ?? _localization.DefaultLanguage;
             }
             return _localization.GetTranslation(language);
         }

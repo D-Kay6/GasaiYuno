@@ -1,6 +1,6 @@
 ﻿using GasaiYuno.Discord.Core.Mediator.Requests;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using MediatR;
 using System;
 using System.Threading;

@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,9 +21,9 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         {
             var dto = new Poll
             {
+                Id = entity.Id,
                 Channel = entity.Channel,
                 Message = entity.Message,
-                MultiSelect = entity.MultiSelect,
                 EndDate = entity.EndDate,
                 Text = entity.Text,
                 Options = entity.Options
@@ -33,12 +33,24 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<Poll> GetAsync(ulong id, ulong channelId, ulong messageId)
+        public async Task<Poll> GetAsync(ulong id)
         {
             return await Context.Polls
                 .Include(x => x.Server)
-                .ThenInclude(x => x.Language)
-                .FirstOrDefaultAsync(x => x.Server.Id == id && x.Channel == channelId && x.Message == messageId)
+                .Include(x => x.Options)
+                .Include(x => x.Selections)
+                .FirstOrDefaultAsync(x => x.Id == id)
+                .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Poll> GetAsync(ulong serverId, ulong channelId, ulong messageId)
+        {
+            return await Context.Polls
+                .Include(x => x.Server)
+                .Include(x => x.Options)
+                .Include(x => x.Selections)
+                .FirstOrDefaultAsync(x => x.Server.Id == serverId && x.Channel == channelId && x.Message == messageId)
                 .ConfigureAwait(false);
         }
 
@@ -65,7 +77,8 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         {
             var query = Context.Polls
                 .Include(x => x.Server)
-                .ThenInclude(x => x.Language)
+                .Include(x => x.Options)
+                .Include(x => x.Selections)
                 .AsQueryable();
             if (serverId.HasValue) query = query.Where(x => x.Server.Id == serverId);
             if (expired.HasValue) query = expired.Value ? query.Where(x => x.EndDate < DateTime.Now) : query.Where(x => x.EndDate >= DateTime.Now);

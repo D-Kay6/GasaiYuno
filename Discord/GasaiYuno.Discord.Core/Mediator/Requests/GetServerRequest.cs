@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using MediatR;
 
 namespace GasaiYuno.Discord.Core.Mediator.Requests

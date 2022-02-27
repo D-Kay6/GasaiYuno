@@ -1,8 +1,6 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
 {
@@ -11,6 +9,11 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Poll> builder)
         {
             builder.ToTable("Polls");
+
+            builder.Property(x => x.Id)
+                .HasColumnName("Id")
+                .ValueGeneratedNever()
+                .IsRequired();
 
             builder.Property<ulong>("ServerId")
                 .IsRequired();
@@ -21,10 +24,6 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
             builder.Property(x => x.Message)
                 .IsRequired();
 
-            builder.Property(x => x.MultiSelect)
-                .HasDefaultValue(false)
-                .IsRequired();
-
             builder.Property(x => x.EndDate)
                 .IsRequired();
 
@@ -32,8 +31,17 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .HasMaxLength(500)
                 .IsRequired();
 
-            builder.Property(x => x.Options)
-                .HasConversion(x => JsonConvert.SerializeObject(x), x => JsonConvert.DeserializeObject<List<PollOption>>(x));
+            builder.HasMany(x => x.Options)
+                .WithOne()
+                .HasForeignKey("PollId")
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.Selections)
+                .WithOne()
+                .HasForeignKey("PollId")
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Server)
                 .WithMany()
@@ -42,7 +50,43 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasKey("ServerId", nameof(Poll.Channel), nameof(Poll.Message));
+            builder.HasKey(x => x.Id);
+        }
+    }
+
+    public class PollOptionEntityTypeConfiguration : IEntityTypeConfiguration<PollOption>
+    {
+        public void Configure(EntityTypeBuilder<PollOption> builder)
+        {
+            builder.ToTable("PollOptions");
+
+            builder.Property<ulong>("PollId")
+                .IsRequired();
+
+            builder.Property(x => x.Value)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.HasKey("PollId", nameof(PollOption.Value));
+        }
+    }
+
+    public class PollSelectionEntityTypeConfiguration : IEntityTypeConfiguration<PollSelection>
+    {
+        public void Configure(EntityTypeBuilder<PollSelection> builder)
+        {
+            builder.ToTable("PollSelections");
+
+            builder.Property<ulong>("PollId")
+                .IsRequired();
+
+            builder.Property(x => x.User)
+                .IsRequired();
+
+            builder.Property(x => x.SelectedOption)
+                .IsRequired();
+
+            builder.HasKey("PollId", nameof(PollSelection.User), nameof(PollSelection.SelectedOption));
         }
     }
 }

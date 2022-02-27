@@ -1,103 +1,101 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
-using GasaiYuno.Discord.Core.Commands.TypeReaders;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Automation
 {
-    [Group("Poll")]
-//[Alias("p")]
-    [RequireUserPermission(GuildPermission.Administrator)]
-    [RequireOwner]
-    public class PollModule : BaseModule<PollModule>
+    [Group("poll", "Create new polls for users to answer.")]
+    [RequireOwner(Group = "Permission")]
+    [RequireUserPermission(GuildPermission.Administrator, Group = "Permission")]
+    public class PollModule : BaseInteractionModule<PollModule>
     {
-        private readonly PollOptionTypeReader _pollOptionTypeReader;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public PollModule(IUnitOfWork unitOfWork)
+        public class PollModal : IModal
         {
-            _pollOptionTypeReader = new PollOptionTypeReader();
-            _unitOfWork = unitOfWork;
+            /// <inheritdoc />
+            public string Title => "New poll";
+
+            [InputLabel("Description")]
+            [ModalTextInput("poll_description", TextInputStyle.Short, maxLength: 500)]
+            public string Description { get; set; }
+
+            [InputLabel("Options, each on a new line.")]
+            [ModalTextInput("poll_options", TextInputStyle.Paragraph)]
+            public string Options { get; set; }
         }
 
-        [Command]
-        public Task PollDefaultAsync() => ReplyAsync(Translation.Message("Automation.Poll.Default"));
+        [SlashCommand("new", "Create a new poll.")]
+        public Task NewPollCommand(
+            [Summary(description: "The time until the result needs to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes")] TimeSpan duration,
+            [Summary(description: "Whether or not the poll allows for multiple options to be selected.")] bool multiSelect = false)
+            => RespondWithModalAsync<PollModal>($"poll_form:{duration.TotalSeconds}|{multiSelect}");
 
-        [Command]
-        public Task PollDefaultAsync(string text, [Remainder] string options) => PollCreateAsync(text, options);
-
-        [Command]
-        public Task PollDefaultAsync(string text, TimeSpan duration, [Remainder] string options) => PollCreateAsync(text, duration, options);
-        
-        [Command("Create")]
-        [Priority(-1)]
-        public async Task PollCreateAsync(string text, [Remainder] string options)
+        [ModalInteraction("poll_form:*|*", true)]
+        public async Task PollResponse(string seconds, string multiSelect, PollModal modal)
         {
-            var pollOptions = await _pollOptionTypeReader.ReadAsync(Context, options, null).ConfigureAwait(false);
-            if (!pollOptions.IsSuccess)
-                throw new ArgumentException(nameof(options));
-
-            await PollCreateAsync(text, pollOptions.BestMatch as PollOption[]).ConfigureAwait(false);
-        }
-
-        [Command("Create")]
-        [Priority(-1)]
-        public async Task PollCreateAsync(string text, TimeSpan duration, [Remainder] string options)
-        {
-            var pollOptions = await _pollOptionTypeReader.ReadAsync(Context, options, null).ConfigureAwait(false);
-            if (!pollOptions.IsSuccess)
-                throw new ArgumentException(nameof(options));
-
-            await PollCreateAsync(text, duration, pollOptions.BestMatch as PollOption[]).ConfigureAwait(false);
-        }
-
-        [Command("Create")]
-        public async Task PollCreateAsync(string text, PollOption[] options)
-        {
-            await Context.Message.DeleteAsync().ConfigureAwait(false);
+            var duration = TimeSpan.FromSeconds(double.Parse(seconds));
+            var allowMultiple = bool.Parse(multiSelect);
+            var options = modal.Options.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (options.Length <= 1)
+                throw new InvalidOperationException("Cannot create a poll with only one or fewer options.");
 
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(text);
-            embedBuilder.WithDescription(string.Join(Environment.NewLine, options.Select(x => $"{x.Emote} {x.Message}")));
-
-            var message = await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-            foreach (var option in options)
-                await message.AddReactionAsync(new Emoji(option.Emote)).ConfigureAwait(false);
-        }
-
-        [Command("Create")]
-        public async Task PollCreateAsync(string text, TimeSpan duration, PollOption[] options)
-        {
-            await Context.Message.DeleteAsync().ConfigureAwait(false);
-
-            var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(text);
-            embedBuilder.WithDescription(string.Join(Environment.NewLine, options.Select(x => $"{x.Emote} {x.Message}")));
-            embedBuilder.WithFooter(Translation.Message("Automation.Poll.Ending"));
+            embedBuilder.WithTitle(Translation.Message("Automation.Poll.Title"));
+            embedBuilder.WithDescription(modal.Description);
+            embedBuilder.WithFooter(Translation.Message("Automation.Poll.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
-            var message = await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-            foreach (var option in options)
-                await message.AddReactionAsync(new Emoji(option.Emote)).ConfigureAwait(false);
+            var selectMenuBuilder = new SelectMenuBuilder()
+                .WithCustomId($"poll_selection:{Context.Interaction.Id}")
+                .WithPlaceholder(Translation.Message(allowMultiple ? "Automation.Poll.Selector.Multiple" : "Automation.Poll.Selector.Single"))
+                .WithMinValues(1)
+                .WithMaxValues(allowMultiple ? options.Length : 1);
+            for (var i = 0; i < options.Length; i++)
+            {
+                selectMenuBuilder.AddOption(options[i], i.ToString());
+            }
 
+            await RespondAsync(embed: embedBuilder.Build(), components: new ComponentBuilder().WithSelectMenu(selectMenuBuilder).Build()).ConfigureAwait(false);
+            var selectionMessage = await GetOriginalResponseAsync().ConfigureAwait(false);
             var poll = new Poll
             {
+                Id = Context.Interaction.Id,
                 Server = Server,
-                Channel = message.Channel.Id,
-                Message = message.Id,
-                MultiSelect = false,
+                Channel = Context.Channel.Id,
+                Message = selectionMessage.Id,
                 EndDate = DateTime.Now + duration,
-                Text = text,
-                Options = options.ToList()
+                Text = modal.Description,
+                Options = options.Select(x => new PollOption{ Value = x }).ToList()
             };
-            
-            _unitOfWork.Polls.Add(poll);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            UnitOfWork.Polls.Add(poll);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        [ComponentInteraction("poll_selection:*", true)]
+        public async Task PollSelection(string reference, string[] selectedOptions)
+        {
+            var referenceId = ulong.Parse(reference);
+            var selections = selectedOptions.Select(int.Parse).ToList();
+            var poll = await UnitOfWork.Polls.GetAsync(referenceId).ConfigureAwait(false);
+            if (poll == null) return;
+
+            var selection = poll.Selections.FirstOrDefault(x => x.User == Context.User.Id);
+            if (selection != null) poll.Selections.RemoveAll(x => x.User == Context.User.Id);
+
+            foreach (var selectedOption in selections)
+            {
+                poll.Selections.Add(new PollSelection
+                {
+                    User = Context.User.Id,
+                    SelectedOption = selectedOption
+                });
+            }
+            UnitOfWork.Polls.Update(poll);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await DeferAsync(true).ConfigureAwait(false);
         }
     }
 }

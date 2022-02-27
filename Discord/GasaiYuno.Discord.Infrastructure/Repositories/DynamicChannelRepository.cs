@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -41,6 +41,16 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
             return await Context.DynamicChannels
                 .Include(x => x.Server)
                 .FirstOrDefaultAsync(x => x.Server.Id == serverId && x.Name == name)
+                .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<DynamicChannel>> SearchAsync(ulong serverId, string name)
+        {
+            return await Context.DynamicChannels
+                .Include(x => x.Server)
+                .Where(x => x.Server.Id == serverId && EF.Functions.Like(x.Name, $"%{name}%"))
+                .ToListAsync()
                 .ConfigureAwait(false);
         }
 

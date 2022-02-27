@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Infrastructure;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
 
 namespace GasaiYuno.Discord.Modules
 {

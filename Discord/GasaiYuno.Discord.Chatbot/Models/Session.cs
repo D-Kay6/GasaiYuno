@@ -1,4 +1,5 @@
-﻿using GasaiYuno.Discord.Chatbot.Interfaces;
+﻿using Discord.WebSocket;
+using GasaiYuno.Discord.Chatbot.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,16 +8,25 @@ namespace GasaiYuno.Discord.Chatbot.Models
 {
     internal class Session : ISession
     {
-        public event EventHandler OnSessionEnded;
+        public event Func<ISession, Task> SessionEnded;
 
         /// <inheritdoc/>
-        public bool Active { get; private set; }
+        public bool TimedOut { get; private set; }
+
+        /// <inheritdoc/>
         public string SessionId { get; }
+
+        /// <inheritdoc/>
+        public ulong UserId { get; private set; }
+
+        /// <inheritdoc/>
+        public SocketThreadChannel Thread { get; private set; }
 
         private readonly EndPoint _endPoint;
         private readonly TimeSpan _idleDuration;
         private readonly Timer _timer;
 
+        private bool _active;
         private string _state;
 
         /// <summary>
@@ -27,24 +37,33 @@ namespace GasaiYuno.Discord.Chatbot.Models
         /// <param name="idleDuration">The maximum duration the session may remain idle.</param>
         public Session(string sessionId, EndPoint endPoint, TimeSpan idleDuration)
         {
-            Active = true;
             SessionId = sessionId;
 
             _endPoint = endPoint;
             _idleDuration = idleDuration;
 
             _timer = new Timer(ThresholdPassed, null, idleDuration, Timeout.InfiniteTimeSpan);
+            _active = true;
         }
-
-        /// <inheritdoc/>
-        public IResponse GetResponse(string message) => GetResponseAsync(message).GetAwaiter().GetResult();
+        
+        public void Link(ulong userId, SocketThreadChannel thread)
+        {
+            if (UserId > 0 || Thread != null)
+                throw new InvalidOperationException("The session has already been linked.");
+            
+            UserId = userId;
+            Thread = thread;
+        }
 
         /// <inheritdoc/>
         public async Task<IResponse> GetResponseAsync(string message)
         {
-            if (!Active) 
+            if (!_active) 
                 throw new InvalidOperationException("The session is not active.");
-            
+
+            // In case the reply could take long enough for the timer to elapse.
+            _timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
             var reply = await _endPoint.GetReplyAsync(message, _state).ConfigureAwait(false);
             _state = reply.State;
             _timer.Change(_idleDuration, Timeout.InfiniteTimeSpan);
@@ -56,15 +75,19 @@ namespace GasaiYuno.Discord.Chatbot.Models
             };
         }
 
-        private void ThresholdPassed(object stateInfo) => Dispose();
+        private void ThresholdPassed(object stateInfo)
+        {
+            TimedOut = true;
+            Dispose();
+        }
 
         /// <inheritdoc/>
         public void Dispose()
         {
             _timer?.Dispose();
 
-            Active = false;
-            OnSessionEnded?.Invoke(this, EventArgs.Empty);
+            _active = false;
+            SessionEnded?.Invoke(this);
         }
     }
 }

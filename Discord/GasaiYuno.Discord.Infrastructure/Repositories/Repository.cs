@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,11 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
+using GasaiYuno.Discord.Domain.Models;
 
 namespace GasaiYuno.Discord.Localization.Interfaces
 {
     public interface ILocalization
     {
-        string DefaultLanguage { get; }
-        ITranslation GetTranslation(string language);
+        Languages DefaultLanguage { get; }
+        ITranslation GetTranslation(Languages language);
     }
 }

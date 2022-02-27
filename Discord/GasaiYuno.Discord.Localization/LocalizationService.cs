@@ -1,4 +1,5 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
+using GasaiYuno.Discord.Domain.Models;
 using GasaiYuno.Discord.Localization.Interfaces;
 using GasaiYuno.Discord.Localization.Models;
 using Microsoft.Extensions.Logging;
@@ -10,21 +11,21 @@ namespace GasaiYuno.Discord.Localization
 {
     internal class LocalizationService : ILocalization
     {
-        public string DefaultLanguage { get; } = "English";
+        public Languages DefaultLanguage => Languages.English;
 
         private static DirectoryInfo Source => new(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
         
-        private readonly Dictionary<string, Translation> _translations;
+        private readonly Dictionary<Languages, Translation> _translations;
         private readonly ILogger<LocalizationService> _logger;
 
         public LocalizationService(ILogger<LocalizationService> logger)
         {
-            _translations = new Dictionary<string, Translation>();
+            _translations = new Dictionary<Languages, Translation>();
             _logger = logger;
 
             foreach (var file in Source.EnumerateFiles())
             {
-                var language = Path.GetFileNameWithoutExtension(file.FullName);
+                if (!Enum.TryParse<Languages>(Path.GetFileNameWithoutExtension(file.FullName), true, out var language)) continue;
                 try
                 {
                     var translation = Translation.Read(file);
@@ -39,14 +40,8 @@ namespace GasaiYuno.Discord.Localization
             }
         }
 
-        public ITranslation GetTranslation(string language)
+        public ITranslation GetTranslation(Languages language)
         {
-            if (string.IsNullOrWhiteSpace(language))
-            {
-                _logger.LogWarning("No language specified. Using default language {name}", DefaultLanguage);
-                return _translations[DefaultLanguage];
-            }
-
             if (_translations.TryGetValue(language, out var translation))
                 return translation;
 

@@ -1,31 +1,23 @@
-﻿using Discord.Commands;
-using Discord.WebSocket;
+﻿using Discord;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Core.Extensions;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Entertainment
 {
-    [Group("Birthday")]
-    public class BirthdayModule : BaseModule<BirthdayModule>
+    public class BirthdayModule : BaseInteractionModule<BirthdayModule>
     {
-        [Priority(-1)]
-        [Command]
-        public async Task BirthdayDefaultAsync([Remainder] string name)
+        [SlashCommand("birthday", "Sing a song for a happy fellow.", true)]
+        public async Task BirthdayCommand([Summary("user", "The user to direct it towards.")] IGuildUser user)
         {
-            await ReplyAsync(Translation.Message("Generic.Invalid.User", name));
-        }
-
-        [Command]
-        public async Task BirthdayDefaultAsync(SocketGuildUser user)
-        {
-            if (user == null)
+            if (user == null || user.IsBot)
             {
-                await ReplyAsync(Translation.Message("Generic.Invalid.User", Context.Message));
+                await RespondAsync(Translation.Message("Generic.Invalid.User", Context.Interaction.Data), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-            
-            await ReplyAsync(Translation.Message("Entertainment.Birthday", user.ToPossessive(), user.Nickname()));
+
+            await RespondAsync(Translation.Message("Entertainment.Birthday", user.ToPossessive(), user.Nickname())).ConfigureAwait(false);
         }
     }
 }

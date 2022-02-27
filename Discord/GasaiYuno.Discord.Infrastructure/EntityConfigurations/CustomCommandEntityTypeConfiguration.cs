@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

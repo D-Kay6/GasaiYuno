@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
 
@@ -17,7 +17,7 @@ namespace GasaiYuno.Discord.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", _token).InstancePerLifetimeScope();
-            builder.RegisterType<CommandService>().InstancePerLifetimeScope();
+            builder.RegisterType<InteractionService>().AsSelf().InstancePerLifetimeScope();
         }
     }
 }

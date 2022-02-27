@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;
@@ -11,6 +11,11 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Raffle> builder)
         {
             builder.ToTable("Raffles");
+
+            builder.Property(x => x.Id)
+                .HasColumnName("Id")
+                .ValueGeneratedNever()
+                .IsRequired();
 
             builder.Property<ulong>("ServerId")
                 .IsRequired();
@@ -28,8 +33,11 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
             builder.Property(x => x.EndDate)
                 .IsRequired();
 
-            builder.Property(x => x.Users)
-                .HasConversion(x => JsonConvert.SerializeObject(x), x => JsonConvert.DeserializeObject<List<ulong>>(x));
+            builder.HasMany(x => x.Entries)
+                .WithOne()
+                .HasForeignKey("RaffleId")
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Server)
                 .WithMany()
@@ -38,7 +46,25 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasKey("ServerId", nameof(Raffle.Channel), nameof(Raffle.Message));
+            builder.HasKey(x => x.Id);
+        }
+    }
+    public class RaffleEntryEntityTypeConfiguration : IEntityTypeConfiguration<RaffleEntry>
+    {
+        public void Configure(EntityTypeBuilder<RaffleEntry> builder)
+        {
+            builder.ToTable("RaffleEntries");
+
+            builder.Property<int>("Id")
+                .UseHiLo("raffleentryseq");
+
+            builder.Property<ulong>("RaffleId")
+                .IsRequired();
+
+            builder.Property(x => x.User)
+                .IsRequired();
+
+            builder.HasKey("Id");
         }
     }
 }

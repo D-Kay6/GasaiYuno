@@ -1,7 +1,9 @@
 ﻿using Discord.WebSocket;
-using GasaiYuno.Discord.Domain;
+using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+//using GasaiYuno.Discord.RavenDB;
+//using Raven.Client.Documents;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +14,13 @@ namespace GasaiYuno.Discord.Listeners
     {
         private readonly DiscordShardedClient _client;
         private readonly Func<IUnitOfWork> _unitOfWorkFactory;
+        //private readonly IDocumentStore _documentStore;
 
-        public GuildListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory)
+        public GuildListener(DiscordConnectionClient client, Func<IUnitOfWork> unitOfWorkFactory/*, IDocumentStore documentStore*/)
         {
             _client = client;
             _unitOfWorkFactory = unitOfWorkFactory;
+            //_documentStore = documentStore;
 
             client.Ready += OnReady;
         }
@@ -28,6 +32,7 @@ namespace GasaiYuno.Discord.Listeners
             _client.LeftGuild += GuildLeftAsync;
 
 #if DEBUG
+            //return Transfer();
             return Task.CompletedTask;
 #else
             return CheckGuilds();
@@ -99,6 +104,35 @@ namespace GasaiYuno.Discord.Listeners
 
             foreach (var guild in _client.Guilds)
                 await unitOfWork.Servers.AddOrUpdateAsync(guild.Id, guild.Name).ConfigureAwait(false);
+        }
+
+        private async Task Transfer()
+        {
+            //var unitOfWork = _unitOfWorkFactory();
+            //var ravenDb = new UnitOfWork(_documentStore);
+
+            //var servers = await unitOfWork.Servers.ListAsync().ConfigureAwait(false);
+            //await ravenDb.Servers.AddRangeAsync(servers).ConfigureAwait(false);
+
+            //var bans = await unitOfWork.Bans.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.Bans.AddRangeAsync(bans).ConfigureAwait(false);
+
+            //var commands = await unitOfWork.Commands.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.Commands.AddRangeAsync(commands).ConfigureAwait(false);
+
+            //var dynamicChannels = await unitOfWork.DynamicChannels.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.DynamicChannels.AddRangeAsync(dynamicChannels).ConfigureAwait(false);
+
+            //var notifications = await unitOfWork.Notifications.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.Notifications.AddRangeAsync(notifications).ConfigureAwait(false);
+
+            //var polls = await unitOfWork.Polls.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.Polls.AddRangeAsync(polls).ConfigureAwait(false);
+
+            //var raffles = await unitOfWork.Raffles.GetAllAsync().ConfigureAwait(false);
+            //await ravenDb.Raffles.AddRangeAsync(raffles).ConfigureAwait(false);
+
+            //await ravenDb.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

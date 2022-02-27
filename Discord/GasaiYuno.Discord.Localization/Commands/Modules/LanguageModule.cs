@@ -1,17 +1,17 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
+using GasaiYuno.Discord.Core.Extensions;
+using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Localization.Interfaces;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Localization.Commands.Modules
 {
-    [Group("Language")]
-    [Alias("Lang", "Localization")]
+    [Group("language", "Manage the language of the server.")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public class LanguageModule : BaseModule<LanguageModule>
+    public class LanguageModule : BaseInteractionModule<LanguageModule>
     {
         private readonly ILocalization _localization;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,32 +22,18 @@ namespace GasaiYuno.Discord.Localization.Commands.Modules
             _unitOfWork = unitOfWork;
         }
 
-        [Command]
-        public Task LanguageDefaultAsync() => ReplyAsync(Translation.Message("Moderation.Language.Default", Server.Language?.Name ?? _localization.DefaultLanguage));
-
-        [Command("List")]
-        public async Task LanguageListAsync()
+        [SlashCommand("current", "Show what language is currently being used.")]
+        public Task CurrentLanguageCommand() => RespondAsync(Translation.Message("Moderation.Language.Default", Server.Language.ToLocalized()), ephemeral: true);
+        
+        [SlashCommand("set", "Change the language for this server.")]
+        public async Task SetLanguageCommand([Summary("language", "The new language.")] Languages language)
         {
-            var languages = await _unitOfWork.Languages.ListAsync().ConfigureAwait(false);
-            await ReplyAsync(Translation.Message("Moderation.Language.List", string.Join(", ", languages.Select(x => x.LocalizedName)))).ConfigureAwait(false);
-        }
-
-        [Command("Set")]
-        public async Task LanguageSetAsync(string value)
-        {
-            var language = await _unitOfWork.Languages.GetAsync(value).ConfigureAwait(false);
-            if (language == null)
-            {
-                await ReplyAsync(Translation.Message("Moderation.Language.Unsupported", value)).ConfigureAwait(false);
-                return;
-            }
-
             Server.Language = language;
             _unitOfWork.Servers.Update(Server);
             await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-            Translation = _localization.GetTranslation(language.Name);
-            await ReplyAsync(Translation.Message("Moderation.Language.Set", language.LocalizedName)).ConfigureAwait(false);
+            Translation = _localization.GetTranslation(language);
+            await RespondAsync(Translation.Message("Moderation.Language.Set", language.ToLocalized()), ephemeral: true).ConfigureAwait(false);
         }
     }
 }

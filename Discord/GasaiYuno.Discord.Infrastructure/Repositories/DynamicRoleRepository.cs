@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         public DynamicRoleRepository(DataContext context) : base(context) { }
 
         /// <inheritdoc/>
-        public async Task<DynamicRole> GetAsync(ulong serverId, AutomationType type, string status)
+        public Task<DynamicRole> GetAsync(ulong serverId, AutomationType type, string status)
         {
             throw new NotImplementedException();
             //return await Context.DynamicRoles
@@ -25,7 +25,7 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<List<DynamicRole>> ListAsync(ulong serverId)
+        public Task<List<DynamicRole>> ListAsync(ulong serverId)
         {
             throw new NotImplementedException();
             //return await Context.DynamicRoles
@@ -35,7 +35,7 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<List<DynamicRole>> ListAsync(ulong serverId, AutomationType type)
+        public Task<List<DynamicRole>> ListAsync(ulong serverId, AutomationType type)
         {
             throw new NotImplementedException();
             //return await Context.DynamicRoles

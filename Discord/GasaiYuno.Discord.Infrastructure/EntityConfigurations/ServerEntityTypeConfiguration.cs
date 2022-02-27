@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,15 +11,16 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
             builder.ToTable("Servers");
 
             builder.Property(x => x.Id)
+                .HasColumnName("Id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.Property<int?>("LanguageId")
-                .HasDefaultValue(1)
-                .IsRequired(false);
-
             builder.Property(x => x.Name)
                 .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(x => x.WarningDisabled)
+                .HasDefaultValue(false)
                 .IsRequired();
 
             builder.Property(x => x.Prefix)
@@ -27,11 +28,9 @@ namespace GasaiYuno.Discord.Infrastructure.EntityConfigurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.HasOne(x => x.Language)
-                .WithMany()
-                .HasForeignKey("LanguageId")
-                .HasPrincipalKey(x => x.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Property(x => x.Language)
+                .HasDefaultValue(Languages.English)
+                .IsRequired();
 
             builder.HasKey(x => x.Id);
         }

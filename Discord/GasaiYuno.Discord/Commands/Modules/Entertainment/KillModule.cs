@@ -1,6 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Core.Mediator.Requests;
@@ -8,28 +7,23 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Entertainment
 {
-    [Group("Kill")]
-    public class KillModule : BaseModule<KillModule>
+    public class KillModule : BaseInteractionModule<KillModule>
     {
-        [Priority(-1)]
-        [Command]
-        public Task KillDefaultAsync([Remainder] string name) => ReplyAsync(Translation.Message("Generic.Invalid.User", name));
-
-        [Command]
-        public async Task KillDefaultAsync(SocketGuildUser user)
+        [SlashCommand("kill", "Have me kill a user.", true)]
+        public async Task KillCommand(IGuildUser user)
         {
             switch (user.Id)
             {
                 case 255453041531158538:
-                    await ReplyAsync(Translation.Message("Entertainment.Kill.Creator", user.Nickname())).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Entertainment.Kill.Creator", user.Nickname()), ephemeral: true).ConfigureAwait(false);
                     break;
                 case 286972781273546762:
                 case 542706288849715202:
-                    await ReplyAsync(Translation.Message("Entertainment.Kill.Self")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Entertainment.Kill.Self"), ephemeral: true).ConfigureAwait(false);
                     break;
                 default:
                     var image = await Mediator.Send(new GetImageRequest("GasaiYuno.gif", "Core")).ConfigureAwait(false);
-                    await Context.Channel.SendFileAsync(new FileAttachment(image), Translation.Message("Entertainment.Kill.Default", user.Mention)).ConfigureAwait(false);
+                    await RespondWithFileAsync(new FileAttachment(image), Translation.Message("Entertainment.Kill.Default", user.Mention)).ConfigureAwait(false);
                     break;
             }
         }

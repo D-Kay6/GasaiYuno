@@ -1,17 +1,12 @@
-﻿using Discord.Commands;
+﻿using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Info
 {
-    [Group("Invite")]
-    public class InviteModule : BaseModule<InviteModule>
+    public class InviteModule : BaseInteractionModule<InviteModule>
     {
-        [Command]
-        public async Task DefaultInvite()
-        {
-            var dmChannel = await Context.User.CreateDMChannelAsync().ConfigureAwait(false);
-            await dmChannel.SendMessageAsync(Translation.Message("Info.Invite"));
-        }
+        [SlashCommand("invite", "My invite link, so you, or someone else, can add me to a server.", true)]
+        public Task InviteCommand() => RespondAsync(Translation.Message("Info.Invite"), ephemeral: true);
     }
 }

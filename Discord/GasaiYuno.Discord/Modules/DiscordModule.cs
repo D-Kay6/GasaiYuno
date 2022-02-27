@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Interactivity;
+using Fergun.Interactive;
 using System;
 
 namespace GasaiYuno.Discord.Modules
@@ -27,7 +27,9 @@ namespace GasaiYuno.Discord.Modules
 #endif
                 ConnectionTimeout = ConnectionTimeout,
                 HandlerTimeout = HandlerTimeout,
-                GatewayIntents = GatewayIntents.Guilds |
+                GatewayIntents = GatewayIntents.DirectMessages | 
+                                 GatewayIntents.Guilds | 
+                                 GatewayIntents.GuildBans |
                                  GatewayIntents.GuildMembers |
                                  GatewayIntents.GuildPresences |
                                  GatewayIntents.GuildIntegrations |
@@ -35,16 +37,16 @@ namespace GasaiYuno.Discord.Modules
                                  GatewayIntents.GuildMessages |
                                  GatewayIntents.GuildMessageReactions |
                                  GatewayIntents.GuildScheduledEvents |
-                                 GatewayIntents.GuildInvites |
-                                 GatewayIntents.DirectMessages
+                                 GatewayIntents.GuildInvites
 
             }).InstancePerDependency();
-            builder.Register(x => new CommandServiceConfig
+            builder.Register(x => new InteractionServiceConfig
             {
                 DefaultRunMode = RunMode.Async,
-                CaseSensitiveCommands = false
+                AutoServiceScopes = false,
+                UseCompiledLambda = true
             }).InstancePerDependency();
-            builder.Register(x => new InteractivityConfig
+            builder.Register(x => new InteractiveConfig
             {
                 DefaultTimeout = TimeSpan.FromMinutes(1)
             }).InstancePerDependency();
@@ -52,6 +54,7 @@ namespace GasaiYuno.Discord.Modules
             builder.RegisterModule(new ConnectionModule(Token));
             builder.RegisterModule(new ListenerModule());
             builder.RegisterModule(new PersistenceModule(ConnectionString));
+            //builder.RegisterModule(new RavenDB.PersistenceModule());
             builder.RegisterModule(new ServiceModule());
             builder.RegisterModule(new MediatorModule());
         }

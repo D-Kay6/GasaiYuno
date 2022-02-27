@@ -18,15 +18,15 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("Latin1_General_CI_AS")
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.HasSequence("languageseq")
+            modelBuilder.HasSequence("raffleentryseq")
                 .IncrementsBy(10);
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Ban", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Ban", b =>
                 {
                     b.Property<decimal>("ServerId")
                         .HasColumnType("decimal(20,0)");
@@ -46,7 +46,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.ToTable("Bans", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.CustomCommand", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.CustomCommand", b =>
                 {
                     b.Property<decimal>("ServerId")
                         .HasColumnType("decimal(20,0)");
@@ -65,7 +65,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.ToTable("CustomCommands", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.DynamicChannel", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.DynamicChannel", b =>
                 {
                     b.Property<decimal>("ServerId")
                         .HasColumnType("decimal(20,0)");
@@ -96,30 +96,7 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.ToTable("DynamicChannels", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Language", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "languageseq");
-
-                    b.Property<string>("LocalizedName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Languages", (string)null);
-                });
-
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Notification", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Notification", b =>
                 {
                     b.Property<decimal>("ServerId")
                         .HasColumnType("decimal(20,0)");
@@ -145,74 +122,127 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.ToTable("Notifications", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Poll", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Poll", b =>
                 {
-                    b.Property<decimal>("ServerId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<decimal>("Id")
+                        .HasColumnType("decimal(20,0)")
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Channel")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<decimal>("Message")
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("MultiSelect")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<decimal>("Message")
+                        .HasColumnType("decimal(20,0)");
 
-                    b.Property<string>("Options")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("ServerId")
+                        .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.HasKey("ServerId", "Channel", "Message");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServerId");
 
                     b.ToTable("Polls", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Raffle", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.PollOption", b =>
                 {
-                    b.Property<decimal>("ServerId")
+                    b.Property<decimal>("PollId")
                         .HasColumnType("decimal(20,0)");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("PollId", "Value");
+
+                    b.ToTable("PollOptions", (string)null);
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.PollSelection", b =>
+                {
+                    b.Property<decimal>("PollId")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal>("User")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<int>("SelectedOption")
+                        .HasColumnType("int");
+
+                    b.HasKey("PollId", "User", "SelectedOption");
+
+                    b.ToTable("PollSelections", (string)null);
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Raffle", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("decimal(20,0)")
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Channel")
                         .HasColumnType("decimal(20,0)");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Message")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<decimal>("ServerId")
+                        .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Users")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("ServerId", "Channel", "Message");
+                    b.HasIndex("ServerId");
 
                     b.ToTable("Raffles", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Server", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.RaffleEntry", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"), "raffleentryseq");
+
+                    b.Property<decimal>("RaffleId")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<int?>("LanguageId")
+                    b.Property<decimal>("User")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaffleId");
+
+                    b.ToTable("RaffleEntries", (string)null);
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Server", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("decimal(20,0)")
+                        .HasColumnName("Id");
+
+                    b.Property<int>("Language")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -226,16 +256,19 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValue("!");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("WarningDisabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.HasIndex("LanguageId");
+                    b.HasKey("Id");
 
                     b.ToTable("Servers", (string)null);
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Ban", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Ban", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -244,9 +277,9 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.CustomCommand", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.CustomCommand", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -255,9 +288,9 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.DynamicChannel", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.DynamicChannel", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -266,9 +299,9 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Notification", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Notification", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -277,9 +310,9 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Poll", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Poll", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -288,9 +321,27 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Raffle", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.PollOption", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Server", "Server")
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Poll", null)
+                        .WithMany("Options")
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.PollSelection", b =>
+                {
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Poll", null)
+                        .WithMany("Selections")
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Raffle", b =>
+                {
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Server", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -299,13 +350,25 @@ namespace GasaiYuno.Discord.Infrastructure.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("GasaiYuno.Discord.Domain.Server", b =>
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.RaffleEntry", b =>
                 {
-                    b.HasOne("GasaiYuno.Discord.Domain.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId");
+                    b.HasOne("GasaiYuno.Discord.Domain.Models.Raffle", null)
+                        .WithMany("Entries")
+                        .HasForeignKey("RaffleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Navigation("Language");
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Poll", b =>
+                {
+                    b.Navigation("Options");
+
+                    b.Navigation("Selections");
+                });
+
+            modelBuilder.Entity("GasaiYuno.Discord.Domain.Models.Raffle", b =>
+                {
+                    b.Navigation("Entries");
                 });
 #pragma warning restore 612, 618
         }

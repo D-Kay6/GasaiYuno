@@ -1,37 +1,28 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
+using GasaiYuno.Discord.Commands.Autocomplete;
 using GasaiYuno.Discord.Core.Commands.Modules;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Automation
 {
-    [Group("DynamicChannels")]
-    [Alias("dc", "DynamicChannel")]
+    [Group("dynamicchannels", "Configure and manage the dynamically generated channels.")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public class DynamicChannelModule : BaseModule<DynamicChannelModule>
+    public class DynamicChannelModule : BaseInteractionModule<DynamicChannelModule>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        [SlashCommand("info", "Display information on the use of dynamic channels.")]
+        public Task InfoDynamicChannelCommand() => RespondAsync(Translation.Message("Automation.Channel.Info"), ephemeral: true);
 
-        public DynamicChannelModule(IUnitOfWork unitOfWork)
+        [SlashCommand("details", "Display detailed information of a specific configuration.")]
+        public async Task DetailsDynamicChannelCommand([Autocomplete(typeof(DynamicChannelAutocompleteHandler))][Summary(description: "The name of the configuration.")] string name)
         {
-            _unitOfWork = unitOfWork;
-        }
-
-        [Command]
-        public Task DynamicChannelDefaultAsync() => ReplyAsync(Translation.Message("Automation.Channel.Default"));
-
-        [Command]
-        [Priority(-1)]
-        public async Task DynamicChannelDefaultAsync(string name)
-        {
-            var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            var dynamicChannel = await UnitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
             if (dynamicChannel == null)
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -41,44 +32,42 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
 
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithTitle(dynamicChannel.Name);
-            embedBuilder.AddField(Translation.Message("Automation.Channel.Info.Channels"), assignedChannels, true);
-            embedBuilder.AddField(Translation.Message("Automation.Channel.Info.Type"), dynamicChannel.Type.ToString(), true);
-            embedBuilder.AddField(Translation.Message("Automation.Channel.Info.GenerationName"), dynamicChannel.GenerationName, true);
+            embedBuilder.AddField(Translation.Message("Automation.Channel.Details.Channels"), assignedChannels, true);
+            embedBuilder.AddField(Translation.Message("Automation.Channel.Details.Type"), dynamicChannel.Type.ToString(), true);
+            embedBuilder.AddField(Translation.Message("Automation.Channel.Details.GenerationName"), dynamicChannel.GenerationName, true);
 
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Command("List")]
-        [Alias("Overview")]
-        public async Task DynamicChannelListAsync()
+        [SlashCommand("list", "Display short information of all the configurations.")]
+        public async Task ListDynamicChannelCommand()
         {
-            var dynamicChannels = await _unitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
+            var dynamicChannels = await UnitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
             if (!dynamicChannels.Any())
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configurations")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configurations"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(Translation.Message("Automation.Channel.Info.Title"));
+            embedBuilder.WithTitle(Translation.Message("Automation.Channel.Details.Title"));
             foreach (var dynamicChannel in dynamicChannels)
-                embedBuilder.AddField(dynamicChannel.Name, Translation.Message("Automation.Channel.Info.List", dynamicChannel.Type.ToString(), dynamicChannel.Channels.Count(x => Context.Guild.GetVoiceChannel(x) != null)), true);
+                embedBuilder.AddField(dynamicChannel.Name, Translation.Message("Automation.Channel.Details.List", dynamicChannel.Type.ToString(), dynamicChannel.Channels.Count(x => Context.Guild.GetVoiceChannel(x) != null)), true);
 
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Command("Add")]
-        [Alias("Configure")]
-        public async Task DynamicChannelAddAsync(string name, AutomationType type)
+        [SlashCommand("new", "Create a new dynamic channel configuration.")]
+        public async Task DynamicChannelAddAsync([Summary(description: "The name of the configuration.")] string name, [Summary(description: "The type of the generated channels.")] AutomationType type)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Name")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Name"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-            if (await _unitOfWork.DynamicChannels.AnyAsync(x => x.Server.Id == Context.Guild.Id && x.Name == name).ConfigureAwait(false))
+            if (await UnitOfWork.DynamicChannels.AnyAsync(x => x.Server.Id == Context.Guild.Id && x.Name == name).ConfigureAwait(false))
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Exists", name)).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Exists", name), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -88,174 +77,101 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                 Type = type,
                 Name = name
             };
-            
-            _unitOfWork.DynamicChannels.Add(dynamicChannel);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-            await ReplyAsync(Translation.Message("Automation.Channel.Added", name)).ConfigureAwait(false);
+            UnitOfWork.DynamicChannels.Add(dynamicChannel);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+            await RespondAsync(Translation.Message("Automation.Channel.Added", name), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Command("Delete")]
-        [Alias("Remove")]
-        public async Task DynamicChannelDeleteAsync(string name)
+        [SlashCommand("delete", "Delete a dynamic channel configuration.")]
+        public async Task DeleteDynamicChannelCommand([Autocomplete(typeof(DynamicChannelAutocompleteHandler))][Summary(description: "The name of the configuration.")] string name)
         {
-            var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            var dynamicChannel = await UnitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
             if (dynamicChannel == null)
             {
-                await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-            
-            _unitOfWork.DynamicChannels.Remove(dynamicChannel);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-                            
-            await ReplyAsync(Translation.Message("Automation.Channel.Deleted", name)).ConfigureAwait(false);
+
+            UnitOfWork.DynamicChannels.Remove(dynamicChannel);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+            await RespondAsync(Translation.Message("Automation.Channel.Deleted", name), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Group("Edit")]
-        [Alias("Modify", "Change")]
-        public class DynamicChannelModifyModule : BaseModule<DynamicChannelModifyModule>
+        [SlashCommand("edit", "Change a dynamic channel configuration.")]
+        public async Task EditDynamicChannelCommand([Autocomplete(typeof(DynamicChannelAutocompleteHandler))][Summary(description: "The name of the configuration.")] string name, [Summary(description: "The new name for generated channels.")] string generatedName)
         {
-            private readonly ChannelTypeReader<IVoiceChannel> _typeReader;
-            private readonly IUnitOfWork _unitOfWork;
-
-            public DynamicChannelModifyModule(IUnitOfWork unitOfWork)
+            var dynamicChannel = await UnitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            if (dynamicChannel == null)
             {
-                _typeReader = new ChannelTypeReader<IVoiceChannel>();
-                _unitOfWork = unitOfWork;
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            [Command]
-            [Priority(-1)]
-            public async Task DynamicChannelModifyDefaultAsync(string name, string action, [Remainder] string parameters)
+            if (string.IsNullOrWhiteSpace(generatedName))
             {
-                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
-                if (dynamicChannel == null)
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
-                    return;
-                }
-
-                TypeReaderResult parseResult;
-                switch (action.ToLower())
-                {
-                    case "d_name":
-                    case "name":
-                        await DynamicChannelModifyNameAsync(dynamicChannel, parameters);
-                        return;
-                    case "assign":
-                    case "add":
-                    case "apply":
-                        parseResult = await _typeReader.ReadAsync(Context, parameters, null).ConfigureAwait(false);
-                        if (!parseResult.IsSuccess)
-                            throw new ArgumentException("InvalidArgument", nameof(parameters));
-
-                        await DynamicChannelModifyAssignAsync(dynamicChannel, parseResult.BestMatch as IVoiceChannel);
-                        return;
-                    case "remove":
-                    case "delete":
-                        parseResult = await _typeReader.ReadAsync(Context, parameters, null).ConfigureAwait(false);
-                        if (!parseResult.IsSuccess)
-                            throw new ArgumentException("InvalidArgument", nameof(parameters));
-
-                        await DynamicChannelModifyRemoveAsync(dynamicChannel, parseResult.BestMatch as IVoiceChannel);
-                        return;
-                }
-
-                throw new ArgumentOutOfRangeException(nameof(action), action, "InvalidArgument");
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.GenerationName"), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            [Command("d_name")]
-            [Alias("Name")]
-            public async Task DynamicChannelModifyNameAsync(string name, string generationName)
-            {
-                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
-                if (dynamicChannel == null)
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
-                    return;
-                }
+            dynamicChannel.GenerationName = generatedName;
 
-                await DynamicChannelModifyNameAsync(dynamicChannel, generationName).ConfigureAwait(false);
+            UnitOfWork.DynamicChannels.Update(dynamicChannel);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+            await RespondAsync(Translation.Message("Automation.Channel.Renamed", dynamicChannel.Name, dynamicChannel.GenerationName), ephemeral: true);
+        }
+
+        [SlashCommand("assign", "Assign a channel to a configuration.")]
+        public async Task AssignDynamicChannelCommand([Autocomplete(typeof(DynamicChannelAutocompleteHandler))][Summary(description: "The name of the configuration.")] string name, [Summary(description: "The channel to add to the configuration.")] IVoiceChannel channel)
+        {
+            var dynamicChannel = await UnitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            if (dynamicChannel == null)
+            {
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            private async Task DynamicChannelModifyNameAsync(DynamicChannel dynamicChannel, string generationName)
+            var dynamicChannels = await UnitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
+            var conflictingConfiguration = dynamicChannels.FirstOrDefault(x => x.Channels.Contains(channel.Id));
+            if (conflictingConfiguration != null)
             {
-                if (string.IsNullOrWhiteSpace(generationName))
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.GenerationName")).ConfigureAwait(false);
-                    return;
-                }
-
-                dynamicChannel.GenerationName = generationName;
-                
-                _unitOfWork.DynamicChannels.Update(dynamicChannel);
-                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-
-                await ReplyAsync(Translation.Message("Automation.Channel.Renamed", dynamicChannel.Name, dynamicChannel.GenerationName));
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Assigned", conflictingConfiguration.Name, channel.Name), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            [Command("Assign")]
-            [Alias("Add", "Apply")]
-            public async Task DynamicChannelModifyAssignAsync(string name, IVoiceChannel voiceChannel)
-            {
-                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
-                if (dynamicChannel == null)
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
-                    return;
-                }
+            dynamicChannel.Channels.Add(channel.Id);
 
-                await DynamicChannelModifyAssignAsync(dynamicChannel, voiceChannel).ConfigureAwait(false);
+            UnitOfWork.DynamicChannels.Update(dynamicChannel);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+            await RespondAsync(Translation.Message("Automation.Channel.Assigned", dynamicChannel.Name, channel.Name), ephemeral: true);
+        }
+
+        [SlashCommand("remove", "Remove a channel from a configuration.")]
+        public async Task RemoveDynamicChannelCommand([Autocomplete(typeof(DynamicChannelAutocompleteHandler))][Summary(description: "The name of the configuration.")] string name, [Summary(description: "The channel to remove from the configuration.")] IVoiceChannel channel)
+        {
+            var dynamicChannel = await UnitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
+            if (dynamicChannel == null)
+            {
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            private async Task DynamicChannelModifyAssignAsync(DynamicChannel dynamicChannel, IVoiceChannel voiceChannel)
+            if (!dynamicChannel.Channels.Contains(channel.Id))
             {
-                var dynamicChannels = await _unitOfWork.DynamicChannels.ListAsync(Context.Guild.Id).ConfigureAwait(false);
-                var conflictingConfiguration = dynamicChannels.FirstOrDefault(x => x.Channels.Contains(voiceChannel.Id));
-                if (conflictingConfiguration != null)
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Assigned", conflictingConfiguration.Name, voiceChannel.Name)).ConfigureAwait(false);
-                    return;
-                }
-
-                dynamicChannel.Channels.Add(voiceChannel.Id);
-                
-                _unitOfWork.DynamicChannels.Update(dynamicChannel);
-                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-
-                await ReplyAsync(Translation.Message("Automation.Channel.Assigned", dynamicChannel.Name, voiceChannel.Name));
+                await RespondAsync(Translation.Message("Automation.Channel.Invalid.Unassigned", dynamicChannel.Name, channel.Name), ephemeral: true).ConfigureAwait(false);
+                return;
             }
 
-            [Command("Remove")]
-            [Alias("Delete")]
-            public async Task DynamicChannelModifyRemoveAsync(string name, IVoiceChannel voiceChannel)
-            {
-                var dynamicChannel = await _unitOfWork.DynamicChannels.GetAsync(Context.Guild.Id, name).ConfigureAwait(false);
-                if (dynamicChannel == null)
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Configuration", name)).ConfigureAwait(false);
-                    return;
-                }
+            dynamicChannel.Channels.Remove(channel.Id);
 
-                await DynamicChannelModifyRemoveAsync(dynamicChannel, voiceChannel).ConfigureAwait(false);
-            }
+            UnitOfWork.DynamicChannels.Update(dynamicChannel);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-            private async Task DynamicChannelModifyRemoveAsync(DynamicChannel dynamicChannel, IVoiceChannel voiceChannel)
-            {
-                if (!dynamicChannel.Channels.Contains(voiceChannel.Id))
-                {
-                    await ReplyAsync(Translation.Message("Automation.Channel.Invalid.Unassigned", dynamicChannel.Name, voiceChannel.Name)).ConfigureAwait(false);
-                    return;
-                }
-
-                dynamicChannel.Channels.Remove(voiceChannel.Id);
-                
-                _unitOfWork.DynamicChannels.Update(dynamicChannel);
-                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-
-                await ReplyAsync(Translation.Message("Automation.Channel.Removed", dynamicChannel.Name, voiceChannel.Name));
-            }
+            await RespondAsync(Translation.Message("Automation.Channel.Removed", dynamicChannel.Name, channel.Name), ephemeral: true);
         }
     }
 }

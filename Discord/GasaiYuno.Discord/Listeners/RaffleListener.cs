@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Mediator.Requests;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -36,35 +36,13 @@ namespace GasaiYuno.Discord.Listeners
 
         private Task OnReady()
         {
-            _client.ReactionAdded += OnReactionAdded;
             _client.ChannelDestroyed += OnChannelDestroyed;
             _client.MessageDeleted += OnMessageDeleted;
 
             _timer.Change(TimeSpan.FromMinutes(1), Timeout.InfiniteTimeSpan);
             return Task.CompletedTask;
         }
-
-        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> cachedMessage, Cacheable<IMessageChannel, ulong> cachedChannel, SocketReaction reaction)
-        {
-            var channel = await cachedChannel.GetOrDownloadAsync().ConfigureAwait(false);
-            if (channel is not SocketGuildChannel guildChannel) return;
-            if (reaction.Emote.Name != "✅") return;
-
-            var unitOfWork = _unitOfWorkFactory();
-            var raffle = await unitOfWork.Raffles.GetAsync(guildChannel.Guild.Id, guildChannel.Id, cachedMessage.Id);
-            if (raffle == null) return;
-            if (!raffle.Users.Contains(reaction.UserId))
-            {
-                raffle.Users.Add(reaction.UserId);
-                unitOfWork.Raffles.Update(raffle);
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            }
-
-            var userMessage = await cachedMessage.DownloadAsync();
-            var user = reaction.User.IsSpecified ? reaction.User.Value : guildChannel.Guild.GetUser(reaction.UserId);
-            await userMessage.RemoveReactionAsync(new Emoji("✅"), user).ConfigureAwait(false);
-        }
-
+        
         private async Task OnChannelDestroyed(SocketChannel channel)
         {
             if (channel is not SocketGuildChannel guildChannel) return;
@@ -107,14 +85,14 @@ namespace GasaiYuno.Discord.Listeners
                     SocketGuildUser guildUser = null;
                     for (var i = 0; i < 10; i++)
                     {
-                        var randomIndex = _random.Next(0, raffle.Users.Count - 1);
-                        var userWon = raffle.Users[randomIndex];
-                        guildUser = guild.GetUser(userWon);
+                        var randomIndex = _random.Next(0, raffle.Entries.Count - 1);
+                        var userWon = raffle.Entries[randomIndex];
+                        guildUser = guild.GetUser(userWon.User);
                         if (guildUser != null) break;
                     }
                     if (guildUser == null) continue;
 
-                    var translation = await _mediator.Send(new GetTranslationRequest(raffle.Server.Language.Name)).ConfigureAwait(false);
+                    var translation = await _mediator.Send(new GetTranslationRequest(raffle.Server.Language)).ConfigureAwait(false);
                     var embedBuilder = new EmbedBuilder();
                     embedBuilder.WithTitle(translation.Message("Automation.Raffle.Result.Title"));
                     embedBuilder.AddField(raffle.Title, translation.Message("Automation.Raffle.Result.Winner", guildUser.Mention));

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using GasaiYuno.Discord.Chatbot.Interfaces;
+using GasaiYuno.Discord.Chatbot.Listeners;
 using GasaiYuno.Discord.Chatbot.Services;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using System.Reflection;
@@ -15,13 +16,14 @@ namespace GasaiYuno.Discord.Chatbot
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterMediatR(Assembly.GetExecutingAssembly());
-            builder.RegisterType<SessionService>().As<IChatService>()
+            builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope()
                 .WithParameters(new[]
                 {
                     new NamedParameter("apiKey", ApiKey),
                     new NamedParameter("idleDuration", IdleDuration)
-                })
-                .InstancePerLifetimeScope();
+                });
+            
+            builder.RegisterType<ChatListener>().AsSelf().InstancePerLifetimeScope();
         }
     }
 }

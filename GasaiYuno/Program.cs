@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace GasaiYuno

@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Domain;
+﻿using GasaiYuno.Discord.Domain.Models;
 using GasaiYuno.Discord.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -11,10 +11,7 @@ namespace GasaiYuno.Discord.Infrastructure
     public class DataContext : DbContext
     {
         private readonly string _connectionString;
-
-        /// <summary>Table containing all the languages.</summary>
-        public DbSet<Language> Languages { get; set; }
-
+        
         /// <summary>Table containing all the server.</summary>
         public DbSet<Server> Servers { get; set; }
 
@@ -46,6 +43,8 @@ namespace GasaiYuno.Discord.Infrastructure
         /// <value><c>true</c> if there is an active transaction; otherwise, <c>false</c>.</value>
         public bool HasActiveTransaction => _currentTransaction != null;
     
+        public DataContext() { }
+
         public DataContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -61,16 +60,17 @@ namespace GasaiYuno.Discord.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("Latin1_General_CI_AS");
-
-            modelBuilder.ApplyConfiguration(new LanguageEntityTypeConfiguration());
+            
             modelBuilder.ApplyConfiguration(new ServerEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new BanEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CustomCommandEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DynamicChannelEntityTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new DynamicRoleEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PollEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PollOptionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PollSelectionEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RaffleEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RaffleEntryEntityTypeConfiguration());
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,6 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         {
             return await Context.Notifications
                 .Include(x => x.Server)
-                .ThenInclude(x => x.Language)
                 .FirstOrDefaultAsync(x => x.Server.Id == serverId && x.Type == type)
                 .ConfigureAwait(false);
         }

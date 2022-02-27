@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,10 +21,11 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         {
             var dto = new Raffle
             {
+                Id = entity.Id,
                 Channel = entity.Channel,
                 Message = entity.Message,
                 Title = entity.Title,
-                Users = entity.Users,
+                Entries = entity.Entries,
                 EndDate = entity.EndDate
             };
             var trackedEntity = Context.Raffles.Add(dto);
@@ -32,12 +33,22 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<Raffle> GetAsync(ulong id, ulong channelId, ulong messageId)
+        public async Task<Raffle> GetAsync(ulong id)
         {
             return await Context.Raffles
                 .Include(x => x.Server)
-                .ThenInclude(x => x.Language)
-                .FirstOrDefaultAsync(x => x.Server.Id == id && x.Channel == channelId && x.Message == messageId)
+                .Include(x => x.Entries)
+                .FirstOrDefaultAsync(x => x.Id == id)
+                .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Raffle> GetAsync(ulong serverId, ulong channelId, ulong messageId)
+        {
+            return await Context.Raffles
+                .Include(x => x.Server)
+                .Include(x => x.Entries)
+                .FirstOrDefaultAsync(x => x.Server.Id == serverId && x.Channel == channelId && x.Message == messageId)
                 .ConfigureAwait(false);
         }
 
@@ -64,7 +75,7 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         {
             var query = Context.Raffles
                 .Include(x => x.Server)
-                .ThenInclude(x => x.Language)
+                .Include(x => x.Entries)
                 .AsQueryable();
             if (serverId.HasValue) query = query.Where(x => x.Server.Id == serverId);
             if (expired.HasValue) query = expired.Value ? query.Where(x => x.EndDate < DateTime.Now) : query.Where(x => x.EndDate >= DateTime.Now);

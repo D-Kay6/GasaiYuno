@@ -2,9 +2,9 @@
 using Discord.Rest;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Extensions;
-using GasaiYuno.Discord.Domain;
+using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Models;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

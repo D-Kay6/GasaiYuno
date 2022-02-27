@@ -1,56 +1,77 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Automation
 {
-    [Group("Raffle")]
-    [RequireOwner]
-    public class RaffleModule : BaseModule<RaffleModule>
+    [Group("raffle", "Create a new raffle for users to join.")]
+    [RequireOwner(Group = "Permission")]
+    [RequireUserPermission(GuildPermission.Administrator, Group = "Permission")]
+    public class RaffleModule : BaseInteractionModule<RaffleModule>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public RaffleModule(IUnitOfWork unitOfWork)
+        public class RaffleModal : IModal
         {
-            _unitOfWork = unitOfWork;
+            /// <inheritdoc />
+            public string Title => "New raffle";
+
+            [InputLabel("Title")]
+            [ModalTextInput("raffle_title", TextInputStyle.Short, maxLength: 500)]
+            public string Header { get; set; }
+
+            [InputLabel("Description")]
+            [ModalTextInput("raffle_description", TextInputStyle.Paragraph)]
+            public string Description { get; set; }
         }
 
-        [Command]
-        public Task RaffleDefaultAsync() => ReplyAsync(Translation.Message("Automation.Raffle.Default"));
-    
-        [Command]
-        public Task RaffleDefaultAsync(string title, TimeSpan duration, [Remainder] string context) => RaffleCreateAsync(title, duration, context);
-    
-        [Command("Create")]
-        [Alias("New")]
-        [Priority(-1)]
-        public async Task RaffleCreateAsync(string title, TimeSpan duration, [Remainder] string context)
+        [SlashCommand("new", "Create a new raffle for users to join.")]
+        public Task NewRaffleCommand([Summary(description: "The time until the result need to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes")] TimeSpan duration)
+            => RespondWithModalAsync<RaffleModal>($"raffle_form:{duration.TotalSeconds}");
+
+        [ModalInteraction("raffle_form:*", true)]
+        public async Task RaffleResponse(string seconds, RaffleModal modal)
         {
-            await Context.Message.DeleteAsync().ConfigureAwait(false);
+            var duration = TimeSpan.FromSeconds(double.Parse(seconds));
 
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(title);
-            embedBuilder.WithDescription($"{context}\n\n{Translation.Message("Automation.Raffle.Footer")}");
+            embedBuilder.WithTitle(modal.Header);
+            embedBuilder.WithDescription($"{modal.Description}\n\n{Translation.Message("Automation.Raffle.Footer")}");
             embedBuilder.WithFooter(Translation.Message("Automation.Raffle.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
-            var message = await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-            await message.AddReactionAsync(new Emoji("✅")).ConfigureAwait(false);
+            var componentBuilder = new ComponentBuilder()
+                .WithButton("Enter", $"raffle_interaction:{Context.Interaction.Id}");
 
+            await RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build()).ConfigureAwait(false);
+            var interactionMessage = await GetOriginalResponseAsync().ConfigureAwait(false);
             var raffle = new Raffle
             {
+                Id = Context.Interaction.Id,
                 Server = Server,
-                Channel = message.Channel.Id,
-                Message = message.Id,
-                Title = title,
+                Channel = Context.Channel.Id,
+                Message = interactionMessage.Id,
+                Title = modal.Header,
                 EndDate = DateTime.Now + duration
             };
-            _unitOfWork.Raffles.Add(raffle);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            UnitOfWork.Raffles.Add(raffle);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        [ComponentInteraction("raffle_interaction:*", true)]
+        public async Task RaffleInteraction(string reference)
+        {
+            var referenceId = ulong.Parse(reference);
+            var raffle = await UnitOfWork.Raffles.GetAsync(referenceId).ConfigureAwait(false);
+            if (raffle == null) return;
+            if (raffle.Entries.Any(x => x.User == Context.User.Id)) return;
+
+            raffle.Entries.Add(new RaffleEntry{User = Context.User.Id });
+            UnitOfWork.Raffles.Update(raffle);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await DeferAsync(true).ConfigureAwait(false);
         }
     }
 }

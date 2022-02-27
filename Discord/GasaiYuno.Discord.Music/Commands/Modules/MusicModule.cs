@@ -1,5 +1,5 @@
-using Discord;
-using Discord.Commands;
+ï»¿using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Core.Extensions;
@@ -16,9 +16,8 @@ using Victoria.Responses.Search;
 
 namespace GasaiYuno.Discord.Music.Commands.Modules
 {
-    [Group("Music")]
-    [Alias("m")]
-    public class MusicModule : BaseModule<MusicModule>
+    [Group("music", "Play music in a channel or get the lyrics of a song.")]
+    public class MusicModule : BaseInteractionModule<MusicModule>
     {
         private readonly LavaNode _lavaNode;
         private readonly ILyricsService _lyricsService;
@@ -29,26 +28,19 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             _lyricsService = lyricsService;
         }
 
-        [Priority(-1)]
-        [Command]
-        public async Task MusicDefaultAsync()
-        {
-            await MusicPlayingAsync();
-        }
-
-        [Command("Join")]
-        public async Task MusicJoinAsync()
+        [SlashCommand("join", "Connect me to the voice channel you're in.")]
+        public async Task JoinMusicCommand()
         {
             if (Context.User is not SocketGuildUser user) return;
             if (user.VoiceChannel == null)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Required.Any")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Any"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             if (_lavaNode.TryGetPlayer(Context.Guild, out var player))
             {
-                await ReplyAsync(Translation.Message(player.VoiceChannel.Id == user.VoiceChannel.Id ? "Entertainment.Music.Channel.Invalid.Same" : "Entertainment.Music.Channel.Invalid.Different")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message(player.VoiceChannel.Id == user.VoiceChannel.Id ? "Entertainment.Music.Channel.Invalid.Same" : "Entertainment.Music.Channel.Invalid.Different"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -59,58 +51,23 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to join a voice channel with player {player} per user {user} request.", player, user);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
-
-        [Command("Move")]
-        public async Task MusicMoveAsync()
+        
+        [SlashCommand("leave", "Disconnect me from your voice channel.")]
+        public async Task LeaveMusicCommand()
         {
             if (Context.User is not SocketGuildUser user) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is PlayerState.None)
+            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Invalid.None")).ConfigureAwait(false);
-                return;
-            }
-
-            if (user.VoiceChannel == null)
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Required.Any")).ConfigureAwait(false);
-                return;
-            }
-
-            if (player.VoiceChannel.Id == user.VoiceChannel.Id)
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Invalid.Same")).ConfigureAwait(false);
-                return;
-            }
-
-            try
-            {
-                await _lavaNode.JoinAsync(user.VoiceChannel).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Something went wrong trying to move to another voice channel with player {player} per user {user} request.", player, user);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
-            }
-        }
-
-        [Command("Leave")]
-        public async Task MusicLeaveAsync()
-        {
-            if (Context.User is not SocketGuildUser user) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is PlayerState.None)
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Invalid.None")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Invalid.None"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             if (player.VoiceChannel.Id != user.VoiceChannel.Id)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Required.Same")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -121,71 +78,76 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to leave a voice channel with player {player} per user {user} request.", player, user);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
+        
 
-
-        [Command("Status")]
-        [RequireOwner]
-        public async Task MusicStatusAsync()
+        [SlashCommand("play", "Request a song to be played.")]
+        public async Task MusicPlayAsync([Summary("song", "Video-url, playlist-url, or name of a song you want to play.")] string query)
         {
-            await Context.Message.DeleteAsync().ConfigureAwait(false);
-            var dm = await Context.User.CreateDMChannelAsync().ConfigureAwait(false);
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
+            if (Context.User is not SocketGuildUser user) return;
+            if (_lavaNode.TryGetPlayer(Context.Guild, out var player) && player.PlayerState is PlayerState.Playing or PlayerState.Paused)
             {
-                await dm.SendMessageAsync("No player for that server.").ConfigureAwait(false);
-                return;
+                if (user.VoiceChannel == null)
+                {
+                    await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Any"), ephemeral: true).ConfigureAwait(false);
+                    return;
+                }
+
+                if (player.VoiceChannel.Id != user.VoiceChannel.Id)
+                {
+                    await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
+                    return;
+                }
             }
-
-            var msg = $"State: {player.PlayerState} \nVoice: {player.VoiceChannel.Name} \nText: {player.TextChannel?.Name ?? "none"} \nTrack: {player.Track?.Title ?? "none"}";
-            await dm.SendMessageAsync(msg).ConfigureAwait(false);
-        }
-
-
-        [Command("Play")]
-        [Alias("Request")]
-        [Summary("Requests a song to be played")]
-        public async Task MusicPlayAsync([Remainder] string query)
-        {
-            if (!await CanPerformAsync()) return;
-
-            var message = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Search", query)).ConfigureAwait(false);
+            
+            await RespondAsync(Translation.Message("Entertainment.Music.Track.Search", query), ephemeral: true).ConfigureAwait(false);
             var searchResponse = await _lavaNode.SearchAsync(SearchType.Direct, query).ConfigureAwait(false);
             if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.YouTube, query).ConfigureAwait(false);
             if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.YouTubeMusic, query).ConfigureAwait(false);
             if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _lavaNode.SearchAsync(SearchType.SoundCloud, query).ConfigureAwait(false);
-
-            await message.DeleteAsync().ConfigureAwait(false);
-            var user = Context.User as SocketGuildUser;
+            
             var tracks = new List<PlayableTrack>();
             switch (searchResponse.Status)
             {
                 case SearchStatus.LoadFailed:
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                    await ModifyOriginalResponseAsync(x => x.Content = Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
                     return;
                 case SearchStatus.SearchResult:
                     var resultTrack = searchResponse.Tracks.FirstOrDefault(t => query.Equals(t.Id));
                     if (resultTrack == null)
                     {
-                        var menuBuilder = new SelectMenuBuilder().WithPlaceholder(Translation.Message("Entertainment.Music.Track.Selection")).WithCustomId(query).WithMinValues(1).WithMaxValues(1);
+                        var menuBuilder = new SelectMenuBuilder()
+                            .WithPlaceholder(Translation.Message("Entertainment.Music.Track.Selection"))
+                            .WithCustomId("music_selection")
+                            .WithMinValues(1).WithMaxValues(1)
+                            .AddOption(Translation.Message("Entertainment.Music.Track.Cancel.Title"), "cancel", Translation.Message("Entertainment.Music.Track.Cancel.Description"));
                         for (var i = 0; i < Math.Min(searchResponse.Tracks.Count, 10); i++)
                         {
                             var responseTrack = searchResponse.Tracks.ElementAt(i);
                             menuBuilder.AddOption(responseTrack.Title, i.ToString(), responseTrack.Author);
                         }
 
-                        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Track.Multiple", query), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
-                        var reactionResult = await Interactivity.NextMessageComponentAsync(Context.Client, x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
-                        if (reactionResult == null) 
+                        var selectionMessage = await ModifyOriginalResponseAsync(x =>
                         {
-                            await selectionMessage.DeleteAsync().ConfigureAwait(false);
+                            x.Content = Translation.Message("Entertainment.Music.Track.Multiple", query);
+                            x.Components = new ComponentBuilder().WithSelectMenu(menuBuilder).Build();
+                        }).ConfigureAwait(false);
+                        var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1)).ConfigureAwait(false);
+                        if (!reactionResult.IsSuccess || reactionResult.Value == null || reactionResult.Value?.Data.Values.First() == "cancel")
+                        {
+                            await ModifyOriginalResponseAsync(x =>
+                            {
+                                x.Content = Translation.Message("Entertainment.Music.Track.Cancel.Performed");
+                                x.Components = new ComponentBuilder().Build();
+                            }).ConfigureAwait(false);
+                            if (reactionResult.Value != null) await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
                             return;
                         }
 
-                        await reactionResult.DeferAsync(true).ConfigureAwait(false);
-                        resultTrack = searchResponse.Tracks.ElementAt(int.Parse(reactionResult.Data.Values.First()));
-                        await selectionMessage.DeleteAsync().ConfigureAwait(false);
+                        await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
+                        resultTrack = searchResponse.Tracks.ElementAt(int.Parse(reactionResult.Value.Data.Values.First()));
                     }
                     tracks.Add(new PlayableTrack(resultTrack, user.Nickname(), Context.Channel as ITextChannel));
                     break;
@@ -200,13 +162,15 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
 
             if (!tracks.Any())
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Track.Invalid")).ConfigureAwait(false);
+                await ModifyOriginalResponseAsync(x =>
+                {
+                    x.Content = Translation.Message("Entertainment.Music.Track.Invalid");
+                    x.Components = new ComponentBuilder().Build();
+                }).ConfigureAwait(false);
                 return;
             }
 
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player))
-                player = await _lavaNode.JoinAsync(user.VoiceChannel, Context.Channel as ITextChannel).ConfigureAwait(false);
-            
+            player ??= await _lavaNode.JoinAsync(user.VoiceChannel, Context.Channel as ITextChannel).ConfigureAwait(false);
             var maxQueueItems = 5;
             var embedBuilder = new EmbedBuilder().WithTitle(Translation.Message("Entertainment.Music.Queue.Added"));
             for (var i = 0; i < tracks.Count; i++)
@@ -218,8 +182,12 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             }
             if (tracks.Count > maxQueueItems)
                 embedBuilder.WithFooter(Translation.Message("Entertainment.Music.Queue.Remaining", tracks.Count - maxQueueItems));
-            if (tracks.Count > 1 || player.PlayerState is PlayerState.Playing or PlayerState.Paused)
-                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            
+            await ModifyOriginalResponseAsync(x =>
+            {
+                x.Embed = embedBuilder.Build();
+                x.Components = new ComponentBuilder().Build();
+            }).ConfigureAwait(false);
             if (player.PlayerState is PlayerState.Playing or PlayerState.Paused) return;
 
             PlayableTrack playableTrack = null;
@@ -239,116 +207,124 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             await player.PlayAsync(playableTrack).ConfigureAwait(false);
         }
 
-        [Command("Pause")]
-        public async Task MusicPauseAsync()
+        [SlashCommand("pause", "Pause the currently playing song.")]
+        public async Task PauseMusicCommand()
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-
             if (player.PlayerState is PlayerState.Paused)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.IsPaused")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.IsPaused"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             try
             {
                 await player.PauseAsync().ConfigureAwait(false);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Paused")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Paused"), ephemeral: true).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to pause the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
 
-        [Command("Resume")]
-        public async Task MusicResumeAsync()
+        [SlashCommand("resume", "Continue playing the previously paused song.")]
+        public async Task ResumeMusicCommand()
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-
             if (player.PlayerState is PlayerState.Playing)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.IsResumed")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.IsResumed"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             try
             {
                 await player.ResumeAsync().ConfigureAwait(false);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Resumed")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Resumed"), ephemeral: true).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to resume the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
 
-        [Command("Stop")]
-        public async Task MusicStopAsync()
+        [SlashCommand("stop", "Stop the current song and don't continue playing.")]
+        public async Task StopMusicCommand()
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             try
             {
                 await player.StopAsync().ConfigureAwait(false);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Stop")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Stop"), ephemeral: true).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to stop the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
 
 
-        [Alias("Now")]
-        [Command("Playing")]
-        public async Task MusicPlayingAsync()
+        [SlashCommand("playing", "Show what song is currently playing.")]
+        public async Task PlayingMusicCommand()
         {
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             var embedBuilder = new EmbedBuilder()
                 .WithTitle(Translation.Message("Entertainment.Music.Track.Current"))
                 .WithDescription(Translation.Message("Entertainment.Music.Track.Item", player.Track.Title.Trim(), player.Track.Duration));
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Command("Queue")]
-        public async Task MusicQueueAsync()
+        [SlashCommand("queue", "Show the songs in the queue.")]
+        public async Task QueueMusicCommand()
         {
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-
             if (player.Queue.Count == 0)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Empty")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Queue.Empty"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -362,122 +338,104 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             if (player.Queue.Count > maxQueueItems)
                 embedBuilder.WithFooter(Translation.Message("Entertainment.Music.Queue.Remaining", player.Queue.Count - maxQueueItems));
 
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
 
 
-        [Command("Shuffle")]
-        public async Task MusicShuffleAsync()
+        [SlashCommand("shuffle", "Shuffle the songs in the queue.")]
+        public async Task ShuffleMusicCommand()
         {
-            if (!await CanPerformAsync()) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || !player.Queue.Any())
+            if (Context.User is not SocketGuildUser user) return;
+            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Empty")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (!player.Queue.Any())
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Queue.Empty"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
-            var notice = await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Shuffling")).ConfigureAwait(false);
+            await RespondAsync(Translation.Message("Entertainment.Music.Queue.Shuffling"), ephemeral: true).ConfigureAwait(false);
             player.Queue.Shuffle();
-            await notice.DeleteAsync().ConfigureAwait(false);
-            await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Shuffled")).ConfigureAwait(false);
+            await ModifyOriginalResponseAsync(x => x.Content = Translation.Message("Entertainment.Music.Queue.Shuffled")).ConfigureAwait(false);
         }
 
-        [Command("Skip")]
-        public async Task MusicSkipAsync()
+        [SlashCommand("skip", "Skip a song and continue playing with the next one.")]
+        public async Task SkipMusicCommand([Summary(description: "The amount of songs to skip.")] int amount = 1)
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             try
             {
+                if (amount > 1)
+                    player.Queue.RemoveRange(0, Math.Min(amount - 1, player.Queue.Count));
+
+                await RespondAsync(Translation.Message("Entertainment.Music.Queue.Skipped", amount), ephemeral: true).ConfigureAwait(false);
                 if (player.Queue.Any()) await player.SkipAsync().ConfigureAwait(false);
                 else await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Something went wrong trying to skip a track of the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                Logger.LogError(e, "Something went wrong trying to skip tracks of the player {player}.", player);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
 
-        [Command("Skip")]
-        public async Task MusicSkipAsync(int amount)
+        [SlashCommand("clear", "Remove all the songs from the queue.")]
+        public async Task ClearMusicCommand()
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-
-            try
-            {
-                player.Queue.RemoveRange(0, amount - 1);
-                if (player.Queue.Any()) await player.SkipAsync().ConfigureAwait(false);
-                else await _lavaNode.LeaveAsync(player.VoiceChannel).ConfigureAwait(false);
-
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Skipped", amount)).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Something went wrong trying to skip multiple tracks of the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
-            }
-        }
-
-        [Command("Clear")]
-        public async Task MusicClearAsync()
-        {
-            if (!await CanPerformAsync()) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
-                return;
-            }
-
             if (player.Queue.Count == 0)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Empty")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Queue.Empty"), ephemeral: true).ConfigureAwait(false);
+                return;
+            }
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
+            {
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             player.Queue.Clear();
-            await ReplyAsync(Translation.Message("Entertainment.Music.Queue.Cleared")).ConfigureAwait(false);
+            await RespondAsync(Translation.Message("Entertainment.Music.Queue.Cleared"), ephemeral: true).ConfigureAwait(false);
         }
 
 
-        [Command("Volume")]
+        [SlashCommand("volume", "Change the volume of the music.")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task MusicVolumeAsync()
+        public async Task VolumeMusicCommand([Summary(description: "The new volume.")] ushort volume)
         {
-            if (!await CanPerformAsync()) return;
-
+            if (Context.User is not SocketGuildUser user) return;
             if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Inactive"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
-
-            await ReplyAsync(Translation.Message("Entertainment.Music.Player.Volume.current", player.Volume)).ConfigureAwait(false);
-        }
-
-        [Command("Volume")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task MusicVolumeAsync(ushort volume)
-        {
-            if (!await CanPerformAsync()) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
+            if (player.VoiceChannel.Id != user.VoiceChannel?.Id)
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Channel.Required.Same"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -485,125 +443,17 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             {
                 if (volume > 150) volume = 150;
                 await player.UpdateVolumeAsync(volume).ConfigureAwait(false);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Volume.New", volume)).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Player.Volume", volume), ephemeral: true).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Something went wrong trying to change the volume of the player {player}.", player);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Exception"), ephemeral: true).ConfigureAwait(false);
             }
         }
 
-        [Command("Lyrics")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task MusicLyricsAsync()
-        {
-            if (!await CanPerformAsync()) return;
-
-            if (!_lavaNode.TryGetPlayer(Context.Guild, out var player) || player.PlayerState is not (PlayerState.Playing or PlayerState.Paused))
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Player.Inactive")).ConfigureAwait(false);
-                return;
-            }
-
-            ILyricsOption selectedOption = null;
-            var typingState = Context.Channel.EnterTypingState();
-            try
-            {
-                async Task<ILyricsOption> FindMatch(string input)
-                {
-                    input = input.Replace('’', '\'');
-                    var options = await _lyricsService.Search(input, 50).ConfigureAwait(false);
-                    if (options == null || options.Length == 0) return null;
-                    return (from lyricsOption in options
-                        let artist = lyricsOption.Artist.Replace('’', '\'')
-                        let title = lyricsOption.Title.Replace('’', '\'')
-                        let fullTitle = lyricsOption.FullTitle.Replace('’', '\'')
-                        let possibleTitles = new[] { $"{artist} - {title}", $"{title} - {artist}", fullTitle, title }
-                        from possibleTitle in possibleTitles
-                        where input.Contains(possibleTitle, StringComparison.OrdinalIgnoreCase)
-                        select lyricsOption).FirstOrDefault();
-                }
-
-                var inputParts = player.Track.Title.Contains(" - ")
-                    ? player.Track.Title.Split("-", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                    : new[] { player.Track.Title };
-                for (var i = 0; i < inputParts.Length && (selectedOption == null); i++) selectedOption = await FindMatch(inputParts[i]);
-                if (selectedOption == null)
-                {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
-                    return;
-                }
-            }
-            catch
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
-                return;
-            }
-            finally
-            {
-                typingState.Dispose();
-            }
-
-            typingState = Context.Channel.EnterTypingState();
-            try
-            {
-                var lyrics = await _lyricsService.Get(selectedOption).ConfigureAwait(false);
-                if (lyrics == null)
-                {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
-                    return;
-                }
-
-                var embedBuilder = new EmbedBuilder()
-                    .WithTitle(selectedOption.FullTitle);
-                if (!string.IsNullOrWhiteSpace(lyrics.Content))
-                {
-                    if (lyrics.Content.Length > 4096)
-                    {
-                        await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Length")).ConfigureAwait(false);
-                        return;
-                    }
-
-                    embedBuilder.WithDescription(lyrics.Content);
-                    await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-                    return;
-                }
-
-                if (lyrics.Parts == null || lyrics.Parts.Length == 0)
-                {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
-                    return;
-                }
-
-                foreach (var lyricsPart in lyrics.Parts)
-                {
-                    var title = lyricsPart.Title;
-                    var content = lyricsPart.Content;
-                    if (string.IsNullOrWhiteSpace(title))
-                    {
-                        if (string.IsNullOrWhiteSpace(lyricsPart.Content)) continue;
-                        title = "-";
-                    }
-                    if (string.IsNullOrWhiteSpace(content)) content = "-";
-                    embedBuilder.AddField(title, content);
-                }
-                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Unable to process the lyrics for {@lyrics}", selectedOption);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
-            }
-            finally
-            {
-                typingState.Dispose();
-            }
-        }
-
-        [Command("Lyrics")]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task MusicLyricsAsync([Remainder] string input)
+        [SlashCommand("lyrics", "Get the lyrics of a song.")]
+        public async Task LyricsMusicCommand([Summary("song", "The name of the song.")] string input)
         {
             SelectMenuBuilder menuBuilder;
             ILyricsOption[] options;
@@ -613,7 +463,7 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
                 options = await _lyricsService.Search(input).ConfigureAwait(false);
                 if (options == null || options.Length == 0)
                 {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -626,7 +476,7 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
             }
             catch
             {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.None"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
             finally
@@ -634,16 +484,16 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
                 typingState.Dispose();
             }
 
-            var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build());
-            var reactionResult = await Interactivity.NextMessageComponentAsync(Context.Client, x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1));
-            if (reactionResult == null)
+            var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build()).ConfigureAwait(false);
+            var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1)).ConfigureAwait(false);
+            if (!reactionResult.IsSuccess || reactionResult.Value == null)
             {
                 await selectionMessage.DeleteAsync().ConfigureAwait(false);
                 return;
             }
 
-            await reactionResult.DeferAsync(true).ConfigureAwait(false);
-            var result = options.First(x => x.Id == reactionResult.Data.Values.First());
+            await reactionResult.Value.DeferAsync(true).ConfigureAwait(false);
+            var result = options.First(x => x.Id == reactionResult.Value.Data.Values.First());
             await selectionMessage.DeleteAsync().ConfigureAwait(false);
             typingState = Context.Channel.EnterTypingState();
             try
@@ -651,7 +501,7 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
                 var lyrics = await _lyricsService.Get(result).ConfigureAwait(false);
                 if (lyrics == null)
                 {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -661,18 +511,18 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
                 {
                     if (lyrics.Content.Length > 4096)
                     {
-                        await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Length")).ConfigureAwait(false);
+                        await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Length"), ephemeral: true).ConfigureAwait(false);
                         return;
                     }
 
                     embedBuilder.WithDescription(lyrics.Content);
-                    await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+                    await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
                     return;
                 }
 
                 if (lyrics.Parts == null || lyrics.Parts.Length == 0)
                 {
-                    await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -688,35 +538,17 @@ namespace GasaiYuno.Discord.Music.Commands.Modules
                     if (string.IsNullOrWhiteSpace(content)) content = "-";
                     embedBuilder.AddField(title, content);
                 }
-                await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+                await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "Unable to process the lyrics for {@lyrics}", result);
-                await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Entertainment.Music.Lyrics.Invalid.Format"), ephemeral: true).ConfigureAwait(false);
             }
             finally
             {
                 typingState.Dispose();
             }
-        }
-
-
-        private async Task<bool> CanPerformAsync()
-        {
-            if (Context.User is not SocketGuildUser user) return false;
-
-            if (_lavaNode.TryGetPlayer(Context.Guild, out var player) && player.PlayerState is PlayerState.Playing or PlayerState.Paused && player.VoiceChannel.Id != user.VoiceChannel?.Id)
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Required.Same")).ConfigureAwait(false);
-                return false;
-            }
-            if (user.VoiceChannel == null)
-            {
-                await ReplyAsync(Translation.Message("Entertainment.Music.Channel.Required.Any")).ConfigureAwait(false);
-                return false;
-            }
-            return true;
         }
     }
 }

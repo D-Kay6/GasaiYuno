@@ -1,11 +1,10 @@
 ﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Core.Mediator.Commands;
 using GasaiYuno.Discord.Core.Mediator.Requests;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Services;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,77 +12,65 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Notifications
 {
-    [Group("Welcome")]
+    [Group("welcome", "A welcome notification.")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public class WelcomeModule : BaseModule<WelcomeModule>
+    public class WelcomeModule : BaseInteractionModule<WelcomeModule>
     {
         private readonly NotificationService _notificationService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public WelcomeModule(NotificationService notificationService, IUnitOfWork unitOfWork)
+        public WelcomeModule(NotificationService notificationService)
         {
             _notificationService = notificationService;
-            _unitOfWork = unitOfWork;
         }
 
-        [Command]
-        public Task WelcomeDefaultAsync() => ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Missing"));
-
-        [Command]
-        public Task WelcomeDefaultAsync(params SocketGuildUser[] users) => _notificationService.WelcomeUsersAsync(Context.Channel as ITextChannel, users);
-
-        [Priority(-1)]
-        [Command]
-        public async Task WelcomeDefaultAsync([Remainder] string name)
+        [SlashCommand("user", "Send a welcome notification for a specific user.")]
+        public async Task UsersWelcomeCommand(IGuildUser user)
         {
-            if (string.IsNullOrWhiteSpace(name)) name = string.Empty;
-            await ReplyAsync(Translation.Message("Generic.Invalid.User", name)).ConfigureAwait(false);
+            await _notificationService.WelcomeUsersAsync(Context.Interaction, user).ConfigureAwait(false);
         }
 
-        [Command("Enable")]
-        [Alias("Activate", "On")]
-        public async Task WelcomeEnableAsync(SocketTextChannel channel)
+        [SlashCommand("enable", "Enable the automated welcome notifications.")]
+        public async Task EnableWelcomeCommand([Summary(description: "The channel to send the messages in.")] ITextChannel channel)
         {
-            var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+            var notification = await UnitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification == null)
             {
-                await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             if (notification.Channel == channel.Id)
             {
-                await ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Enabled")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Notification.Welcome.Invalid.Enabled"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             notification.Channel = channel.Id;
-            _unitOfWork.Notifications.Update(notification);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            UnitOfWork.Notifications.Update(notification);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-            await ReplyAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention));
+            await RespondAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention), ephemeral: true);
         }
 
-        [Command("Disable")]
-        [Alias("Deactivate", "Off")]
-        public async Task WelcomeDisableAsync()
+        [SlashCommand("disable", "Disable the automated welcome notifications.")]
+        public async Task DisableWelcomeCommand()
         {
-            var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
+            var notification = await UnitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
             if (notification?.Channel == null)
             {
-                await ReplyAsync(Translation.Message("Notification.Welcome.Invalid.Disabled")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Notification.Welcome.Invalid.Disabled"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             notification.Channel = null;
-            _unitOfWork.Notifications.Update(notification);
-            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            UnitOfWork.Notifications.Update(notification);
+            await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-            await ReplyAsync(Translation.Message("Notification.Welcome.Disabled")).ConfigureAwait(false);
+            await RespondAsync(Translation.Message("Notification.Welcome.Disabled"), ephemeral: true).ConfigureAwait(false);
         }
 
-        [Group("Message")]
-        public class WelcomeMessageModule : BaseModule<WelcomeMessageModule>
+        [Group("message", "Configure the message of the notification.")]
+        public class WelcomeMessageModule : BaseInteractionModule<WelcomeMessageModule>
         {
             private readonly IUnitOfWork _unitOfWork;
 
@@ -92,32 +79,32 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 _unitOfWork = unitOfWork;
             }
 
-            [Command]
-            public async Task WelcomeMessageDefaultAsync()
+            [SlashCommand("current", "Display the current message used in the notification.")]
+            public async Task CurrentWelcomeMessageCommand()
             {
                 var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
-                    await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
-                await ReplyAsync(Translation.Message("Notification.Welcome.Message.Current", notification.Message, Context.Guild.Name, "{0}")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Notification.Welcome.Message.Current", notification.Message, Context.Guild.Name, "{0}"), ephemeral: true).ConfigureAwait(false);
             }
 
-            [Command("Set")]
-            public async Task WelcomeMessageSetAsync([Remainder] string message)
+            [SlashCommand("change", "Change the message used in the notification.")]
+            public async Task ChangeWelcomeMessageCommand(string message)
             {
                 if (string.IsNullOrWhiteSpace(message))
                 {
-                    await ReplyAsync(Translation.Message("Notification.Welcome.Message.Invalid")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Notification.Welcome.Message.Invalid"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
                 var notification = await _unitOfWork.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
-                    await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -125,12 +112,12 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 _unitOfWork.Notifications.Update(notification);
                 await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
 
-                await ReplyAsync(Translation.Message("Notification.Welcome.Message.Changed", notification.Message, Context.Guild.Name)).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Notification.Welcome.Message.Changed", notification.Message, Context.Guild.Name), ephemeral: true).ConfigureAwait(false);
             }
         }
 
-        [Group("Image")]
-        public class WelcomeImageModule : BaseModule<WelcomeImageModule>
+        [Group("image", "Configure the image of the notification.")]
+        public class WelcomeImageModule : BaseInteractionModule<WelcomeImageModule>
         {
             private readonly IUnitOfWork _repository;
 
@@ -141,30 +128,29 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 _repository = repository;
             }
 
-            [Command]
-            public async Task WelcomeImageDefaultAsync()
+            [SlashCommand("current", "Display the current image used in the notification.")]
+            public async Task CurrentWelcomeImageCommand()
             {
                 var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
-                    await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
                 if (string.IsNullOrEmpty(notification.Image))
-                    await ReplyAsync(Translation.Message("Notification.Welcome.Image.None")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
                 else
-                    await Context.Channel.SendFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Current")).ConfigureAwait(false);
+                    await RespondWithFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Current"), ephemeral: true).ConfigureAwait(false);
             }
 
-            [Command("Enable")]
-            [Alias("On", "Change")]
-            public async Task WelcomeImageEnableAsync(string imageUrl = null)
+            [SlashCommand("change", "Change the image used in the notification.")]
+            public async Task ChangeWelcomeImageCommand([Summary("url", "The url of the image. If none is provided, the default image will be used.")] string imageUrl = null)
             {
                 var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
-                    await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -181,7 +167,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                     catch (Exception e)
                     {
                         Logger.LogError(e, "The image {url} could not be obtained.", imageUrl);
-                        await ReplyAsync(Translation.Message("Notification.Welcome.Image.Invalid")).ConfigureAwait(false);
+                        await RespondAsync(Translation.Message("Notification.Welcome.Image.Invalid"), ephemeral: true).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -189,23 +175,22 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 _repository.Notifications.Update(notification);
                 await _repository.SaveChangesAsync().ConfigureAwait(false);
 
-                await Context.Channel.SendFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Enabled")).ConfigureAwait(false);
+                await RespondWithFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Enabled"), ephemeral: true).ConfigureAwait(false);
             }
 
-            [Command("Disable")]
-            [Alias("Off")]
-            public async Task WelcomeImageDisableAsync()
+            [SlashCommand("disable", "Disable the image used in the notification.")]
+            public async Task DisableWelcomeImageCommand()
             {
                 var notification = await _repository.Notifications.GetOrAddAsync(Context.Guild.Id, NotificationType.Welcome).ConfigureAwait(false);
                 if (notification == null)
                 {
-                    await ReplyAsync(Translation.Message("Generic.Exception")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Generic.Exception"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
                 if (string.IsNullOrEmpty(notification.Image))
                 {
-                    await ReplyAsync(Translation.Message("Notification.Welcome.Image.None")).ConfigureAwait(false);
+                    await RespondAsync(Translation.Message("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -222,7 +207,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Notifications
                 _repository.Notifications.Update(notification);
                 await _repository.SaveChangesAsync().ConfigureAwait(false);
 
-                await ReplyAsync(Translation.Message("Notification.Welcome.Image.Disabled")).ConfigureAwait(false);
+                await RespondAsync(Translation.Message("Notification.Welcome.Image.Disabled"), ephemeral: true).ConfigureAwait(false);
             }
         }
     }

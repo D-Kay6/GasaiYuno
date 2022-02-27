@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.Repositories;
+﻿using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Domain.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,6 @@ namespace GasaiYuno.Discord.Infrastructure.Repositories
         public async Task<Server> GetAsync(ulong serverId)
         {
             return await Context.Servers
-                .Include(x => x.Language)
                 .FirstOrDefaultAsync(x => x.Id == serverId)
                 .ConfigureAwait(false);
         }

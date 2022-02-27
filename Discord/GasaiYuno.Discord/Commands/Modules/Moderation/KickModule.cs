@@ -1,34 +1,25 @@
 ﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation
 {
-    [Group("Kick")]
-    [RequireUserPermission(GuildPermission.KickMembers)]
-    public class KickModule : BaseModule<KickModule>
+    public class KickModule : BaseInteractionModule<KickModule>
     {
-        [Command]
-        public Task KickDefaultAsync() => ReplyAsync(Translation.Message("Moderation.Kick.Default", Server.Prefix));
-
-        [Command]
-        [Priority(-1)]
-        public Task KickUserAsync([Remainder] string name) => ReplyAsync(Translation.Message("Generic.Invalid.User", name));
-
-        [Command]
-        public async Task KickUserAsync(SocketGuildUser user, [Remainder] string reason = null)
+        [SlashCommand("kick", "Kick a user who misbehaves, or just because you feel like it.", true)]
+        [RequireUserPermission(GuildPermission.KickMembers)]
+        public async Task KickCommand([Summary(description: "The user to ban.")] IGuildUser user, [Summary(description: "The reason for the ban.")] string reason = null)
         {
-            await user.KickAsync(reason);
+            await user.KickAsync(reason).ConfigureAwait(false);
 
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithThumbnailUrl(user.GetAvatarUrl());
-            embedBuilder.AddField(Translation.Message("Moderation.Kick.Info.User"), user.Mention);
+            embedBuilder.AddField(Translation.Message("Moderation.Kick.User"), user.Mention);
             if (!string.IsNullOrWhiteSpace(reason))
-                embedBuilder.AddField(Translation.Message("Moderation.Kick.Info.Reason"), reason);
+                embedBuilder.AddField(Translation.Message("Moderation.Kick.Reason"), reason);
 
-            await ReplyAsync(embed: embedBuilder.Build());
+            await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
     }
 }

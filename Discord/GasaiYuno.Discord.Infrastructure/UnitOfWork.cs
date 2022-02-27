@@ -1,6 +1,6 @@
-﻿using GasaiYuno.Discord.Infrastructure.Repositories;
-using GasaiYuno.Discord.Persistence.Repositories;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+﻿using GasaiYuno.Discord.Domain.Persistence.Repositories;
+using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Infrastructure.Repositories;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +14,6 @@ namespace GasaiYuno.Discord.Infrastructure
         private CommandRepository _commandRepository;
         private DynamicChannelRepository _dynamicChannelRepository;
         private DynamicRoleRepository _dynamicRoleRepository;
-        private LanguageRepository _languageRepository;
         private NotificationRepository _notificationRepository;
         private PollRepository _pollRepository;
         private RaffleRepository _raffleRepository;
@@ -24,7 +23,6 @@ namespace GasaiYuno.Discord.Infrastructure
         public ICommandRepository Commands => _commandRepository ??= new CommandRepository(_context);
         public IDynamicChannelRepository DynamicChannels => _dynamicChannelRepository ??= new DynamicChannelRepository(_context);
         public IDynamicRoleRepository DynamicRoles => _dynamicRoleRepository ??= new DynamicRoleRepository(_context);
-        public ILanguageRepository Languages => _languageRepository ??= new LanguageRepository(_context);
         public INotificationRepository Notifications => _notificationRepository ??= new NotificationRepository(_context);
         public IPollRepository Polls => _pollRepository ??= new PollRepository(_context);
         public IRaffleRepository Raffles => _raffleRepository ??= new RaffleRepository(_context);
@@ -36,7 +34,7 @@ namespace GasaiYuno.Discord.Infrastructure
         }
 
         /// <inheritdoc />
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => _context.SaveChangesAsync(cancellationToken);
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default) => _context.SaveChangesAsync(cancellationToken);
 
         public void Dispose()
         {

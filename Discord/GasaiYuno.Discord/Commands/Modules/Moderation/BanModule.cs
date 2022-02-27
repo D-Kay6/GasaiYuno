@@ -1,71 +1,24 @@
 ﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands.Modules;
-using GasaiYuno.Discord.Domain;
-using GasaiYuno.Discord.Persistence.UnitOfWork;
+using GasaiYuno.Discord.Domain.Models;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Commands.Modules.Moderation
 {
-    [Group("Ban")]
-    [RequireUserPermission(GuildPermission.BanMembers)]
-    public class BanModule : BaseModule<BanModule>
+    public class BanModule : BaseInteractionModule<BanModule>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public BanModule(IUnitOfWork unitOfWork)
+        [SlashCommand("ban", "Ban a user who misbehaves, or just because you feel like it.", true)]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        public async Task BanCommand(
+            [Summary(description: "The user to ban.")] IGuildUser user,
+            [Summary(description: "How long to ban the user for.")] TimeSpan? duration = null,
+            [Summary(description: "The reason for the ban.")] string reason = null,
+            [Summary(description: "Until how many days back the messages of the user should be removed.")] int days = 0)
         {
-            _unitOfWork = unitOfWork;
-        }
-
-        [Command]
-        public Task BanDefaultAsync() => ReplyAsync(Translation.Message("Moderation.Ban.Default"));
-
-        [Priority(-1)]
-        [Command]
-        public Task BanUserAsync([Remainder] string name) => ReplyAsync(Translation.Message("Generic.Invalid.User", name));
-
-        [Command]
-        public async Task BanUserAsync(SocketGuildUser user)
-        {
-            await user.BanAsync().ConfigureAwait(false);
-
-            var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithThumbnailUrl(user.GetAvatarUrl());
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.User"), user.Mention);
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.Duration"), Translation.Message("Generic.Forever"));
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.Reason"), Translation.Message("Generic.None"));
-
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
-        }
-
-        [Command]
-        [Priority(-1)]
-        public Task BanUserAsync(SocketGuildUser user, [Remainder] string message) => BanUserAsync(user, TimeSpan.Zero, message);
-
-        [Command]
-        public async Task BanUserAsync(SocketGuildUser user, TimeSpan duration, [Remainder] string message)
-        {
-            if (string.IsNullOrEmpty(message))
-            {
-                await BanUserAsync(user).ConfigureAwait(false);
-                return;
-            }
-
-            var parts = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var endDate = duration > TimeSpan.Zero ? DateTime.Now + duration : (DateTime?)null;
-            var time = Translation.Message("Generic.Forever");
-            if (endDate != null)
-            {
-                time = endDate.Value.ToString("g");
-                parts = parts.Skip(1).ToArray();
-            }
-
-            var reason = string.Join(' ', parts);
-            if (endDate != null)
+            var endDate = duration.HasValue ? DateTime.Now + duration : null;
+            if (endDate.HasValue)
             {
                 var ban = new Ban
                 {
@@ -74,22 +27,19 @@ namespace GasaiYuno.Discord.Commands.Modules.Moderation
                     EndDate = endDate.Value,
                     Reason = reason
                 };
-                
-                _unitOfWork.Bans.Add(ban);
-                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+                UnitOfWork.Bans.Add(ban);
+                await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            await user.BanAsync(0, reason).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(reason))
-                reason = Translation.Message("Generic.None");
-
+            await user.BanAsync(days, reason).ConfigureAwait(false);
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithThumbnailUrl(user.GetAvatarUrl());
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.User"), user.Mention);
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.Duration"), time);
-            embedBuilder.AddField(Translation.Message("Moderation.Ban.Info.Reason"), reason);
+            embedBuilder.AddField(Translation.Message("Moderation.Ban.User"), user.Mention);
+            embedBuilder.AddField(Translation.Message("Moderation.Ban.Duration"), endDate?.ToString("g") ?? Translation.Message("Generic.Forever"));
+            embedBuilder.AddField(Translation.Message("Moderation.Ban.Reason"), !string.IsNullOrEmpty(reason) ? reason : Translation.Message("Generic.None"));
 
-            await ReplyAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
+            await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
         }
     }
 }

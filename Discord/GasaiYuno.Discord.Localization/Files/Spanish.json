@@ -1,319 +1,201 @@
 {
   "Messages": {
     "Entertainment": {
-      "Birthday": "Hooray! It's our little {0} birthday[enter][enter]Happy Birthday to You :notes:[enter]Happy Birthday to You[enter]Happy Birthday Dear {1} :notes:[enter]Happy Birthday to You[enter][enter]From good friends and true :notes:[enter]From old friends and new[enter]May good luck go with you :notes:[enter]And happiness too.",
+      "Birthday": "¡Hurra! Es nuestro pequeño cumpleaños, {0} [enter][enter]Feliz cumpleaños para ti :notes:[enter]Feliz cumpleaños para ti[enter]Feliz cumpleaños, querido {1} :notes:[enter]Feliz cumpleaños para ti[enter][enter]De buenos amigos y verdaderos :notes:[enter]De viejos amigos y nuevos[enter]Que la buena suerte te acompañe :notes:[enter]Y felicidad también.",
       "Kill": {
-        "Default": "Come here {0}. We're gonna have some fun...",
-        "Creator": "How dare you to order me to kill {0}.[enter]I should kill YOU for even thinking of something like that!",
-        "Self": "Why would I kill myself?"
+        "Default": "Ven aquí {0}. Vamos a divertirnos un poco...",
+        "Creator": "Cómo te atreves a ordenarme que me mate {0}.[enter]¡Debería matarte a ti por pensar algo así!",
+        "Self": "¿Por qué me mataría a mí mismo?"
       },
       "Chat": {
         "Invalid": {
-          "Exists": "We already have an ongoing conversation in this server? Feel free to end it with `{0}chat stop` though.",
-          "None": "But, we aren't even engaged in a conversation."
+          "Exists": "¿Ya tenemos una conversación en curso en este servidor? Siéntete libre de terminarlo con `/chat stop`.",
+          "None": "Pero ni siquiera estamos conversando."
         },
-        "Start": "You want to chat with me? Are you sure you're up for that?[enter]Just start typing and I'll respond.",
-        "End": "Ehhh? But it just started to get interesting...",
-        "Timeout": "Since you're no longer responding, I'm ending the conversation here."
+        "Thread": "I've started a new thread to house our conversation.",
+        "Start": "¿Quieres charlar conmigo? ¿Estás seguro de que estás preparado para eso?[enter]Simplemente comienza a escribir y te responderé.",
+        "End": "¿Ehhh? Pero esto empezó a ponerse interesante...",
+        "Timeout": "Como ya no respondes, terminaré la conversación aquí."
       },
       "CustomCommand": {
         "Invalid": {
-          "Exists": "`{0}` already is a custom command.",
-          "Missing": "I couldn't find any custom commands named `{0}`.",
-          "None": "There are no custom commands on this server."
+          "Exists": "`{0}` ya es un comando personalizado.",
+          "Missing": "No pude encontrar ningún comando personalizado llamado `{0}`.",
+          "None": "No hay comandos personalizados en este servidor."
         },
-        "Default": "There are {1} custom commands on this server.[enter][enter]To run a custom command, simply use this server's command prefix followed by the command title[enter]Example: `{0}bye` -> `Cya`[enter][enter]You can add a custom command with **{0}customcommand add _<command title>_ _<response>_**.[enter]If you want the command title to exist of multiple words, combine them withing double quotes (i.e. \"say hi\").[enter]The response will be send in the same channel the custom command is send in.[enter][enter]You can also remove a custom command with **{0}customcommand remove _<command title>_**.",
+        "Default": "Hay {1} comandos personalizados en este servidor.[enter][enter]Para ejecutar un comando personalizado, simplemente use el prefijo del comando de este servidor seguido del título del comando[enter]Ejemplo: `{0}bye` ->_ `Cya`[enter][enter]Puedes añadir un comando personalizado con `{0}customcommand add _<command title>_ _<response>_`[enter]Si desea que el título del comando exista de varias palabras, combínelas entre comillas dobles (i.e. \"say hi\").[enter]La respuesta se enviará en el mismo canal por el que se envía el comando personalizado.[enter][enter]También puedes eliminar un comando personalizado con `/customcommand remove _<command title>_`.",
         "Title": "Custom Commands",
-        "Added": "I've added `{0}` to this server's custom commands. :thumbsup:",
-        "Removed": "I've removed `{0}` from this server's custom commands. :thumbsup:"
+        "Added": "Añadí `{0}` a los comandos personalizados de este servidor. :thumbsup:",
+        "Removed": "Eliminé `{0}` de los comandos personalizados de este servidor. :thumbsup:"
       },
       "Music": {
-        "Exception": "Something went wrong. Come to my support server if this problem persists.",
-        "Connection": {
-          "Exists": "I am already in a voice channel.",
-          "None": "I am currently not in a voice channel.",
-          "Same": "I am already in the same voice channel as you.",
-          "Different": "You must be in the same voice channel as me to be able to do this."
-        },
+        "Exception": "Algo salió mal. Entra a mi servidor de ayuda si el problema persiste.",
         "Channel": {
-          "Stop": "The music player was stopped.[enter]All users have left the voice channel.",
+          "Stop": "El reproductor de música fue parado.[enter]Todos los usuarios salieron del canal de voz.",
           "Required": {
-            "Any": "You must be in a voice channel to listen to music.",
-            "Same": "You must be in the same voice channel as me to be able to do this."
+            "Any": "Debes estar en un canal de voz para escuchar música.",
+            "Same": "Debes estar en el mismo canal de voz que yo para poder hacer esto."
           },
           "Invalid": {
-            "None": "I am currently not in a voice channel.",
-            "Same": "I am already in the same voice channel as you.",
-            "Different": "I am already in another voice channel."
+            "None": "No estoy en ningún canal de voz.",
+            "Same": "Ya estoy en el mismo canal en el que estás tú."
           }
         },
         "Player": {
-          "Volume": {
-            "Current": "Current music volume is {0}.",
-            "New": "Music volume was changed to {0}."
-          },
-          "Inactive": "I'm currently not playing any music.",
-          "IsPaused": "The music is already paused.",
-          "Paused": "Pausing the music...",
-          "IsResumed": "The music is not paused.",
-          "Resumed": "Continuing with the current song...",
-          "Stop": "Stopped playing music."
+          "Volume": "El volumen de la música fue cambiado a {0}.",
+          "Inactive": "No estoy reproduciendo música ahora mismo.",
+          "IsPaused": "La música ya está pausada.",
+          "Paused": "Pausando la música...",
+          "IsResumed": "La música no está pausada.",
+          "Resumed": "Continuando la canción...",
+          "Stop": "Paré de reproducir música."
         },
         "Queue": {
-          "Added": "Added to queue:",
-          "List": "Next up:",
-          "Details": "Position in queue: {0} | Duration: {1}",
-          "Remaining": "And {0} more songs.",
-          "Empty": "There is no music in the queue. Add a song to start listening to music.",
-          "Shuffling": "Shuffling...",
-          "Shuffled": "The queue has been shuffled.",
-          "Cleared": "Queue cleared :ok_hand:.",
-          "Skipped": "Skipped __{0}__ song(s)."
+          "Added": "Añadida a la cola:",
+          "List": "La siguiente:",
+          "Details": "Posición en cola: {0} | Duración: {1}",
+          "Remaining": "Y {0} canciones más.",
+          "Empty": "No hay música en la cola. Añade una canción para empezar a escuchar música.",
+          "Shuffling": "Barajando la cola...",
+          "Shuffled": "La cola se ha barajado.",
+          "Cleared": "Cola limpiada :ok_hand:.",
+          "Skipped": "Omitidas __{0}__ canción(es)."
         },
         "Lyrics": {
           "Invalid": {
-            "None": "Sorry, I was unable to find any lyrics.",
-            "Format": "I was unable to understand the lyrics. Maybe try again later?",
-            "Length": "The lyrics is too long for me to be able to send it."
+            "None": "Lo siento, no pude encontrar las letras de esta canción.",
+            "Format": "No pude entender la letra. Quizás intentelo de nuevo más tarde.",
+            "Length": "La letra es demasiado larga para poder enviarla"
           },
-          "Multiple": "I found multiple results for **{0}**.",
-          "Selection": "Please select the song:"
+          "Multiple": "Encontré varios resultados para **{0}**.",
+          "Selection": "Por favor, seleccione la canción:"
         },
         "Track": {
           "Exception": {
-            "Message": "There was an error trying to play `{0}`.",
-            "Reason": "Reason: {0}",
-            "Support": "Come to my support server if this problem persists."
+            "Message": "Hubo un error al intentar reproducir `{0}`.",
+            "Reason": "Razón: {0}"
           },
-          "Current": "Now playing:",
+          "Current": "Ahora reproduciendo:",
           "Item": "**{0}** {1}",
-          "Invalid": "I could not find a valid song to play.",
-          "Search": "Searching for **{0}**...",
-          "Multiple": "I found multiple songs matching **{0}**.",
-          "Selection": "Please select a song:"
+          "Invalid": "No pude encontrar una canción válida para reproducir.",
+          "Search": "Buscando **{0}**...",
+          "Multiple": "Encontré varias canciones que coinciden **{0}**.",
+          "Selection": "Por favor, seleccione una canción:",
+          "Cancel": {
+            "Title": "== Cancelar ==",
+            "Description": "Cancele la selección de canciones.",
+            "Performed": "Cancelado"
+          }
         }
       }
     },
     "Moderation": {
       "Manage": {
-        "Restart": "Restarting...",
-        "Shutdown": "Shutting down..."
+        "Restart": "Reiniciando...",
+        "Shutdown": "Apagando..."
       },
       "Kick": {
-        "Default": "Kick a user from the discord with **{0}kick _<username/mention>_**.",
-        "Info": {
-          "Title": "Kicked {0}",
-          "User": "User",
-          "Reason": "Reason"
-        }
+        "User": "Usuario",
+        "Reason": "Razón"
       },
       "Ban": {
-        "Default": "You can ban a user from the discord with **{0}ban _<username/mention>_ _<optional: reason>_**.[enter]Enter a reason if you want to see later why that user was banned.[enter][enter]If you want a ban to be temporary, you can add the duration with **{0}ban _<username/mention>_ _<duration>_ _<optional: reason>_**.[enter]Keep in mind this does not work on existing bans.[enter]The format for duration is **_<number>__<optional: metric type>_**.[enter]The type can be of[enter]    - s/sec/second/seconds[enter]    - m/min/minute/minutes[enter]    - h/hour/hours[enter]    - d/day/days[enter]Example: `{0}ban D-Kay 4h Spamming`",
-        "Info": {
-          "Title": "Banned {0}",
-          "User": "User",
-          "Duration": "Duration",
-          "Reason": "Reason"
-        }
-      },
-      "Prefix": {
-        "Invalid": "I require a prefix to recognize commands.",
-        "Current": "My command prefix for this server is currently `{0}`.",
-        "New": "Sure thing. My command prefix is now `{0}`."
+        "User": "Usuario",
+        "Duration": "Duración",
+        "Reason": "Razón"
       },
       "Language": {
-        "Default": "I'm currently set to `{0}`.",
-        "Unsupported": "`{0}` is not a supported language (yet). If you want to help with translation, join my support server and let my creator know.",
-        "Set": "I'll now use `{0}` on this server.",
-        "List": "These are the languages I currently support: {0}[enter]Be wary that some translations may be under construction and may contain messages that still require translating.[enter]If you want your language to be supported or help improve an already existing translation, come to my support server."
-      },
-      "Notice": {
-        "Invalid": {
-          "Message": "You'll have to provide me with some kind of message to be able to send."
-        }
+        "Default": "Actualmente mi idioma es `{0}`.",
+        "Unsupported": "`{0}` no es un idioma permitido (todavía). Si quieres ayudarme con la traducción, únete a mi servidor de ayuda y deja que mi creador lo sepa.",
+        "Set": "Ahora usaré el idioma `{0}` en este servidor.",
+        "List": "Estos son los idiomas que soporto actualmente: {0}[enter]Tenga cuidado, algunas traducciones pueden estar en mantenimiento y pueden contener mensajes que aún requieren traducción[enter]Si desea que su idioma sea compatible o ayude a una mejor traducción ya existente, únete a mi servidor de soporte."
       }
     },
     "Automation": {
       "Channel": {
         "Invalid": {
-          "Name": "The configuration name may not be empty.",
-          "GenerationName": "The name for duplicated channels may not be empty.",
-          "Exists": "Configuration `{0}` already exists. Did you forget?",
-          "Channels": "One or more of the channels is already in use by another configuration. Channels: {0}",
-          "Configuration": "I could not find any dynamic channel configurations named {0}. Are you sure you typed it correctly?",
-          "Configurations": "I could not find any dynamic channel configurations. Did you forget to make them?",
-          "Assigned": "`{1}` is already assigned to configuration `{0}`. First remove it from there if you want it added to this one.",
-          "Unassigned": "`{1}` is not assigned to configuration `{0}`. Are you sure you typed it correctly?"
+          "Name": "El nombre de la configuración no puede estar vacío.",
+          "GenerationName": "El nombre de los canales duplicados no pueden estar vacío.",
+          "Exists": "La configuración `{0}` ya existe. ¿Te olvidaste de eso?",
+          "Configuration": "No pude encontrar ninguna configuración del canal dinámico con el nombre {0}. ¿Estás seguro de que lo escribiste bien?",
+          "Configurations": "No pude encontrar ninguna configuración de canal dinámico. ¿Olvidaste hacerlos?",
+          "Assigned": "`{1}` ya está asignado a configuración `{0}`. Primero elimínelo de allí si desea que se aplique a este.",
+          "Unassigned": "`{1}` no está asignado a la configuración `{0}`. ¿Está seguro de haberlo escrito correctamente?"
         },
-        "Default": "Dynamic channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins a dynamic channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
-        "Info": {
-          "Title": "Dynamic Channels",
-          "Type": "Type",
-          "GenerationName": "Generated name",
-          "Channels": "Assigned channels",
-          "List": "Type: {0}[enter]Assigned channels: {1}"
+        "Info": "Los canales dinámicos ayudan a mantener limpio su servidor al eliminar la necesidad de canales de voz que solo sirven para proporcionar un canal para cuando los usuarios lo necesiten.[enter]Piense en canales como `voz 1`, `voz 2`, etc.[enter]Cuando un usuario se une a un canal dinámico, duplicaré ese canal, incluyendo todos los ajustes, y moveré al usuario a este nuevo canal[enter]También proporcionaré al usuario el permiso `Administrar Canal`, sólo para ese canal, para que puedan modificarlo según sus necesidades.[enter][enter]El canal duplicado puede ser de dos tipos __Permanente__ y __Temporal__.[enter]Los canales permanentes, como indica su nombre, permanecerán en el servidor, hasta se quitan manualmente.[enter]Los canales temporales los borraré cuando todos hayan salido del canal.[enter]De esta manera, no tendrás ningún desorden de canales[enter][enter]También, puedes cambiar el nombre que debo dar al canal duplicado.[enter]Este nombre acepta un parámetro en la forma de `[user]` donde ingresaré la forma posesiva del nombre de usuario.[enter]Ejemplo: `[user] canal` ->_ `Canal de D-Kay`",
+        "Details": {
+          "Title": "Canales dinámicos",
+          "Type": "Tipos",
+          "GenerationName": "Nombre Generado",
+          "Channels": "Canales asignados",
+          "List": "Tipos: {0}[enter]Canales: {1}"
         },
-        "Added": "Configuration `{0}` has been created. Remember to assign channels to it.",
-        "Deleted": "Configuration `{0}` has been removed. Note that any remaining channels that have been made with this will have to be deleted manually.",
-        "Renamed": "Duplicated channels from {0} will now be named `{1}`.",
-        "Assigned": "`{1}` was assigned to the `{0}` configuration.",
-        "Removed": "`{1}` was removed from the `{0}` configuration."
+        "Added": "Se ha creado la configuración `{0}`. Recuerde asignarle canales.",
+        "Deleted": "Se ha eliminado la configuración `{0}`. Tenga en cuenta que los canales restantes que se hayan creado con esto deberán eliminarse manualmente.",
+        "Renamed": "Los canales duplicados de {0} ahora se llamarán `{1}`.",
+        "Assigned": "`{1}` se asignó a la configuración `{0}`.",
+        "Removed": "`{1}` fue eliminado de la configuración `{0}`."
       },
       "Poll": {
-        "Invalid": {
-          "None": "I was unable to find any running poll for that message. Are you sure it's still active?"
+        "Title": "Encuesta",
+        "EndDate": "Fecha final:",
+        "Selector": {
+          "Single": "Seleccione una opción",
+          "Multiple": "Seleccione una o más opciones"
         },
-        "Default": "Polls can be easily created with the format `<text> <optional: duration> <options>`.[enter]If a duration is specified, I will post the result in the same channel as the poll after the duration has passed.[enter]To cancel a poll, simply delete the message.[enter][enter]The duration can be specified as a number and the unit of time.[enter]If you do not specify a unit of time, the number will be seen as days.[enter]You can also enter multiple different durations to get even more specific.[enter]Durations are separated with `|`.[enter][enter]You can specify up to 26 different options.[enter]Options are separated with `|`.[enter][enter]Supported units of time:[enter]Minutes => m, min, minute, minutes[enter]Hours => h, hour, hours[enter]Days => d, day, days[enter]Weeks => w, week, weeks[enter][enter]Examples:[enter]`!poll \"What is your favorite color?\" 3w|4days Blue|Yellow|Green|Purple|Red|Pink|Other`[enter]`!poll \"How old are you?\" 2day|9h|30min 12 - 18|19 - 25|26 - 32|33 - 39|40 - 46|47 - 53|54 - 60|60 >`[enter]`!poll \"How did we meet?\" 3 Chatroom|Online multiplayer|School`[enter]`!poll \"Do you like it here?\" Absolutely|It's alright|Not really|I don't even know why I'm still here`",
-        "Ending": "Poll ends at:",
-        "Ended": "Poll ended at:",
         "Result": {
-          "Title": "A poll has ended.",
-          "Winner": "Won:"
+          "Title": "Una encuesta ha terminado.",
+          "None": "No hubo envíos, por lo que no hubo resultados."
         }
       },
       "Raffle": {
-        "Invalid": {
-          "None": "I was unable to find any running raffle for that message. Are you sure it's still active?"
-        },
-        "Default": "Raffles can be easily created with the format `<title> <duration> <message>`.[enter]I will post the result in the same channel as the raffle after the duration has passed.[enter]To cancel a raffle, simply delete the message.[enter][enter]The duration can be specified as a number and the unit of time.[enter]If you do not specify a unit of time, the number will be seen as days.[enter]You can also enter multiple different durations to get even more specific.[enter]Durations are separated with `|`.[enter][enter]You can specify up to 26 different options.[enter]Options are separated with `|`.[enter][enter]Supported units of time:[enter]Minutes => m, min, minute, minutes[enter]Hours => h, hour, hours[enter]Days => d, day, days[enter]Weeks => w, week, weeks",
-        "Footer": "Apply by reacting with :white_check_mark:.",
-        "EndDate": "End date:",
+        "Footer": "Aplicar haciendo clic en el botón de abajo.",
+        "EndDate": "Fecha final:",
         "Result": {
-          "Title": "A raffle has ended.",
-          "Winner": "Winner: {0}"
+          "Title": "Ha finalizado un sorteo.",
+          "Winner": "Ganador: {0}"
         }
       }
     },
     "Notification": {
       "Welcome": {
-        "Exception": "Something went wrong with the welcome notification for your server `{0}`.[enter] This may be due to the deletion and recreation of the configured channel.[enter] I disabled the notification for now.[enter] You can re-enable it by using the configuring command again.",
+        "Exception": "Algo salió mal con la notificación de bienvenida para su servidor `{0}`.[enter] Esto puede deberse a la eliminación y recreación del canal configurado.[enter] Inhabilité la notificación por ahora.[enter] Puede volver a habilitarlo utilizando el comando de configuración nuevamente.",
         "Invalid": {
-          "Missing": "The name or mention of a user is required as a target.",
-          "Enabled": "The welcome notification is already active on this channel.",
-          "Disabled": "The welcome notification is not active."
+          "Enabled": "La notificación de bienvenida ya está activa en este canal.",
+          "Disabled": "La notificación de bienvenida no está activa."
         },
-        "Enabled": "I will now welcome any new member in {0}.",
-        "Disabled": "The welcome notification has now been disabled. You can still use my normal command to activate it manually.",
+        "Enabled": "Ahora daré la bienvenida a cualquier miembro nuevo en {0}.",
+        "Disabled": "La notificación de bienvenida ahora se ha deshabilitado. Todavía puedes usar mi comando normal para activarlo manualmente.",
         "Message": {
-          "Invalid": "The message may not be empty.",
-          "Current": "The welcome message for {1} is:[enter]```[enter]{0}[enter]```[enter]When changing your notification message, you can use `[user]` as a placeholder for the mention of the user.",
-          "Changed": "The notification message for {1} was changed to:[enter]```[enter]{0}[enter]```"
+          "Invalid": "El mensaje no puede estar vacío.",
+          "Current": "El mensaje de bienvenida para {1} es:[enter]```[enter]{0}[enter]```[enter]uando cambie su mensaje de notificación, puede usar `[user]` como marcador de posición para la mención del usuario.",
+          "Changed": "El mensaje de notificación para {1} se cambió a:[enter]```[enter]{0}[enter]```"
         },
         "Image": {
-          "Invalid": "I was unable to obtain the image from that url. This could be due to an invalid format.",
-          "None": "I'm not displaying an image with the notification.",
-          "Current": "I will display this image along with the notification.",
-          "Enabled": "I've added the image to the notification.",
-          "Disabled": "I'll stop adding the image to the notification."
+          "Invalid": "No pude obtener la imagen de esa URL. Esto podría deberse a un formato no válido.",
+          "None": "No estoy mostrando una imagen con la notificación.",
+          "Current": "Mostraré esta imagen junto con la notificación.",
+          "Enabled": "Agregué la imagen a la notificación.",
+          "Disabled": "Dejaré de agregar la imagen a la notificación."
         }
       }
     },
     "Info": {
-      "Support": "I'm sorry to hear you have problems with me. Come join my support server 'https://discord.gg/YFqUMDT'. Maybe someone there can help you.",
-      "Invite": "You can invite me to your server with this link: https://discordapp.com/oauth2/authorize?client_id=286972781273546762&scope=bot&permissions=8 [enter]For more info on me, go take a look at https://discordbots.org/bot/286972781273546762, or use the help command in any of the discord servers I'm in.[enter]If you're in need of support, join my support server at 'https://discord.gg/YFqUMDT'.",
-      "Help": {
-        "Unknown": "I have no information for that command.",
-        "Title": "A list of my commands.[enter]Be sure to keep an eye on this list, as it might get updated with additional information.",
-        "Entertainment": {
-          "Title": "__**Entertainment**__",
-          "Message": "Some may be useful, others are wacky.",
-          "Birthday": {
-            "Title": "__Birthday__",
-            "Normal": "{0}birthday _<username>_ - Sing a song for a happy fellow."
-          },
-          "Chat": {
-            "Title": "__Chat__",
-            "Normal": "{0}chat - Engage in a casual, but probably still weird, conversation with me.[enter]{0}chat _<message>_ - Same as `chat`, but I'll start the conversation with the provided message.[enter]{0}chat stop - End the ongoing conversation."
-          },
-          "Kill": {
-            "Title": "__Kill__",
-            "Normal": "{0}kill _<username>_ - Have me kill a user."
-          },
-          "CustomCommand": {
-            "Title": "__Custom Commands__",
-            "Normal": "{0}customcommands - Display some information about the usage of custom commands.[enter]{0}customcommands list - Display all custom commands of this server.",
-            "Admin": "{0}customcommands add _<command title>_ _<response>_ - Add a custom command for this server.[enter]{0}customcommands remove _<command title>_ - Remove one of this server's custom commands."
-          },
-          "Music1": {
-            "Title": "__Music (1/2)__",
-            "Normal": "{0}music join - Join your voice channel.[enter]{0}music move - Move to your voice channel.[enter]{0}music leave - Leave the voice channel.[enter]{0}music play _<name>_ - Search for a song by its name and add it to the queue.[enter]{0}music play _<song url: youtube|soundcloud>_ - Add a song to the queue.[enter]{0}music play _<playlist url: youtube|soundcloud>_ - Add an entire playlist to the queue.[enter]{0}music playing - Show what song is being played.[enter]{0}music queue - List the songs in the queue."
-          },
-          "Music2": {
-            "Title": "__Music (2/2)__",
-            "Normal": "{0}music pause - Pause the current song.[enter]{0}music unpause - Un-pause the current song.[enter]{0}music shuffle - Shuffle all the songs in the queue.[enter]{0}music skip - Skip the song currently playing.[enter]{0}music skip _<amount>_ - Skip the given amount of songs.[enter]{0}music clear - Remove all songs from the queue.[enter]{0}music stop - Stop playing music and remove all songs from the queue.",
-            "Admin": "{0}music volume _<value>_ - Change the music volume."
-          }
-        },
-        "Moderation": {
-          "Title": "__**Moderation**__",
-          "Message": "Collection of server configurations and administrative features.",
-          "Prefix": {
-            "Title": "__Command Prefix__",
-            "Admin": "{0}prefix - Show the command prefix I use for this server.[enter]{0}prefix set _<new prefix>_ - Change the command prefix I'll use for this server."
-          },
-          "Language": {
-            "Title": "__Language__",
-            "Admin": "{0}language - Show the language I use for this server.[enter]{0}language list - Display a list of all supported languages.[enter]{0}language set _<language>_ - Change the language I'll use for this server."
-          },
-          "Kick": {
-            "Title": "__Kick__",
-            "Admin": "{0}kick _<user: name|id|mention>_ - Kick a user off the server."
-          },
-          "Ban": {
-            "Title": "__Ban__",
-            "Admin": "{0}ban - Display information about formatting the command.[enter]{0}ban _<user: name|id|mention>_ _<optional: duration>_ _<optional: reason>_ - Ban a user from the server. If a duration is provided, the ban will be lifted after that time has passed."
-          }
-        },
-        "Automation": {
-          "Title": "__**Automation**__",
-          "Message": "Mostly just configuration. Hopefully only needed every once in a while.",
-          "DynamicChannel": {
-            "Title": "__Dynamic Channels__",
-            "Admin": "{0}dynamicchannels - Display information on the use of dynamic channels.[enter]{0}dynamicchannels _<config name>_ - Display detailed information of a specific configuration.[enter]{0}dynamicchannels list/overview - Display short information of all the configurations.[enter]{0}dynamicchannels add/configure _<config name>_ _<type: temp|perm>_ - Create a new dynamic channel configuration.[enter]{0}dynamicchannels delete/remove _<config name>_ - Remove a dynamic channel configuration.[enter]{0}dynamicchannels edit/modify/change _<config name>_ d_name/name _<new duplication name>_ - Change the name given to duplicated channels.[enter]{0}dynamicchannels edit/modify/change _<config name>_ assign/add/apply _<voicechannel: name|id>_ - Apply the configuration on a voice channel.[enter]{0}dynamicchannels edit/modify/change _<config name>_ remove/delete _<voicechannel: name|id>_ - Remove the configuration from a voice channel."
-          }
-        },
-        "Notification": {
-          "Title": "__**Notifications**__",
-          "Message": "Configurable messages that can be send automatically on events.",
-          "Welcome": {
-            "Title": "__Welcome__",
-            "Admin": "{0}welcome _<user: name|id|mention, user: name|id|mention, etc>_ - Manually send the notification message to one or multiple users.[enter]{0}welcome enable/on _<textchannel: name|id|mention>_ - Enable the automated welcome notifications. Notification messages will be send in the provided text channel.[enter]{0}welcome disable/off - Disable the automated welcome notifications.[enter]{0}welcome message - Display the current message used by the notification.[enter]{0}welcome message set _<message>_ - Change the message used by the notification.[enter]{0}welcome image - Display if and which image is being shown with the notification.[enter]{0}welcome image enable/on _<optional: image url>_ - Start showing an image with every notification. If no image url is provided, I'll use my own image.[enter]{0}welcome image disable/off - Stop showing the configured image with the notification."
-          }
-        },
-        "Info": {
-          "Title": "__**Information**__",
-          "Message": "If you require some additional information or have some problems with me.",
-          "Help": {
-            "Title": "__Help__",
-            "Normal": "{0}help - Display the entire command list.[enter]{0}help _<command>_ - Display information about a specific command."
-          },
-          "Invite": {
-            "Title": "__Invite__",
-            "Normal": "{0}invite - My invite link, so you, or someone else, can add me to a server."
-          },
-          "Support": {
-            "Title": "__Support__",
-            "Normal": "{0}support - Link to my support discord."
-          }
-        },
-        "Note": {
-          "Title": "**Note**",
-          "Message": "A `/` between two parameters mean you can use either one of those (alias).[enter]Parameters in between `<>` are for you to fill in, unless they are marked as optional. A `|` in here means you can choose one of those options. If what you want to fill in contains spaces, you need to wrap it in between double quotes.[enter]Example:[enter]    `{0}customcommands add \"Morning\" \"Nice day for fishing, ain't it?\"`[enter]    `{0}dynamicchannels add \"My config\" temp`"
-        }
-      }
+      "Support": "Lamento escuchar que tienes problemas conmigo. Ven y únete a mi servidor de soporte 'https://discord.gg/YFqUMDT'. Quizás alguien pueda ayudarte.",
+      "Invite": "Puedes invitarme a tu servidor mediante este link: https://discord.com/api/oauth2/authorize?client_id=286972781273546762&permissions=8&scope=bot%20applications.commands [enter]Si necesita asistencia, únase a mi servidor de asistencia en 'https://discord.gg/YFqUMDT'."
     },
     "Generic": {
-      "Exception": "Something went wrong. Please go to my support server (https://discord.gg/YFqUMDT) if the problem persists.",
+      "Exception": "Algo salió mal. Vaya a mi servidor de soporte (https://discord.gg/YFqUMDT) si el problema persiste.",
       "Invalid": {
-        "User": "I could not find a user by the name of `{0}`.",
-        "Role": "I could not find a role with the name `{0}`.",
-        "Message": "I cannot send an empty message.",
-        "Argument": "Ehmm... I think you made a mistake somewhere. Try using `{0}help` if you forgot the syntax.",
-        "Permission": "You do not have the right permissions to be able to do that.",
-        "Command": "Sorry, I don't know what to do with that. Use `{0}help` if you need a list of my commands."
+        "User": "No pude encontrar un usuario con el nombre de `{0}`.",
+        "Role": "No pude encontrar un rol con el nombre `{0}`.",
+        "Message": "No puedo enviar un mensaje vacío.",
+        "Argument": "Ehmm ... creo que cometiste un error en alguna parte. Intenta usar `{0}help` si olvidó la sintaxis.",
+        "Permission": "No tiene los permisos adecuados para poder hacer eso.",
+        "Command": "Lo siento, creo que cometiste un error en alguna parte. Vuelva a comprobar que tiene el formato correcto.",
+        "Execution": "No puedo hacer eso. {0}"
       },
-      "Forever": "Forever",
-      "None": "None"
+      "Forever": "Para siempre",
+      "None": "Ninguno"
     }
   }
 }

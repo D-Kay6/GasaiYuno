@@ -1,30 +1,29 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http;
+﻿using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace GasaiYuno.Discord.Chatbot.Models
 {
     internal class EndPoint
     {
-        private const string Url = "https://www.cleverbot.com/getreply?key={0}&input={1}";
-
-        private readonly string _apiKey;
+        private readonly RestClient _restClient;
 
         public EndPoint(string apiKey)
         {
-            _apiKey = apiKey;
+            _restClient = new RestClient("https://www.cleverbot.com/");
+            _restClient.AddDefaultParameter("key", apiKey);
+            _restClient.UseNewtonsoftJson();
         }
 
         public async Task<Reply> GetReplyAsync(string message, string state)
         {
-            var url = string.Format(Url, _apiKey, HttpUtility.UrlEncode(message));
-            if (!string.IsNullOrWhiteSpace(state))
-                url += $"&cs={state}";
-
-            using var httpClient = new HttpClient();
-            var jsonString = await httpClient.GetStringAsync(url).ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<Reply>(jsonString);
+            var request = new RestRequest("getreply");
+            request.AddQueryParameter("input", message);
+            if (!string.IsNullOrEmpty(state))
+                request.AddQueryParameter("cs", state);;
+            
+            var response = await _restClient.GetAsync<Reply>(request).ConfigureAwait(false);
+            return response;
         }
     }
 }

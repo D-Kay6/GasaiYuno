@@ -18,22 +18,22 @@ namespace GasaiYuno.Discord.Music.Models.Audio
         /// <summary>
         /// Fires when a track playback has started.
         /// </summary>
-        public event Func<TrackStartEventArgs, Task> OnTrackStarted;
+        public new event Func<TrackStartEventArgs, Task> OnTrackStarted;
 
         /// <summary>
         /// Fires when a track playback has finished.
         /// </summary>
-        public event Func<TrackEndedEventArgs, Task> OnTrackEnded;
+        public new event Func<TrackEndedEventArgs, Task> OnTrackEnded;
 
         /// <summary>
         /// Fires when a track has thrown an exception.
         /// </summary>
-        public event Func<TrackExceptionEventArgs, Task> OnTrackException;
+        public new event Func<TrackExceptionEventArgs, Task> OnTrackException;
 
         /// <summary>
         /// Fires when a track got stuck.
         /// </summary>
-        public event Func<TrackStuckEventArgs, Task> OnTrackStuck;
+        public new event Func<TrackStuckEventArgs, Task> OnTrackStuck;
     
         /// <inheritdoc />
         public MusicNode(DiscordSocketClient socketClient, LavaConfig config) : base(socketClient, config)

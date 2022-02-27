@@ -6,8 +6,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RestSharp" Version="107.0.3" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
+		<PackageReference Include="RestSharp" Version="107.3.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Victoria" Version="5.2.7" />
 	</ItemGroup>
