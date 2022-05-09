@@ -1,79 +1,70 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using GasaiYuno.Discord.Models;
+using GasaiYuno.Discord.Core.Interfaces;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using Timer = System.Timers.Timer;
 
-namespace GasaiYuno.Discord.Listeners
+namespace GasaiYuno.Discord.Listeners;
+
+internal class StatusListener : IListener
 {
-    internal class StatusListener : IDisposable
+    public int Priority => 1;
+
+    private readonly DiscordShardedClient _client;
+    private readonly Random _random;
+    private readonly Timer _timer;
+
+    public StatusListener(DiscordShardedClient client)
     {
-        private readonly DiscordShardedClient _client;
-        private readonly Random _random;
-        private readonly Timer _timer;
+        _client = client;
+        _random = new Random();
+        _timer = new Timer(RandomizeActivity, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+    }
 
-        public StatusListener(DiscordConnectionClient client)
-        {
-            _client = client;
-            _timer = new Timer { Interval = TimeSpan.FromMinutes(5).TotalMilliseconds };
-            _random = new Random();
+    public Task Start()
+    {
+        _timer.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+        return Task.CompletedTask;
+    }
 
-            client.Ready += OnReady;
-        }
-
-        private async Task OnReady()
-        {
-            _timer.Elapsed += OnTick;
-            _timer.Start();
-
-            await RandomizeActivityAsync().ConfigureAwait(false);
-        }
-
-        private async void OnTick(object sender, ElapsedEventArgs e)
-        {
-            await RandomizeActivityAsync().ConfigureAwait(false);
-        }
-
-        private async Task RandomizeActivityAsync()
-        {
-            var i = _random.Next(1, 6);
-            IActivity activity = null;
+    private async void RandomizeActivity(object stateInfo)
+    {
 #if DEBUG
-            i = 10;
+        await _client.SetStatusAsync(UserStatus.DoNotDisturb).ConfigureAwait(false);
+        await _client.SetGameAsync("new updates", type: ActivityType.Watching).ConfigureAwait(false);
+        return;
 #endif
-            switch (i)
-            {
-                case 1:
-                    activity = new Game("Yukiteru Diary", ActivityType.Watching);
-                    break;
-                case 2:
-                    activity = new Game("with her knife", ActivityType.Playing);
-                    break;
-                case 3:
-                    activity = new Game("some music", ActivityType.Listening);
-                    break;
-                case 4:
-                    activity = new Game($"{_client.Guilds.Count} servers", ActivityType.Watching);
-                    break;
-                case 5:
-                    var userCount = _client.Guilds.Sum(guild => guild.MemberCount);
-                    activity = new Game($"{userCount} users", ActivityType.Watching);
-                    break;
-                case 10:
-                    await _client.SetStatusAsync(UserStatus.DoNotDisturb).ConfigureAwait(false);
-                    activity = new Game("new updates", ActivityType.Watching);
-                    break;
-            }
-
-            await _client.SetActivityAsync(activity).ConfigureAwait(false);
-        }
-
-        public void Dispose()
+        var i = _random.Next(1, 7);
+        switch (i)
         {
-            _timer?.Dispose();
+            case 1:
+                await _client.SetGameAsync("with her knife").ConfigureAwait(false);
+                break;
+            case 2:
+                await _client.SetGameAsync("Yukiteru Diary", type: ActivityType.Watching).ConfigureAwait(false);
+                break;
+            case 3:
+                await _client.SetGameAsync("the Diary Game", type: ActivityType.Competing).ConfigureAwait(false);
+                break;
+            case 4:
+                await _client.SetGameAsync("some music", type: ActivityType.Listening).ConfigureAwait(false);
+                break;
+            case 5:
+                await _client.SetGameAsync($"{_client.Guilds.Count} servers", type: ActivityType.Watching).ConfigureAwait(false);
+                break;
+            case 6:
+                var userCount = _client.Guilds.Sum(guild => guild.MemberCount);
+                await _client.SetGameAsync($"{userCount} users", type: ActivityType.Watching).ConfigureAwait(false);
+                break;
         }
+        
+        _timer.Change(TimeSpan.FromMinutes(5), Timeout.InfiniteTimeSpan);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return _timer?.DisposeAsync() ?? ValueTask.CompletedTask;
     }
 }

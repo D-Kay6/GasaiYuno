@@ -8,69 +8,68 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GasaiYuno
+namespace GasaiYuno;
+
+internal class Program
 {
-    internal class Program
+    private static async Task Main(string[] args)
     {
-        private static async Task Main(string[] args)
+        Console.Title = "Gasai Yuno - Discord";
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateLogger();
+
+        try
         {
-            Console.Title = "Gasai Yuno - Discord";
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
-
-            try
-            {
-                CheckPrerequisites();
-            }
-            catch (Exception e)
-            {
-                Log.Fatal(e, "Unable to download prerequisites. Application cannot run without. Manual downloading required.");
-                Log.CloseAndFlush();
-                return;
-            }
-
-            try
-            {
-                Log.Information("Booting up...");
-                await Host.CreateDefaultBuilder(args)
-                    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                    .UseSerilog((context, services, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
-                    .ConfigureServices(ConfigureServices)
-                    .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
-                    .UseConsoleLifetime()
-                    .RunConsoleAsync();
-            }
-            catch (Exception e)
-            {
-                Log.Fatal(e, "Host terminated unexpectedly.");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            CheckPrerequisites();
+        }
+        catch (Exception e)
+        {
+            Log.Fatal(e, "Unable to download prerequisites. Application cannot run without. Manual downloading required");
+            Log.CloseAndFlush();
+            return;
         }
 
-
-        private static void ConfigureServices(IServiceCollection services)
+        try
         {
+            Log.Information("Booting up...");
+            await Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .UseSerilog((context, _, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
+                .ConfigureServices(ConfigureServices)
+                .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
+                .UseConsoleLifetime()
+                .RunConsoleAsync();
         }
-
-        private static void ConfigureContainer(HostBuilderContext hostBuilderContext, ContainerBuilder containerBuilder)
+        catch (Exception e)
         {
-            containerBuilder.RegisterModule(new ConfigurationModule(hostBuilderContext.Configuration));
+            Log.Fatal(e, "Host terminated unexpectedly");
         }
-
-        private static void CheckPrerequisites()
+        finally
         {
-            var file = "libsodium.dll";
-            if (!File.Exists(file))
-                throw new FileNotFoundException("The required dependency could not be found.", file);
-
-            file = "opus.dll";
-            if (!File.Exists(file))
-                throw new FileNotFoundException("The required dependency could not be found.", file);
+            Log.CloseAndFlush();
         }
+    }
+
+
+    private static void ConfigureServices(IServiceCollection services)
+    {
+    }
+
+    private static void ConfigureContainer(HostBuilderContext hostBuilderContext, ContainerBuilder containerBuilder)
+    {
+        containerBuilder.RegisterModule(new ConfigurationModule(hostBuilderContext.Configuration));
+    }
+
+    private static void CheckPrerequisites()
+    {
+        var file = "libsodium.dll";
+        if (!File.Exists(file))
+            throw new FileNotFoundException("The required dependency could not be found.", file);
+
+        file = "opus.dll";
+        if (!File.Exists(file))
+            throw new FileNotFoundException("The required dependency could not be found.", file);
     }
 }

@@ -3,21 +3,20 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Models;
 
-namespace GasaiYuno.Discord.Modules
+namespace GasaiYuno.Discord.Modules;
+
+internal class ConnectionModule : Module
 {
-    internal class ConnectionModule : Module
+    private readonly string _token;
+
+    public ConnectionModule(string token)
     {
-        private readonly string _token;
+        _token = token;
+    }
 
-        public ConnectionModule(string token)
-        {
-            _token = token;
-        }
-
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", _token).InstancePerLifetimeScope();
-            builder.RegisterType<InteractionService>().AsSelf().InstancePerLifetimeScope();
-        }
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", _token).InstancePerLifetimeScope();
+        builder.RegisterType<InteractionService>().AsSelf().InstancePerLifetimeScope();
     }
 }

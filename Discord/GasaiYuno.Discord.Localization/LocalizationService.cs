@@ -7,46 +7,45 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GasaiYuno.Discord.Localization
+namespace GasaiYuno.Discord.Localization;
+
+internal class LocalizationService : ILocalization
 {
-    internal class LocalizationService : ILocalization
-    {
-        public Languages DefaultLanguage => Languages.English;
+    public Languages DefaultLanguage => Languages.English;
 
-        private static DirectoryInfo Source => new(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
+    private static DirectoryInfo Source => new(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
         
-        private readonly Dictionary<Languages, Translation> _translations;
-        private readonly ILogger<LocalizationService> _logger;
+    private readonly Dictionary<Languages, Translation> _translations;
+    private readonly ILogger<LocalizationService> _logger;
 
-        public LocalizationService(ILogger<LocalizationService> logger)
+    public LocalizationService(ILogger<LocalizationService> logger)
+    {
+        _translations = new Dictionary<Languages, Translation>();
+        _logger = logger;
+
+        foreach (var file in Source.EnumerateFiles())
         {
-            _translations = new Dictionary<Languages, Translation>();
-            _logger = logger;
-
-            foreach (var file in Source.EnumerateFiles())
+            if (!Enum.TryParse<Languages>(Path.GetFileNameWithoutExtension(file.FullName), true, out var language)) continue;
+            try
             {
-                if (!Enum.TryParse<Languages>(Path.GetFileNameWithoutExtension(file.FullName), true, out var language)) continue;
-                try
-                {
-                    var translation = Translation.Read(file);
-                    _translations.Add(language, translation);
+                var translation = Translation.Read(file);
+                _translations.Add(language, translation);
 
-                    _logger.LogInformation("Added translation {translation} for language {name}", translation, language);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Failed to add a translation for language {name}", language);
-                }
+                _logger.LogInformation("Added translation {@Translation} for language {Language}", translation, language);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to add a translation for language {Language}", language);
             }
         }
+    }
 
-        public ITranslation GetTranslation(Languages language)
-        {
-            if (_translations.TryGetValue(language, out var translation))
-                return translation;
+    public ITranslation GetTranslation(Languages language)
+    {
+        if (_translations.TryGetValue(language, out var translation))
+            return translation;
 
-            _logger.LogWarning("Unable to find translation file for language {name}. Using default language {name}", language, DefaultLanguage);
-            return _translations[DefaultLanguage];
-        }
+        _logger.LogWarning("Unable to find translation file for language {Language}. Using default language {Default}", language, DefaultLanguage);
+        return _translations[DefaultLanguage];
     }
 }

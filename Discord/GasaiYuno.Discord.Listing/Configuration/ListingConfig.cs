@@ -1,9 +1,8 @@
-﻿namespace GasaiYuno.Discord.Listing.Configuration
+﻿namespace GasaiYuno.Discord.Listing.Configuration;
+
+internal struct ListingConfig
 {
-    internal struct ListingConfig
-    {
-        public EndpointConfig TopGg { get; init; }
-        //public EndpointConfig DiscordBotsGg { get; init; }
-        //public EndpointConfig DiscordBotList { get; init; }
-    }
+    public EndpointConfig TopGg { get; init; }
+    //public EndpointConfig DiscordBotsGg { get; init; }
+    //public EndpointConfig DiscordBotList { get; init; }
 }

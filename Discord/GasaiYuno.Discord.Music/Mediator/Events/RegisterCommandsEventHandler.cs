@@ -6,23 +6,22 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Music.Mediator.Events
+namespace GasaiYuno.Discord.Music.Mediator.Events;
+
+public class RegisterCommandsEventHandler : INotificationHandler<RegisterCommandsEvent>
 {
-    public class RegisterCommandsEventHandler : INotificationHandler<RegisterCommandsEvent>
+    private readonly InteractionService _interactionService;
+    private readonly IServiceProvider _serviceProvider;
+
+    public RegisterCommandsEventHandler(InteractionService interactionService, IServiceProvider serviceProvider)
     {
-        private readonly InteractionService _interactionService;
-        private readonly IServiceProvider _serviceProvider;
+        _interactionService = interactionService;
+        _serviceProvider = serviceProvider;
+    }
 
-        public RegisterCommandsEventHandler(InteractionService interactionService, IServiceProvider serviceProvider)
-        {
-            _interactionService = interactionService;
-            _serviceProvider = serviceProvider;
-        }
-
-        /// <inheritdoc />
-        public async Task Handle(RegisterCommandsEvent notification, CancellationToken cancellationToken)
-        {
-            await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
-        }
+    /// <inheritdoc />
+    public async Task Handle(RegisterCommandsEvent notification, CancellationToken cancellationToken)
+    {
+        await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
     }
 }

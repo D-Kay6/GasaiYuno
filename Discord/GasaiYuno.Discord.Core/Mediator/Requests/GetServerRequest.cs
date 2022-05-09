@@ -1,17 +1,16 @@
 ﻿using GasaiYuno.Discord.Domain.Models;
 using MediatR;
 
-namespace GasaiYuno.Discord.Core.Mediator.Requests
-{
-    public record GetServerRequest : IRequest<Server>
-    {
-        public ulong Id { get; init; }
-        public string Name { get; init; }
+namespace GasaiYuno.Discord.Core.Mediator.Requests;
 
-        public GetServerRequest(ulong id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
+public record GetServerRequest : IRequest<Server>
+{
+    public ulong Id { get; init; }
+    public string Name { get; init; }
+
+    public GetServerRequest(ulong id, string name)
+    {
+        Id = id;
+        Name = name;
     }
 }

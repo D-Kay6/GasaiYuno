@@ -1,7 +1,6 @@
-﻿namespace GasaiYuno.Discord.Domain.Models
+﻿namespace GasaiYuno.Discord.Domain.Models;
+
+public class PollOption
 {
-    public class PollOption
-    {
-        public string Value { get; set; }
-    }
+    public string Value { get; set; }
 }

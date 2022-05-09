@@ -348,6 +348,5 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
-GasaiYuno/appsettings.Debug.json
-
-GasaiYuno/appsettings.Release.json
+.idea/
+GasaiYuno/appsettings.*.json

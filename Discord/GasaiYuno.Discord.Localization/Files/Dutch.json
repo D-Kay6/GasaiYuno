@@ -167,8 +167,8 @@
         "Disabled": "welkomstberichten zijn nu uitgeschakeld. Je kunt nog steeds mijn normale commando uitvoeren om deze handmatig te activeren.",
         "Message": {
           "Invalid": "Het bericht mag niet leeg zijn.",
-          "Current": "Het welkomstbericht voor {1} is:[enter]```[enter]{0}[enter]```[enter]Wanneer je het bericht aanpast, kun je `[user]` gebruiken als plaatsvervanger voor het taggen van de gebruiker.",
-          "Changed": "Het welkomstbericht voor {1} is veranderd naar:[enter]```[enter]{0}[enter]```"
+          "Current": "Het welkomstbericht is:",
+          "Changed": "Het welkomstbericht is veranderd naar:"
         },
         "Image": {
           "Invalid": "Ik kon geen afbeelding ophalen van deze link. Dit kan zijn wegens een fout format.",

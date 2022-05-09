@@ -167,8 +167,8 @@
         "Disabled": "La notificación de bienvenida ahora se ha deshabilitado. Todavía puedes usar mi comando normal para activarlo manualmente.",
         "Message": {
           "Invalid": "El mensaje no puede estar vacío.",
-          "Current": "El mensaje de bienvenida para {1} es:[enter]```[enter]{0}[enter]```[enter]uando cambie su mensaje de notificación, puede usar `[user]` como marcador de posición para la mención del usuario.",
-          "Changed": "El mensaje de notificación para {1} se cambió a:[enter]```[enter]{0}[enter]```"
+          "Current": "El mensaje de bienvenida es:",
+          "Changed": "El mensaje de bienvenida se cambió a:"
         },
         "Image": {
           "Invalid": "No pude obtener la imagen de esa URL. Esto podría deberse a un formato no válido.",

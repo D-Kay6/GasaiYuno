@@ -3,32 +3,30 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Domain.Persistence.UnitOfWork;
 using GasaiYuno.Discord.Localization.Interfaces;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Localization.Mediator.Requests
+namespace GasaiYuno.Discord.Localization.Mediator.Requests;
+
+internal class GetTranslationRequestHandler : IRequestHandler<GetTranslationRequest, ITranslation>
 {
-    internal class GetTranslationRequestHandler : IRequestHandler<GetTranslationRequest, ITranslation>
+    private readonly ILocalization _localization;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public GetTranslationRequestHandler(ILocalization localization, IUnitOfWork unitOfWork)
     {
-        private readonly ILocalization _localization;
-        private readonly IUnitOfWork _unitOfWork;
+        _localization = localization;
+        _unitOfWork = unitOfWork;
+    }
 
-        public GetTranslationRequestHandler(ILocalization localization, IUnitOfWork unitOfWork)
+    public async Task<ITranslation> Handle(GetTranslationRequest request, CancellationToken cancellationToken)
+    {
+        var language = request.Language;
+        if (request.ServerId != 0)
         {
-            _localization = localization;
-            _unitOfWork = unitOfWork;
+            var server = await _unitOfWork.Servers.GetAsync(request.ServerId);
+            language = server?.Language ?? _localization.DefaultLanguage;
         }
-
-        public async Task<ITranslation> Handle(GetTranslationRequest request, CancellationToken cancellationToken)
-        {
-            var language = request.Language;
-            if (request.ServerId != 0)
-            {
-                var server = await _unitOfWork.Servers.GetAsync(request.ServerId);
-                language = server?.Language ?? _localization.DefaultLanguage;
-            }
-            return _localization.GetTranslation(language);
-        }
+        return _localization.GetTranslation(language);
     }
 }

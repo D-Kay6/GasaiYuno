@@ -1,8 +1,7 @@
-﻿namespace GasaiYuno.Discord.Domain.Models
+﻿namespace GasaiYuno.Discord.Domain.Models;
+
+public enum AutomationType
 {
-    public enum AutomationType
-    {
-        Temporary,
-        Permanent
-    }
+    Temporary,
+    Permanent
 }

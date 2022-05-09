@@ -2,47 +2,47 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
+using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Listeners;
 using GasaiYuno.Discord.Services;
 
-namespace GasaiYuno.Discord.Modules
+namespace GasaiYuno.Discord.Modules;
+
+internal class ListenerModule : Module
 {
-    internal class ListenerModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<ConnectionListener>().AsSelf().InstancePerLifetimeScope();
-
-            builder.RegisterType<StatusListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<GuildListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<SlashCommandListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<NotificationListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<BanListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<DynamicChannelListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<PollListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-            builder.RegisterType<RaffleListener>().AsSelf().InstancePerLifetimeScope().AutoActivate();
-        }
-
-        protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
-        {
-            registration.PipelineBuilding += (sender, pipeline) =>
-            {
-                pipeline.Use(PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (c, next) =>
-                {
-                    next(c);
-                    if (c.Instance?.GetType() == typeof(LifetimeService))
-                    {
-                        c.Resolve<StatusListener>();
-                        c.Resolve<GuildListener>();
-                        c.Resolve<SlashCommandListener>();
-                        c.Resolve<NotificationListener>();
-                        c.Resolve<BanListener>();
-                        c.Resolve<DynamicChannelListener>();
-                        c.Resolve<PollListener>();
-                        c.Resolve<RaffleListener>();
-                    }
-                });
-            };
-        }
+        builder.RegisterType<StatusListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<GuildListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<SlashCommandListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<NotificationListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<BanListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<DynamicChannelListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<DistributionRoleListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<PollListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<RaffleListener>().As<IListener>().InstancePerLifetimeScope();
     }
+
+    // protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
+    // {
+    //     registration.PipelineBuilding += (_, pipeline) =>
+    //     {
+    //         pipeline.Use(PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (c, next) =>
+    //         {
+    //             next(c);
+    //             if (c.Instance?.GetType() == typeof(LifetimeService))
+    //             {
+    //                 // c.Resolve<StatusListener>();
+    //                 // c.Resolve<GuildListener>();
+    //                 c.Resolve<SlashCommandListener>();
+    //                 // c.Resolve<NotificationListener>();
+    //                 // c.Resolve<BanListener>();
+    //                 // c.Resolve<DynamicChannelListener>();
+    //                 // c.Resolve<DistributionRoleListener>();
+    //                 // c.Resolve<PollListener>();
+    //                 // c.Resolve<RaffleListener>();
+    //             }
+    //         });
+    //     };
+    // }
 }

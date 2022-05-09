@@ -1,7 +1,6 @@
-﻿namespace GasaiYuno.Discord.Domain.Models
+﻿namespace GasaiYuno.Discord.Domain.Models;
+
+public enum NotificationType
 {
-    public enum NotificationType
-    {
-        Welcome
-    }
+    Welcome
 }

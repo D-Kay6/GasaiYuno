@@ -3,13 +3,12 @@ using MediatR.Extensions.Autofac.DependencyInjection;
 using System.Reflection;
 using Module = Autofac.Module;
 
-namespace GasaiYuno.Discord.Modules
+namespace GasaiYuno.Discord.Modules;
+
+public class MediatorModule : Module
 {
-    public class MediatorModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterMediatR(Assembly.GetExecutingAssembly());
-        }
+        builder.RegisterMediatR(Assembly.GetExecutingAssembly());
     }
 }

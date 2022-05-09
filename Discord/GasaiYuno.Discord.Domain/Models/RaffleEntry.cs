@@ -1,7 +1,6 @@
-﻿namespace GasaiYuno.Discord.Domain.Models
+﻿namespace GasaiYuno.Discord.Domain.Models;
+
+public class RaffleEntry
 {
-    public class RaffleEntry
-    {
-        public ulong User { get; set; }
-    }
+    public ulong User { get; set; }
 }

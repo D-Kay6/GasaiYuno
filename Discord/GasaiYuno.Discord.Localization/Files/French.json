@@ -167,8 +167,8 @@
         "Disabled": "La notification de bienvenue a été désactivée. Vous pouvez toujours utiliser ma commande normale pour l'activer manuellement.",
         "Message": {
           "Invalid": "Le message ne doit pas être vide.",
-          "Current": "Le message de bienvenue pour {1} est :[enter]```[enter]{0}[enter]```[enter]Pour modifier votre message de notification, vous pouvez utiliser `[user]` comme support pour la mention de l'utilisateur.",
-          "Changed": "Le message de notification pour {1} a été changé en :[enter]```[enter]{0}[enter]```"
+          "Current": "Le message de bienvenue est :",
+          "Changed": "Le message de bienvenue a été changé en :"
         },
         "Image": {
           "Invalid": "Je n'ai pas pu obtenir l'image à partir de cette url. Cela pourrait être dû à un format invalide.",

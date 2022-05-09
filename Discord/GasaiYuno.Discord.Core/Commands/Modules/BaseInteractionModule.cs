@@ -9,25 +9,29 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Core.Commands.Modules
+namespace GasaiYuno.Discord.Core.Commands.Modules;
+
+public abstract class BaseInteractionModule<TImplementor> : BaseInteractionModule<TImplementor, SocketSlashCommand> { }
+
+public abstract class BaseInteractionModule<TImplementor, TInteraction> : InteractionModuleBase<ShardedInteractionContext<TInteraction>> where TInteraction : SocketInteraction
 {
-    public abstract class BaseInteractionModule<TImplementor> : BaseInteractionModule<TImplementor, SocketInteraction> { }
+    public InteractiveService Interactivity { get; init; }
+    public IMediator Mediator { get; init; }
+    public IUnitOfWork UnitOfWork { get; init; }
+    public ILogger<TImplementor> Logger { get; init; }
 
-    public abstract class BaseInteractionModule<TImplementor, TInteraction> : InteractionModuleBase<ShardedInteractionContext<TInteraction>> where TInteraction : SocketInteraction
+    protected Server Server { get; private set; }
+    protected ITranslation Translation { get; set; }
+
+    /// <inheritdoc />
+    public override async Task BeforeExecuteAsync(ICommandInfo command)
     {
-        public InteractiveService Interactivity { get; init; }
-        public IMediator Mediator { get; init; }
-        public IUnitOfWork UnitOfWork { get; init; }
-        public ILogger<TImplementor> Logger { get; init; }
+        Server = await UnitOfWork.Servers.GetOrAddAsync(Context.Guild.Id, Context.Guild.Name).ConfigureAwait(false);
+        Translation = await Mediator.Send(new GetTranslationRequest(Server.Language)).ConfigureAwait(false);
+    }
 
-        protected Server Server { get; private set; }
-        protected ITranslation Translation { get; set; }
-
-        /// <inheritdoc />
-        public override async Task BeforeExecuteAsync(ICommandInfo command)
-        {
-            Server = await Mediator.Send(new GetServerRequest(Context.Guild.Id, Context.Guild.Name)).ConfigureAwait(false);
-            Translation = await Mediator.Send(new GetTranslationRequest(Server.Language)).ConfigureAwait(false);
-        }
+    protected Task ConfirmAsync()
+    {
+        return Context.Interaction.RespondAsync(":thumbsup:", ephemeral: true);
     }
 }

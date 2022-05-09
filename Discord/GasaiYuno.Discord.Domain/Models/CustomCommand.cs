@@ -1,9 +1,8 @@
-﻿namespace GasaiYuno.Discord.Domain.Models
+﻿namespace GasaiYuno.Discord.Domain.Models;
+
+public class CustomCommand
 {
-    public class CustomCommand
-    {
-        public Server Server { get; init; }
-        public string Command { get; set; }
-        public string Response { get; set; }
-    }
+    public ulong Server { get; init; }
+    public string Command { get; set; }
+    public string Response { get; set; }
 }

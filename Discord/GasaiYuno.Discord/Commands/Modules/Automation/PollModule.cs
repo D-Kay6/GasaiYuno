@@ -1,39 +1,44 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Commands.Modules;
 using GasaiYuno.Discord.Domain.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GasaiYuno.Discord.Commands.Modules.Automation
+namespace GasaiYuno.Discord.Commands.Modules.Automation;
+
+[EnabledInDm(false)]
+[DefaultPermission(false)]
+[DefaultMemberPermissions(GuildPermission.ManageEvents)]
+[Group("poll", "Create new polls for users to answer.")]
+public class PollModule : BaseInteractionModule<PollModule>
 {
-    [Group("poll", "Create new polls for users to answer.")]
-    [RequireOwner(Group = "Permission")]
-    [RequireUserPermission(GuildPermission.Administrator, Group = "Permission")]
-    public class PollModule : BaseInteractionModule<PollModule>
+    [RequireUserPermission(GuildPermission.ManageEvents)]
+    [SlashCommand("new", "Create a new poll.")]
+    public Task NewPollCommand(
+        [Summary(description: "The time until the result needs to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes")] TimeSpan duration,
+        [Summary(description: "Whether or not the poll allows for multiple options to be selected.")] bool multiSelect = false)
+        => RespondWithModalAsync<PollModal>($"poll form:{duration.TotalSeconds}|{multiSelect}");
+
+    public class PollModal : IModal
     {
-        public class PollModal : IModal
-        {
-            /// <inheritdoc />
-            public string Title => "New poll";
+        /// <inheritdoc />
+        public string Title => "New poll";
 
-            [InputLabel("Description")]
-            [ModalTextInput("poll_description", TextInputStyle.Short, maxLength: 500)]
-            public string Description { get; set; }
+        [InputLabel("Description")]
+        [ModalTextInput("form description", TextInputStyle.Short, maxLength: 500)]
+        public string Description { get; set; }
 
-            [InputLabel("Options, each on a new line.")]
-            [ModalTextInput("poll_options", TextInputStyle.Paragraph)]
-            public string Options { get; set; }
-        }
+        [InputLabel("Options, each on a new line.")]
+        [ModalTextInput("form options", TextInputStyle.Paragraph)]
+        public string Options { get; set; }
+    }
 
-        [SlashCommand("new", "Create a new poll.")]
-        public Task NewPollCommand(
-            [Summary(description: "The time until the result needs to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes")] TimeSpan duration,
-            [Summary(description: "Whether or not the poll allows for multiple options to be selected.")] bool multiSelect = false)
-            => RespondWithModalAsync<PollModal>($"poll_form:{duration.TotalSeconds}|{multiSelect}");
-
-        [ModalInteraction("poll_form:*|*", true)]
+    public class PollModalModule : BaseInteractionModule<PollModalModule, SocketModal>
+    {
+        [ModalInteraction("form:*|*")]
         public async Task PollResponse(string seconds, string multiSelect, PollModal modal)
         {
             var duration = TimeSpan.FromSeconds(double.Parse(seconds));
@@ -49,7 +54,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
             var selectMenuBuilder = new SelectMenuBuilder()
-                .WithCustomId($"poll_selection:{Context.Interaction.Id}")
+                .WithCustomId($"poll selection:{Context.Interaction.Id}")
                 .WithPlaceholder(Translation.Message(allowMultiple ? "Automation.Poll.Selector.Multiple" : "Automation.Poll.Selector.Single"))
                 .WithMinValues(1)
                 .WithMaxValues(allowMultiple ? options.Length : 1);
@@ -62,19 +67,22 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
             var selectionMessage = await GetOriginalResponseAsync().ConfigureAwait(false);
             var poll = new Poll
             {
-                Id = Context.Interaction.Id,
-                Server = Server,
+                Identity = Context.Interaction.Id,
+                Server = Context.Guild.Id,
                 Channel = Context.Channel.Id,
                 Message = selectionMessage.Id,
                 EndDate = DateTime.Now + duration,
                 Text = modal.Description,
-                Options = options.Select(x => new PollOption{ Value = x }).ToList()
+                Options = options.Select(x => new PollOption { Value = x }).ToList()
             };
-            UnitOfWork.Polls.Add(poll);
+            await UnitOfWork.Polls.AddAsync(poll).ConfigureAwait(false);
             await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
+    }
 
-        [ComponentInteraction("poll_selection:*", true)]
+    public class PollComponentModule : BaseInteractionModule<PollComponentModule, SocketMessageComponent>
+    {
+        [ComponentInteraction("selection:*")]
         public async Task PollSelection(string reference, string[] selectedOptions)
         {
             var referenceId = ulong.Parse(reference);
@@ -93,6 +101,7 @@ namespace GasaiYuno.Discord.Commands.Modules.Automation
                     SelectedOption = selectedOption
                 });
             }
+
             UnitOfWork.Polls.Update(poll);
             await UnitOfWork.SaveChangesAsync().ConfigureAwait(false);
             await DeferAsync(true).ConfigureAwait(false);
