@@ -3,8 +3,15 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Fergun.Interactive;
-using GasaiYuno.Discord.RavenDB;
+using GasaiYuno.Discord.Core.Interfaces;
+using GasaiYuno.Discord.Listeners;
+using GasaiYuno.Discord.Models;
+using GasaiYuno.Discord.Services;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
+using System.Reflection;
+using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Modules;
 
@@ -14,10 +21,6 @@ public class DiscordModule : Module
     public int ConnectionTimeout { get; init; }
     public int HandlerTimeout { get; init; }
     public int TotalShards { get; init; }
-    public string ConnectionString { get; init; }
-    public string Url { get; init; }
-    public string Database { get; init; }
-    public string Certificate { get; init; }
 
     protected override void Load(ContainerBuilder builder)
     {
@@ -44,6 +47,7 @@ public class DiscordModule : Module
                              GatewayIntents.GuildInvites | GatewayIntents.GuildWebhooks
 
         }).InstancePerDependency();
+        
         builder.Register(_ => new InteractionServiceConfig
         {
             DefaultRunMode = RunMode.Async,
@@ -51,15 +55,22 @@ public class DiscordModule : Module
             UseCompiledLambda = true,
             InteractionCustomIdDelimiters = new[] { ' ' }
         }).InstancePerDependency();
+        
         builder.Register(_ => new InteractiveConfig
         {
             DefaultTimeout = TimeSpan.FromMinutes(1)
         }).InstancePerDependency();
-
-        builder.RegisterModule(new ConnectionModule(Token));
-        builder.RegisterModule(new ListenerModule());
-        builder.RegisterModule(new PersistenceModule(Url, Database, Certificate));
-        builder.RegisterModule(new ServiceModule());
-        builder.RegisterModule(new MediatorModule());
+        
+        builder.RegisterMediatR(Assembly.GetExecutingAssembly());
+        
+        builder.RegisterType<DiscordService>().As<IHostedService>();
+        builder.RegisterType<LifetimeService>().As<ILifetimeService>().InstancePerLifetimeScope();
+        builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", Token).InstancePerLifetimeScope();
+        builder.RegisterType<InteractionService>().AsSelf().InstancePerLifetimeScope();
+        builder.RegisterType<InteractiveService>().AsSelf().InstancePerLifetimeScope();
+        
+        builder.RegisterType<StatusListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<GuildListener>().As<IListener>().InstancePerLifetimeScope();
+        builder.RegisterType<SlashCommandListener>().As<IListener>().InstancePerLifetimeScope();
     }
 }

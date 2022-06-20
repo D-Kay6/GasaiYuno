@@ -1,20 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<DebugType>embedded</DebugType>
+		<LangVersion>default</LangVersion>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
-		<PackageId>gasai.yuno.discord</PackageId>
+		<PackageId>gasaiyuno.discord.app</PackageId>
 		<Authors>D-Kay</Authors>
 		<Company>Seven Diamonds</Company>
 		<Product>Gasai Yuno</Product>
-		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\bin\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Autofac" Version="6.3.0" />
+		<PackageReference Include="Autofac" Version="6.4.0" />
 		<PackageReference Include="Autofac.Configuration" Version="6.0.0" />
-		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.SlowCheetah" Version="4.0.8">
 			<PrivateAssets>all</PrivateAssets>
@@ -28,15 +34,6 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj" />
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Chatbot\GasaiYuno.Discord.Chatbot.csproj" />
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Listing\GasaiYuno.Discord.Listing.csproj" />
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Localization\GasaiYuno.Discord.Localization.csproj" />
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Music\GasaiYuno.Discord.Music.csproj" />
-	  <ProjectReference Include="..\Discord\GasaiYuno.Discord.Storage\GasaiYuno.Discord.Storage.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

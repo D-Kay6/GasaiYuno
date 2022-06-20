@@ -58,7 +58,7 @@ public class LyricsService : ILyricsService
         }
         if (lyricsSections == null || lyricsSections.Length == 0) return null;
 
-        Lyrics result = new Lyrics
+        var result = new Lyrics
         {
             Parts = new ILyricsPart[lyricsSections.Length]
         };

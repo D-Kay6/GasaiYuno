@@ -57,8 +57,8 @@ internal class MusicListener : IListener
         try
         {
             if (!_musicNode.TryGetPlayer(voiceChannel.Guild, out var player)) return;
-            if (voiceChannel.Users.Count != 1) return;
-            if (!voiceChannel.Users.First().Id.Equals(_client.CurrentUser.Id)) return;
+            if (voiceChannel.ConnectedUsers.Count != 1) return;
+            if (!voiceChannel.ConnectedUsers.First().Id.Equals(_client.CurrentUser.Id)) return;
 
             var translation = await _mediator.Send(new GetTranslationRequest(voiceChannel.Guild.Id));
             if (player.TextChannel != null)

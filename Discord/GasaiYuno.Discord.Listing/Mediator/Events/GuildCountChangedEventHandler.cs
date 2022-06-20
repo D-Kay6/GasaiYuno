@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Listing.Ínterfaces;
+﻿using GasaiYuno.Discord.Listing.Interfaces;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +14,14 @@ public class GuildCountChangedEventHandler : INotificationHandler<GuildCountChan
         _listingUpdater = listingUpdater;
     }
 
-    public Task Handle(GuildCountChangedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(GuildCountChangedEvent command, CancellationToken cancellationToken)
     {
-        if (notification.ShardId >= 0)
-            return _listingUpdater.UpdateStatsAsync(notification.BotId, notification.ShardCount, notification.ShardId, notification.GuildCount);
+        if (command.ShardId >= 0)
+            return _listingUpdater.UpdateStatsAsync(command.BotId, command.ShardCount, command.ShardId, command.GuildCount);
 
-        if (notification.ShardCount >= 0)
-            return _listingUpdater.UpdateStatsAsync(notification.BotId, notification.ShardCount, notification.GuildCount);
+        if (command.ShardCount >= 0)
+            return _listingUpdater.UpdateStatsAsync(command.BotId, command.ShardCount, command.GuildCount);
 
-        return _listingUpdater.UpdateStatsAsync(notification.BotId, notification.GuildCount);
+        return _listingUpdater.UpdateStatsAsync(command.BotId, command.GuildCount);
     }
 }

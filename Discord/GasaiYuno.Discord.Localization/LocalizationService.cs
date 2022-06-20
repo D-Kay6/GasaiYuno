@@ -1,5 +1,5 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
-using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Core.Models;
 using GasaiYuno.Discord.Localization.Interfaces;
 using GasaiYuno.Discord.Localization.Models;
 using Microsoft.Extensions.Logging;

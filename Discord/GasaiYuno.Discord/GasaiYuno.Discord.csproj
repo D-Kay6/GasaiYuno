@@ -2,26 +2,28 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<DebugType>embedded</DebugType>
+		<LangVersion>default</LangVersion>
+		<Authors>D-Kay</Authors>
+		<Company>Seven Diamonds</Company>
+		<PackageVersion>0.1.0</PackageVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\bin\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Discord.Net" Version="3.6.1" />
-		<PackageReference Include="FluentValidation" Version="11.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+		<ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
-		<ProjectReference Include="..\GasaiYuno.Discord.Domain\GasaiYuno.Discord.Domain.csproj" />
-		<!--<ProjectReference Include="..\GasaiYuno.Discord.Infrastructure\GasaiYuno.Discord.Infrastructure.csproj" />-->
-		<ProjectReference Include="..\GasaiYuno.Discord.RavenDB\GasaiYuno.Discord.RavenDB.csproj" />
+		<PackageReference Include="Discord.Net" Version="3.7.2" />
+		<PackageReference Include="FluentValidation" Version="11.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
 	</ItemGroup>
 
 </Project>

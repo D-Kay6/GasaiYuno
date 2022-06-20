@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
 using GasaiYuno.Discord.Core.Extensions;
-using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Core.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

@@ -5,7 +5,7 @@ using GasaiYuno.Discord.Core.Commands.TypeConverters;
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Events;
 using GasaiYuno.Discord.Core.Mediator.Requests;
-using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Core.Models;
 using GasaiYuno.Discord.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;

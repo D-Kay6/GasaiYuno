@@ -1,5 +1,5 @@
-﻿using GasaiYuno.Discord.Domain.Attributes;
-using GasaiYuno.Discord.Domain.Models;
+﻿using GasaiYuno.Discord.Core.Attributes;
+using GasaiYuno.Discord.Core.Models;
 using System.Linq;
 using System.Reflection;
 

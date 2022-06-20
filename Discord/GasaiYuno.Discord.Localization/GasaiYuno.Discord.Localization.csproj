@@ -2,15 +2,24 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<DebugType>embedded</DebugType>
+		<LangVersion>default</LangVersion>
+		<Authors>D-Kay</Authors>
+		<Company>Seven Diamonds</Company>
+		<PackageVersion>0.1.0</PackageVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>..\..\bin\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

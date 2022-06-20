@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using GasaiYuno.Discord.Core.Extensions;
-using GasaiYuno.Discord.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Linq;
@@ -34,7 +33,7 @@ public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
         {
             _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, request, failures);
 
-            throw new DiscordDomainException($"Command Validation Errors for type {typeof(TRequest).Name}", new ValidationException("Validation exception", failures));
+            throw new ValidationException($"Command Validation Errors for type {typeof(TRequest).Name}", new FluentValidation.ValidationException("Validation exception", failures));
         }
 
         return await next();

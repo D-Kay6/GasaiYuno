@@ -1,4 +1,4 @@
-﻿using GasaiYuno.Discord.Listeners;
+﻿using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Services;
 
-public class LifetimeService
+public class LifetimeService : ILifetimeService
 {
     public bool KeepAlive { get; private set; }
 
     private readonly DiscordConnectionClient _connection;
     private readonly ILogger<LifetimeService> _logger;
-        
+
     private CancellationTokenSource _stopTokenSource;
 
     /// <summary>
@@ -28,11 +28,11 @@ public class LifetimeService
 
         KeepAlive = true;
     }
-        
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _stopTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            
+
         if (_stopTokenSource.IsCancellationRequested)
         {
             KeepAlive = false;
@@ -55,14 +55,14 @@ public class LifetimeService
             _logger.LogInformation(e, "Cancellation of the lifetime was requested. Restarting: {KeepAlive}", KeepAlive);
         }
     }
-        
+
     public async Task RestartAsync()
     {
         await _connection.StopAsync().ConfigureAwait(false);
         KeepAlive = true;
         _stopTokenSource.Cancel();
     }
-        
+
     public async Task StopAsync()
     {
         await _connection.StopAsync().ConfigureAwait(false);

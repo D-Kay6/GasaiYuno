@@ -4,9 +4,8 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace GasaiYuno;
 
@@ -30,6 +29,9 @@ internal class Program
             Log.CloseAndFlush();
             return;
         }
+        
+        var executionFolder = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+        AssemblyLoadContext.Default.Resolving += (AssemblyLoadContext context, AssemblyName assembly) => context.LoadFromAssemblyPath(Path.Combine(executionFolder, $"{assembly.Name}.dll"));
 
         try
         {

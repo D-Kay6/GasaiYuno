@@ -1,5 +1,5 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
-using GasaiYuno.Discord.Domain.Models;
+using GasaiYuno.Discord.Core.Models;
 using MediatR;
 
 namespace GasaiYuno.Discord.Core.Mediator.Requests;

@@ -1,5 +1,5 @@
 ﻿using GasaiYuno.Discord.Listing.Configuration;
-using GasaiYuno.Discord.Listing.Ínterfaces;
+using GasaiYuno.Discord.Listing.Interfaces;
 using GasaiYuno.Discord.Listing.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;

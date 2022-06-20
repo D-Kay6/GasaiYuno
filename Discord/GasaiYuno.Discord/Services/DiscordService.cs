@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using GasaiYuno.Discord.Core.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,7 +32,7 @@ public class DiscordService : BackgroundService
             try
             {
                 await using var scope = _lifetimeScope.BeginLifetimeScope("DiscordLifetime");
-                var lifetimeService = scope.Resolve<LifetimeService>();
+                var lifetimeService = scope.Resolve<ILifetimeService>();
                 await lifetimeService.StartAsync(cancellationToken);
                 keepAlive = lifetimeService.KeepAlive;
             }
