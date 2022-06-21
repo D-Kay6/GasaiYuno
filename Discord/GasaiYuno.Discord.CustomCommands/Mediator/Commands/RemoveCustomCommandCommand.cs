@@ -8,10 +8,10 @@ public record RemoveCustomCommandCommand : INotification
     public ulong ServerId { get; }
     public string Command { get; }
     
-    public RemoveCustomCommandCommand(CustomCommand command)
+    public RemoveCustomCommandCommand(CustomCommand customCommand)
     {
-        ServerId = command.Server;
-        Command = command.Command;
+        ServerId = customCommand.Server;
+        Command = customCommand.Command;
     }
     
     public RemoveCustomCommandCommand(ulong serverId, string command)

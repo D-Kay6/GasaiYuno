@@ -113,27 +113,20 @@
     "Automation": {
       "Channel": {
         "Invalid": {
-          "Name": "De configuratienaam mag niet leeg zijn.",
-          "GenerationName": "De naam voor dubbele kanalen mag niet leeg zijn.",
-          "Exists": "Configuratie `{0}` bestaat al. Was je dit misschien vergeten?",
-          "Configuration": "Ik kon geen dynamische kanaalconfiguratie vinden genaamd {0}. Weet je zeker dat je dit juist hebt ingevoerd?",
-          "Configurations": "Ik kon geen dynamische kanaalconfiguraties vinden. Ben je vergeten eentje aan te maken?",
-          "Assigned": "`{1}` is al gekoppeld aan configuratie `{0}`. Verwijder deze eerst als je dit wil toevoegen aan de nieuwe.",
-          "Unassigned": "`{1}` is niet gekoppeld aan configuratie `{0}`. Weet je zeker dat je dit juist hebt ingevoerd?"
+          "Channel": "That is not an auto-channel. Did you intent to make it one?",
+          "Channels": "I could not find any auto-channels. Did you forget to make them?",
+          "GenerationName": "The name for duplicated channels may not be empty.",
+          "Exists": "{0} already is an auto-channel. Did you forget?"
         },
-        "Info": "Dynamische kanalen helpen om je server overzichtelijk te houden door het verwijderen van voicekanalen die alleen nodig zijn voor als gebruikers deze nodig hebben.[enter]Denk hierbij aan kanalen zoals `voice 1`, `voice 2`, enz.[enter]Wanneer een gebruiker een dynamisch kanaal binnen treedt, dupliceer ik dit kanaal, inclusief alle instellingen, en verplaats ik de gebruiker naar dit nieuwe kanaal.[enter]De gebruiker krijgt dan ook de `Manage Channel` permissie voor dit specifieke kanaal, zodat zij deze kunnen aanpassen aan hun eigen benodigdheden.[enter][enter]Het gedupliceerde kanaal heeft één van de volgende instellingsmogelijkheden: __Permanent__ and __Tijdelijk__.[enter]Permanente kanalen blijven bestaan tot deze handmatig worden verwijderd.[enter]Tijdelijke kanalen worden verwijderd als niemand meer in dit kanaal zit.[enter]Zo krijg je geen warboel aan kanalen.[enter][enter]Je kunt ook de naam veranderen die ik aan het gedupliceerde kanaal moet geven.[enter]Deze naam accepteert een parameter in de vorm van `[user]` waar ik de gebruikersnaam in bezittelijke vorm zet.[enter]Bijvoorbeeld: `[user] channel` ->_ `Barney's channel`",
+        "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
         "Details": {
-          "Title": "Dynamische Kanalen",
+          "Title": "Auto-Channels",
           "Type": "Type",
-          "GenerationName": "Gegenereerde naam",
-          "Channels": "Gekoppelde kanalen",
-          "List": "Type: {0}[enter]Gekoppelde kanalen: {1}"
+          "GenerationName": "Generated name"
         },
-        "Added": "Configuratie `{0}` is aangemaakt. Vergeet niet om kanalen toe te kennen aan deze configuratie.",
-        "Deleted": "Configuratie `{0}` is verwijderd. Pas op, overgebleven kanalen aangemaakt met deze configuratie moeten handmatig verwijderd worden.",
-        "Renamed": "Gedupliceerde kanalen van {0} zullen nu `{1}` genoemd worden.",
-        "Assigned": "`{1}` is toegewezen aan de `{0}` configuratie.",
-        "Removed": "`{1}` is losgekoppeld van de `{0}` configuratie."
+        "Created": "{0} is now an auto-channel.",
+        "Removed": "{0} is no longer an auto-channel.",
+        "Renamed": "Duplicated channels from {0} will now be named `{1}`."
       },
       "Poll": {
         "Title": "Peiling",

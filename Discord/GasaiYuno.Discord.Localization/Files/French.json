@@ -113,27 +113,20 @@
     "Automation": {
       "Channel": {
         "Invalid": {
-          "Name": "Le nom de la configuration ne doit pas être vide.",
-          "GenerationName": "Le nom des salons dupliqués ne doit pas être vide.",
-          "Exists": "La configuration `{0}` existe déjà. Vous avez oublié ?",
-          "Configuration": "Je n'ai pas trouvé de configurations de salons dynamiques nommés {0}. Tu es sûr de l'avoir écrit correctement ?",
-          "Configurations": "Je n'ai pas trouvé de configurations de salons dynamiques. Avez-vous oublié de les faire ?",
-          "Assigned": "`{1}` est déjà affecté à la configuration `{0}`. Retirez-le d'abord de là si vous voulez l'ajouter à celui-ci.",
-          "Unassigned": "`{1}` n'est pas affecté à la configuration `{0}`. Tu es sûr de l'avoir écrit correctement ?"
+          "Channel": "That is not an auto-channel. Did you intent to make it one?",
+          "Channels": "I could not find any auto-channels. Did you forget to make them?",
+          "GenerationName": "The name for duplicated channels may not be empty.",
+          "Exists": "{0} already is an auto-channel. Did you forget?"
         },
-        "Info": "Les salons dynamiques vous aident à garder votre serveur propre en supprimant le salon une fois vide et permettent d'en créer quand les utilisateurs en ont besoin.[enter]Pensez à des salons comme `voice 1`, `voice 2`, etc.[enter]Lorsqu'un utilisateur rejoint un salon dynamique, je vais dupliquer ce salon, y compris tous les paramètres, et déplacer l'utilisateur vers ce nouveau salon.[enter]Je vais également fournir à l'utilisateur la permission `Manage Channel`, pour ce salon uniquement, afin qu'il puisse le modifier selon ses besoins.[enter][enter]Le salon dupliqué peut être de deux types : __Permanent__ et __Temporary__.[enter]Les salons permanents resteront, comme leur nom l'indique, sur le serveur jusqu'à ce qu'ils soient supprimés manuellement.[enter]Les salons temporaires seront supprimés une fois que tout le monde aura quitté le salon.[enter]De cette façon, vous ne serez pas encombré de salons inutiles.[enter][enter]Vous pouvez également changer le nom que je dois donner au salon dupliqué.[enter]Ce nom accepte un paramètre sous la forme `[user]` où je saisirai la partie du nom de l'utilisateur.[enter]Par exemple : `[user] channel` ->_ `D-Kay's channel`",
+        "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
         "Details": {
-          "Title": "Salons dynamiques",
+          "Title": "Auto-Channels",
           "Type": "Type",
-          "GenerationName": "Nom généré",
-          "Channels": "Salons assignés",
-          "List": "Type : {0}[enter]Salons assignés : {1}"
+          "GenerationName": "Generated name"
         },
-        "Added": "La configuration `{0}` a été créé. N'oubliez pas de lui attribuer des salons.",
-        "Deleted": "La configuration `{0}` a été supprimé. Notez que tous les salons restants qui ont été créés avec cette méthode devront être supprimés manuellement.",
-        "Renamed": "Les salons dupliqués de {0} seront désormais nommés `{1}`.",
-        "Assigned": "`{1}` a été attribué à la configuration `{0}`",
-        "Removed": "`{1}` a été supprimé de la configuration `{0}`"
+        "Created": "{0} is now an auto-channel.",
+        "Removed": "{0} is no longer an auto-channel.",
+        "Renamed": "Duplicated channels from {0} will now be named `{1}`."
       },
       "Poll": {
         "Title": "Sondage",

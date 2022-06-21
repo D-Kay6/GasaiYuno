@@ -113,27 +113,20 @@
     "Automation": {
       "Channel": {
         "Invalid": {
-          "Name": "The configuration name may not be empty.",
+          "Channel": "That is not an auto-channel. Did you intent to make it one?",
+          "Channels": "I could not find any auto-channels. Did you forget to make them?",
           "GenerationName": "The name for duplicated channels may not be empty.",
-          "Exists": "Configuration `{0}` already exists. Did you forget?",
-          "Configuration": "I could not find any dynamic channel configurations named {0}. Are you sure you typed it correctly?",
-          "Configurations": "I could not find any dynamic channel configurations. Did you forget to make them?",
-          "Assigned": "`{1}` is already assigned to configuration `{0}`. First remove it from there if you want it added to this one.",
-          "Unassigned": "`{1}` is not assigned to configuration `{0}`. Are you sure you typed it correctly?"
+          "Exists": "{0} already is an auto-channel. Did you forget?"
         },
-        "Info": "Dynamic channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins a dynamic channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
+        "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
         "Details": {
-          "Title": "Dynamic Channels",
+          "Title": "Auto-Channels",
           "Type": "Type",
-          "GenerationName": "Generated name",
-          "Channels": "Assigned channels",
-          "List": "Type: {0}[enter]Assigned channels: {1}"
+          "GenerationName": "Generated name"
         },
-        "Added": "Configuration `{0}` has been created. Remember to assign channels to it.",
-        "Deleted": "Configuration `{0}` has been removed. Note that any remaining channels that have been made with this will have to be deleted manually.",
-        "Renamed": "Duplicated channels from {0} will now be named `{1}`.",
-        "Assigned": "`{1}` was assigned to the `{0}` configuration.",
-        "Removed": "`{1}` was removed from the `{0}` configuration."
+        "Created": "{0} is now an auto-channel.",
+        "Removed": "{0} is no longer an auto-channel.",
+        "Renamed": "Duplicated channels from {0} will now be named `{1}`."
       },
       "Poll": {
         "Title": "Poll",

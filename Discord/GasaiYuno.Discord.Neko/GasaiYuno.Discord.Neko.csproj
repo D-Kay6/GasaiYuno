@@ -21,7 +21,6 @@
     <ItemGroup>
         <PackageReference Include="Neko-Love.Net" Version="1.0.0" />
         <PackageReference Include="Nekos.Net" Version="3.2.0" />
-        <PackageReference Include="RavenDB.Client" Version="5.3.103" />
     </ItemGroup>
 
 </Project>

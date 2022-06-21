@@ -113,27 +113,20 @@
     "Automation": {
       "Channel": {
         "Invalid": {
-          "Name": "El nombre de la configuración no puede estar vacío.",
-          "GenerationName": "El nombre de los canales duplicados no pueden estar vacío.",
-          "Exists": "La configuración `{0}` ya existe. ¿Te olvidaste de eso?",
-          "Configuration": "No pude encontrar ninguna configuración del canal dinámico con el nombre {0}. ¿Estás seguro de que lo escribiste bien?",
-          "Configurations": "No pude encontrar ninguna configuración de canal dinámico. ¿Olvidaste hacerlos?",
-          "Assigned": "`{1}` ya está asignado a configuración `{0}`. Primero elimínelo de allí si desea que se aplique a este.",
-          "Unassigned": "`{1}` no está asignado a la configuración `{0}`. ¿Está seguro de haberlo escrito correctamente?"
+          "Channel": "That is not an auto-channel. Did you intent to make it one?",
+          "Channels": "I could not find any auto-channels. Did you forget to make them?",
+          "GenerationName": "The name for duplicated channels may not be empty.",
+          "Exists": "{0} already is an auto-channel. Did you forget?"
         },
-        "Info": "Los canales dinámicos ayudan a mantener limpio su servidor al eliminar la necesidad de canales de voz que solo sirven para proporcionar un canal para cuando los usuarios lo necesiten.[enter]Piense en canales como `voz 1`, `voz 2`, etc.[enter]Cuando un usuario se une a un canal dinámico, duplicaré ese canal, incluyendo todos los ajustes, y moveré al usuario a este nuevo canal[enter]También proporcionaré al usuario el permiso `Administrar Canal`, sólo para ese canal, para que puedan modificarlo según sus necesidades.[enter][enter]El canal duplicado puede ser de dos tipos __Permanente__ y __Temporal__.[enter]Los canales permanentes, como indica su nombre, permanecerán en el servidor, hasta se quitan manualmente.[enter]Los canales temporales los borraré cuando todos hayan salido del canal.[enter]De esta manera, no tendrás ningún desorden de canales[enter][enter]También, puedes cambiar el nombre que debo dar al canal duplicado.[enter]Este nombre acepta un parámetro en la forma de `[user]` donde ingresaré la forma posesiva del nombre de usuario.[enter]Ejemplo: `[user] canal` ->_ `Canal de D-Kay`",
+        "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
         "Details": {
-          "Title": "Canales dinámicos",
-          "Type": "Tipos",
-          "GenerationName": "Nombre Generado",
-          "Channels": "Canales asignados",
-          "List": "Tipos: {0}[enter]Canales: {1}"
+          "Title": "Auto-Channels",
+          "Type": "Type",
+          "GenerationName": "Generated name"
         },
-        "Added": "Se ha creado la configuración `{0}`. Recuerde asignarle canales.",
-        "Deleted": "Se ha eliminado la configuración `{0}`. Tenga en cuenta que los canales restantes que se hayan creado con esto deberán eliminarse manualmente.",
-        "Renamed": "Los canales duplicados de {0} ahora se llamarán `{1}`.",
-        "Assigned": "`{1}` se asignó a la configuración `{0}`.",
-        "Removed": "`{1}` fue eliminado de la configuración `{0}`."
+        "Created": "{0} is now an auto-channel.",
+        "Removed": "{0} is no longer an auto-channel.",
+        "Renamed": "Duplicated channels from {0} will now be named `{1}`."
       },
       "Poll": {
         "Title": "Encuesta",

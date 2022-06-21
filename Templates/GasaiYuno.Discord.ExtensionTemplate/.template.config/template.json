@@ -1,0 +1,101 @@
+{
+	"author": "D-Kay",
+	"classifications": [
+		"Common",
+		"Library"
+	],
+	"name": "GasaiYuno Discord Extension",
+	"description": "A structure for creating extensions for the GasaiYuno discord bot.",
+	"identity": "GasaiYuno.Discord.Extension.1.0",
+	"groupIdentity": "GasaiYuno.Discord.Extension",
+	"shortName": "gasaiyuno-discord-ext",
+	"tags": {
+		"language": "C#",
+		"type": "project"
+	},
+	"sourceName": "ExtensionTemplate",
+	"preferNameDirectory": "true",
+	"symbols": {
+		"ExtensionPascalSingle": {
+			"type": "derived",
+			"valueSource": "name",
+			"valueTransform": "PascalCaseSingle",
+			"replaces": "ExtNamePS",
+			"fileRename": "ExtNamePS"
+		},
+		"ExtensionPascalPlural": {
+			"type": "derived",
+			"valueSource": "name",
+			"valueTransform": "PascalCasePlural",
+			"replaces": "ExtNamePP",
+			"fileRename": "ExtNamePP"
+		},
+		"ExtensionCamelSingle": {
+			"type": "derived",
+			"valueSource": "name",
+			"valueTransform": "CamelCaseSingle",
+			"replaces": "ExtNameCS",
+			"fileRename": "ExtNameCS"
+		},
+		"ExtensionCamelPlural": {
+			"type": "derived",
+			"valueSource": "name",
+			"valueTransform": "CamelCasePlural",
+			"replaces": "ExtNameCP",
+			"fileRename": "ExtNameCP"
+		}
+	},
+	"forms": {
+		"PascalCaseSingle": {
+			"identifier": "chain",
+			"steps": [
+				"ExtrudeName",
+				"PascalCase",
+				"Single"
+			]
+		},
+		"PascalCasePlural": {
+			"identifier": "chain",
+			"steps": [
+				"ExtrudeName",
+				"PascalCase"
+			]
+		},
+		"CamelCaseSingle": {
+			"identifier": "chain",
+			"steps": [
+				"ExtrudeName",
+				"CamelCase",
+				"Single"
+			]
+		},
+		"CamelCasePlural": {
+			"identifier": "chain",
+			"steps": [
+				"ExtrudeName",
+				"CamelCase"
+			]
+		},
+		"ExtrudeName": {
+			"identifier": "replace",
+			"pattern": "(?<=^).+\\.",
+			"replacement": ""
+		},
+		"PascalCase": {
+			"identifier": "firstUpperCase"
+		},
+		"CamelCase": {
+			"identifier": "firstLowerCase"
+		},
+		"Single": {
+			"identifier": "replace",
+			"pattern": "(?:s*$)",
+			"replacement": ""
+		},
+		"Plural": {
+			"identifier": "replace",
+			"pattern": "(?:s*$)",
+			"replacement": "s"
+		}
+	}
+}

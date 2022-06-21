@@ -9,11 +9,11 @@ public record AddCustomCommandCommand : INotification
     public string Command { get; }
     public string Response { get; }
     
-    public AddCustomCommandCommand(CustomCommand command)
+    public AddCustomCommandCommand(CustomCommand customCommand)
     {
-        ServerId = command.Server;
-        Command = command.Command;
-        Response = command.Response;
+        ServerId = customCommand.Server;
+        Command = customCommand.Command;
+        Response = customCommand.Response;
     }
     
     public AddCustomCommandCommand(ulong serverId, string command, string response)

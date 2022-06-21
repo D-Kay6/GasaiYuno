@@ -18,8 +18,4 @@
         <ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="RavenDB.Client" Version="5.3.103" />
-    </ItemGroup>
-
 </Project>
