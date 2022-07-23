@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Timers;
+﻿using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace GasaiYuno.Discord.Core.Models;

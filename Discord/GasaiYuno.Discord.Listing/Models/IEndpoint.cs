@@ -1,5 +1,4 @@
 ﻿using RestSharp;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listing.Models;
 

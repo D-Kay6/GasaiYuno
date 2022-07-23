@@ -1,9 +1,7 @@
 ﻿using GasaiYuno.Discord.Listing.Configuration;
 using RestSharp;
 using RestSharp.Authenticators;
-using System;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listing.Models;
 

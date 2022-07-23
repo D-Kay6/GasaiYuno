@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GasaiYuno.Discord.Core.Attributes;
+﻿namespace GasaiYuno.Discord.Core.Attributes;
 
 [AttributeUsage(AttributeTargets.Field)]
 public class LocalizationAttribute : Attribute

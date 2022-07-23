@@ -6,7 +6,6 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Core.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Core.Commands;
 

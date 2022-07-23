@@ -6,10 +6,6 @@ using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Music.Interfaces.Lyrics;
 using GasaiYuno.Discord.Music.Models.Audio;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Victoria.Enums;
 using Victoria.Responses.Search;
 

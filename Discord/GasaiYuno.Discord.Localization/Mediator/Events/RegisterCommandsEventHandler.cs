@@ -1,10 +1,7 @@
 ﻿using Discord.Interactions;
 using GasaiYuno.Discord.Core.Mediator.Events;
 using MediatR;
-using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Localization.Mediator.Events;
 

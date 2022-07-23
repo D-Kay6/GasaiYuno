@@ -1,10 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Interfaces;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listeners;
 

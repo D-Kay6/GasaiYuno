@@ -2,8 +2,6 @@
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Listing.Mediator.Events;
 using MediatR;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listing.Listeners;
 
@@ -13,13 +11,11 @@ internal class ListingListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<ListingListener> _logger;
 
-    public ListingListener(DiscordShardedClient client, IMediator mediator, ILogger<ListingListener> logger)
+    public ListingListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
     }
 
     public Task Start()

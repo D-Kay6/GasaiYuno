@@ -9,9 +9,6 @@ using GasaiYuno.Discord.Core.Models;
 using GasaiYuno.Discord.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listeners;
 

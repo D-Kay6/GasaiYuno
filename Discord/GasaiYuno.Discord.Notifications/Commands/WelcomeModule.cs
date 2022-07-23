@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 namespace GasaiYuno.Discord.Notifications.Commands;
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageMessages)]
 [RequireUserPermission(GuildPermission.ManageMessages)]
 [Group("welcome", "A welcome notification.")]

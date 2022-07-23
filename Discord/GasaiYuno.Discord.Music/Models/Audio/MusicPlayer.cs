@@ -1,6 +1,4 @@
 ﻿using Discord;
-using System;
-using System.Threading.Tasks;
 using Victoria;
 using Victoria.Enums;
 

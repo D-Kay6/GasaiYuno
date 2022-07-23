@@ -1,5 +1,4 @@
 ﻿using Discord;
-using System;
 
 namespace GasaiYuno.Discord.Core.Extensions;
 

@@ -1,9 +1,6 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Services;
 

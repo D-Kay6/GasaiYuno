@@ -2,7 +2,6 @@
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Events;
 using MediatR;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listeners;
 

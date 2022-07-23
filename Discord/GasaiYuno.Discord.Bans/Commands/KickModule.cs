@@ -7,7 +7,6 @@ namespace GasaiYuno.Discord.Bans.Commands;
 [EnabledInDm(false)]
 public class KickModule : BaseInteractionModule<KickModule>
 {
-    [DefaultPermission(false)]
     [DefaultMemberPermissions(GuildPermission.KickMembers)]
     [RequireUserPermission(GuildPermission.KickMembers)]
     [SlashCommand("kick", "Kick a user who misbehaves, or just because you feel like it.")]

@@ -1,8 +1,6 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Requests;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Requests;
 

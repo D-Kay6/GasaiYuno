@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GasaiYuno.Discord.Mediator;
+﻿namespace GasaiYuno.Discord.Mediator;
 
 /// <summary>
 /// Exception type for mediator validation errors

@@ -1,6 +1,5 @@
 ﻿using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Chatbot.Models;
 

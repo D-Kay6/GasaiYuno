@@ -4,10 +4,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators.OAuth2;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Music.Services;
 

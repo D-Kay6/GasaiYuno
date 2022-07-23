@@ -1,6 +1,4 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace GasaiYuno.Discord.Localization.Models;

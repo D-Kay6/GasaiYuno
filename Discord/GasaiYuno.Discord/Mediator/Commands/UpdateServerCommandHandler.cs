@@ -2,8 +2,6 @@
 using GasaiYuno.Discord.Core.Mediator.Commands;
 using GasaiYuno.Discord.Core.Models;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Commands;
 

@@ -1,7 +1,5 @@
 ﻿using GasaiYuno.Discord.Listing.Interfaces;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listing.Mediator.Events;
 

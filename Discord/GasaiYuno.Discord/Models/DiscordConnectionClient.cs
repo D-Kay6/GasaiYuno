@@ -4,13 +4,11 @@ using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Mediator.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Models;
 
-public class DiscordConnectionClient : DiscordShardedClient, IAsyncDisposable
+public class DiscordConnectionClient : DiscordShardedClient
 {
     public event Func<Task> Ready;
     

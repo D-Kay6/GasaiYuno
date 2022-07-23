@@ -5,7 +5,6 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Polls.Mediator.Commands;
 using GasaiYuno.Discord.Polls.Mediator.Requests;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace GasaiYuno.Discord.Polls.Listeners;
 
@@ -15,14 +14,12 @@ internal class PollListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<PollListener> _logger;
     private readonly Timer _timer;
 
-    public PollListener(DiscordShardedClient client, IMediator mediator, ILogger<PollListener> logger)
+    public PollListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
 
         _timer = new Timer(CheckPolls, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
     }

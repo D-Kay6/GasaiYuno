@@ -2,9 +2,6 @@
 using GasaiYuno.Discord.Core.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Behaviors;
 
