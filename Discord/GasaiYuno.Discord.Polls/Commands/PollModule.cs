@@ -7,7 +7,6 @@ using GasaiYuno.Discord.Polls.Mediator.Commands;
 namespace GasaiYuno.Discord.Polls.Commands;
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageEvents)]
 [Group("poll", "Create new polls for users to answer.")]
 public class PollModule : BaseInteractionModule<PollModule>

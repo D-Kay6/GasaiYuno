@@ -28,7 +28,6 @@ public class CustomCommandResponderModule : BaseInteractionModule<CustomCommandM
 }
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageMessages)]
 [Group("custom-commands", "Manage customized commands and their respective response.")]
 public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
@@ -136,7 +135,7 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
                 return;
             }
 
-            await Mediator.Send(new AddCustomCommandCommand(Context.Guild.Id, modal.Name.Trim(), modal.Response.Trim())).ConfigureAwait(false);
+            await Mediator.Publish(new AddCustomCommandCommand(Context.Guild.Id, modal.Name.Trim(), modal.Response.Trim())).ConfigureAwait(false);
             await RespondAsync(Translation.Message("Entertainment.CustomCommand.Added", modal.Name), ephemeral: true).ConfigureAwait(false);
         }
     }

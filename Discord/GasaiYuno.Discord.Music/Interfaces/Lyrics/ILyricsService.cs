@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace GasaiYuno.Discord.Music.Interfaces.Lyrics;
+﻿namespace GasaiYuno.Discord.Music.Interfaces.Lyrics;
 
 public interface ILyricsService
 {

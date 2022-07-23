@@ -5,7 +5,6 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Raffles.Mediator.Commands;
 using GasaiYuno.Discord.Raffles.Mediator.Requests;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace GasaiYuno.Discord.Raffles.Listeners;
 
@@ -15,15 +14,13 @@ internal class RaffleListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<RaffleListener> _logger;
     private readonly Timer _timer;
     private readonly Random _random;
 
-    public RaffleListener(DiscordShardedClient client, IMediator mediator, ILogger<RaffleListener> logger)
+    public RaffleListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
 
         _timer = new Timer(CheckRaffles, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         _random = new Random();

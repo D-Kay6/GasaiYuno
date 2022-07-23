@@ -30,5 +30,6 @@ public class AddCustomCommandCommandHandler : INotificationHandler<AddCustomComm
             Response = command.Response
         };
         await _unitOfWork.AddAsync(customCommand, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

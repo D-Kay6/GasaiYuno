@@ -25,7 +25,8 @@ public class AddDistributionRoleCommandHandler : INotificationHandler<AddDistrib
             Message = command.MessageId,
             Description = command.Description,
             MinSelected = command.MinSelected,
-            MaxSelected = command.MaxSelected
+            MaxSelected = command.MaxSelected,
+            ButtonText = command.ButtonText
         };
         await _unitOfWork.AddAsync(distributionRole, cancellationToken).ConfigureAwait(false);
         await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

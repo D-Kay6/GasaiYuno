@@ -3,7 +3,6 @@ using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.DistributionRoles.Mediator.Commands;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace GasaiYuno.Discord.DistributionRoles.Listeners;
 
@@ -13,13 +12,11 @@ internal class DistributionRoleListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<DistributionRoleListener> _logger;
 
-    public DistributionRoleListener(DiscordShardedClient client, IMediator mediator, ILogger<DistributionRoleListener> logger)
+    public DistributionRoleListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
     }
 
     public Task Start()

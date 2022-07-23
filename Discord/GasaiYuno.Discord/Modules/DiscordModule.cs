@@ -9,7 +9,6 @@ using GasaiYuno.Discord.Models;
 using GasaiYuno.Discord.Services;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Reflection;
 using Module = Autofac.Module;
 

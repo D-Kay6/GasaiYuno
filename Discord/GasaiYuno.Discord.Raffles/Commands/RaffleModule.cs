@@ -7,7 +7,6 @@ using GasaiYuno.Discord.Raffles.Mediator.Commands;
 namespace GasaiYuno.Discord.Raffles.Commands;
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageEvents)]
 [Group("raffle", "Create a new raffle for users to join.")]
 public class RaffleModule : BaseInteractionModule<RaffleModule>

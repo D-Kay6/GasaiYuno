@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using GasaiYuno.Discord.AutoChannels.Commands.Autocomplete;
 using GasaiYuno.Discord.AutoChannels.Mediator.Commands;
 using GasaiYuno.Discord.AutoChannels.Mediator.Requests;
 using GasaiYuno.Discord.AutoChannels.Models;

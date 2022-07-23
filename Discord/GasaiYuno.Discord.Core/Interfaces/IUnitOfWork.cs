@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace GasaiYuno.Discord.Core.Interfaces;
+﻿namespace GasaiYuno.Discord.Core.Interfaces;
 
 public interface IUnitOfWork<TEntity> : IRepository<TEntity>, IDisposable where TEntity : IEntity
 {

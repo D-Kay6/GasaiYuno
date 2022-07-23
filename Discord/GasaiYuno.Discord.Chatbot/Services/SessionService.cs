@@ -1,9 +1,7 @@
 ﻿using Discord.WebSocket;
 using GasaiYuno.Discord.Chatbot.Interfaces;
 using GasaiYuno.Discord.Chatbot.Models;
-using System;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Chatbot.Services;
 

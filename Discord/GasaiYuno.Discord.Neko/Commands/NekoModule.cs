@@ -88,7 +88,7 @@ public class NekoModule : BaseInteractionModule<NekoModule>
             var imageData = await _restClient.DownloadStreamAsync(new RestRequest(url)).ConfigureAwait(false);
             await FollowupWithFileAsync(imageData, $"Neko{extension}").ConfigureAwait(false);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             await FollowupAsync(url).ConfigureAwait(false);
         }

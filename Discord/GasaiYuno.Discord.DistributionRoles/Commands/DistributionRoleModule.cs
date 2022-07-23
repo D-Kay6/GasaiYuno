@@ -8,7 +8,6 @@ using GasaiYuno.Discord.DistributionRoles.Mediator.Requests;
 namespace GasaiYuno.Discord.DistributionRoles.Commands;
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageRoles)]
 [Group("role-distributor", "Manage the automated role distribution of message interactions.")]
 public class DistributionRoleModule : BaseInteractionModule<DistributionRoleModule>

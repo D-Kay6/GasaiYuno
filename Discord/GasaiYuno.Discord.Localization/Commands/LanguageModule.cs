@@ -5,12 +5,10 @@ using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Core.Mediator.Commands;
 using GasaiYuno.Discord.Core.Models;
 using GasaiYuno.Discord.Localization.Interfaces;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Localization.Commands;
 
 [EnabledInDm(false)]
-[DefaultPermission(false)]
 [DefaultMemberPermissions(GuildPermission.ManageGuild)]
 [RequireUserPermission(GuildPermission.ManageGuild)]
 [Group("language", "Manage the language of the server.")]

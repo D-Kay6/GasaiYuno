@@ -17,7 +17,6 @@ public class ManageModule : BaseInteractionModule<ManageModule>
         _lifetimeService = lifetimeService;
     }
 
-    [DefaultPermission(false)]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     [SlashCommand("restart", "Restart the bot (owner only).")]
     public async Task RestartCommand()
@@ -26,7 +25,6 @@ public class ManageModule : BaseInteractionModule<ManageModule>
         await _lifetimeService.RestartAsync();
     }
 
-    [DefaultPermission(false)]
     [DefaultMemberPermissions(GuildPermission.Administrator)]
     [SlashCommand("shutdown", "shut the bot down (owner only).")]
     public async Task ShutdownCommand()

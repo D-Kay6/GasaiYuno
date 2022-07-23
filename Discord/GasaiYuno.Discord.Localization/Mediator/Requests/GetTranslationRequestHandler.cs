@@ -2,8 +2,6 @@
 using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Localization.Interfaces;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Localization.Mediator.Requests;
 

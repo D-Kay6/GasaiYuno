@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace GasaiYuno.Discord.Listing.Interfaces;
+﻿namespace GasaiYuno.Discord.Listing.Interfaces;
 
 public interface IListingUpdater
 {

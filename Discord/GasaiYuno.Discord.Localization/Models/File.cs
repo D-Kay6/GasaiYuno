@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.IO;
 using System.Text;
 
 namespace GasaiYuno.Discord.Localization.Models;

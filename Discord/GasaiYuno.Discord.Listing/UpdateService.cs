@@ -3,8 +3,6 @@ using GasaiYuno.Discord.Listing.Interfaces;
 using GasaiYuno.Discord.Listing.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Listing;
 

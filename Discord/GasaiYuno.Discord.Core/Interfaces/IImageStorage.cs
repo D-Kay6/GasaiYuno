@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace GasaiYuno.Discord.Core.Interfaces;
+﻿namespace GasaiYuno.Discord.Core.Interfaces;
 
 public interface IImageStorage
 {

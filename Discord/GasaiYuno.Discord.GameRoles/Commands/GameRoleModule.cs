@@ -12,7 +12,8 @@ namespace GasaiYuno.Discord.GameRoles.Commands;
 public class GameRoleModule : BaseInteractionModule<GameRoleModule>
 {
     [SlashCommand("list", "See an overview of all the game role configurations.")]
-    public async Task ListGameRoleCommand([Summary(description: "The type of automation.")] AutomationType? type = null)
+    public Task ListGameRoleCommand([Summary(description: "The type of automation.")] AutomationType? type = null)
     {
+        return Task.CompletedTask;
     }
 }

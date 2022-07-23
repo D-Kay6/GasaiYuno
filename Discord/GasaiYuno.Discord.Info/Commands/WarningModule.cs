@@ -8,7 +8,6 @@ namespace GasaiYuno.Discord.Info.Commands;
 [EnabledInDm(false)]
 public class WarningModule : BaseInteractionModule<WarningModule>
 {
-    [DefaultPermission(false)]
     [DefaultMemberPermissions(GuildPermission.ManageMessages)]
     [RequireUserPermission(GuildPermission.ManageMessages)]
     [SlashCommand("disable-warning", "Disable the warning about the prefix no longer working.")]

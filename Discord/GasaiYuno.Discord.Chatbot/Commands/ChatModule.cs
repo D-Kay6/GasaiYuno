@@ -3,7 +3,6 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Chatbot.Interfaces;
 using GasaiYuno.Discord.Core.Commands;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Chatbot.Commands;
 
