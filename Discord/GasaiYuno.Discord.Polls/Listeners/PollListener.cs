@@ -60,11 +60,9 @@ internal class PollListener : IListener
                 if (channel == null) continue;
 
                 var translation = await _mediator.Send(new GetTranslationRequest(poll.Server)).ConfigureAwait(false);
-                var totalScore = poll.Selections.Select(x => x.SelectedOption).GroupBy(x => x).ToList();
-                var maxScore = totalScore.MaxBy(x => x.Count())?.Key ?? -1;
-                var highestIndexes = totalScore.Where(x => x.Count() == maxScore).Select(x => x.Key).ToList();
-                var options = highestIndexes.Select(index => poll.Options[index]).ToList();
-                var selectedOptions = options.Any() ? string.Join("\n", options) : translation.Message("Automation.Poll.Result.None");
+                var maxScore = poll.Options.Max(x => x.Selectors.Count);
+                var winningOptions = poll.Options.Where(x => x.Selectors.Count == maxScore).Select(x => x.Value).ToList();
+                var selectedOptions = winningOptions.Any() ? string.Join("\n", winningOptions) : translation.Message("Automation.Poll.Result.None");
 
                 var message = await channel.GetMessageAsync(poll.Message).ConfigureAwait(false);
                 var embedBuilder = new EmbedBuilder();

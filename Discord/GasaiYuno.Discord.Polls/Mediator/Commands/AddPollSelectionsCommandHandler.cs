@@ -17,11 +17,21 @@ public class AddPollSelectionsCommandHandler : INotificationHandler<AddPollSelec
     {
         var poll = await _unitOfWork.SingleOrDefaultAsync(x => x.Identity == command.ReferenceId, cancellationToken).ConfigureAwait(false);
         if (poll == null) return;
-
-        poll.Selections.RemoveAll(x => x.User == command.UserId);
-        if (command.SelectedOptions.Length > 0)
-            poll.Selections.AddRange(command.SelectedOptions.Select(x => new PollSelection{User = command.UserId, SelectedOption = x}));
         
+        for (var i = 0; i < poll.Options.Count; i++)
+        {
+            var pollOption = poll.Options[i];
+            if (command.SelectedOptions.Contains(i))
+            {
+                if (!pollOption.Selectors.Contains(command.UserId))
+                    pollOption.Selectors.Add(command.UserId);
+            }
+            else
+            {
+                if (pollOption.Selectors.Contains(command.UserId))
+                    pollOption.Selectors.Remove(command.UserId);
+            }
+        }
         await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

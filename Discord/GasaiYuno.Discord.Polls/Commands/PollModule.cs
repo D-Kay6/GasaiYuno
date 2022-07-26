@@ -24,7 +24,7 @@ public class PollModule : BaseInteractionModule<PollModule>
         public string Title => "New poll";
 
         [InputLabel("Description")]
-        [ModalTextInput("form description", TextInputStyle.Short, maxLength: 500)]
+        [ModalTextInput("form description", TextInputStyle.Paragraph, maxLength: 256)]
         public string Description { get; set; }
 
         [InputLabel("Options, each on a new line.")]
@@ -49,8 +49,9 @@ public class PollModule : BaseInteractionModule<PollModule>
             embedBuilder.WithFooter(Translation.Message("Automation.Poll.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
+            var reference = Guid.NewGuid();
             var selectMenuBuilder = new SelectMenuBuilder()
-                .WithCustomId($"poll selection:{Context.Interaction.Id}")
+                .WithCustomId($"poll selection:{reference}")
                 .WithPlaceholder(Translation.Message(allowMultiple ? "Automation.Poll.Selector.Multiple" : "Automation.Poll.Selector.Single"))
                 .WithMinValues(1)
                 .WithMaxValues(allowMultiple ? options.Length : 1);
@@ -61,7 +62,7 @@ public class PollModule : BaseInteractionModule<PollModule>
 
             await RespondAsync(embed: embedBuilder.Build(), components: new ComponentBuilder().WithSelectMenu(selectMenuBuilder).Build()).ConfigureAwait(false);
             var selectionMessage = await GetOriginalResponseAsync().ConfigureAwait(false);
-            await Mediator.Publish(new AddPollCommand(Context.Interaction.Id, Context.Guild.Id, Context.Channel.Id, selectionMessage.Id, DateTime.Now + duration, modal.Description, options)).ConfigureAwait(false);
+            await Mediator.Publish(new AddPollCommand(reference, Context.Guild.Id, Context.Channel.Id, selectionMessage.Id, DateTime.Now + duration, modal.Description, options)).ConfigureAwait(false);
         }
     }
 
@@ -70,7 +71,7 @@ public class PollModule : BaseInteractionModule<PollModule>
         [ComponentInteraction("selection:*")]
         public async Task PollSelection(string reference, string[] selectedOptions)
         {
-            var referenceId = ulong.Parse(reference);
+            var referenceId = Guid.Parse(reference);
             var selections = selectedOptions.Select(int.Parse).ToArray();
             await Mediator.Publish(new AddPollSelectionsCommand(referenceId, Context.User.Id, selections)).ConfigureAwait(false);
             await DeferAsync(true).ConfigureAwait(false);

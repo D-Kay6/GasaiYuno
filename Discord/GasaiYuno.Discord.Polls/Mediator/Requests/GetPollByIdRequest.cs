@@ -5,9 +5,9 @@ namespace GasaiYuno.Discord.Polls.Mediator.Requests;
 
 public record GetPollByIdRequest : IRequest<Poll>
 {
-    public ulong Id { get; }
+    public Guid Id { get; }
     
-    public GetPollByIdRequest(ulong id)
+    public GetPollByIdRequest(Guid id)
     {
         Id = id;
     }
