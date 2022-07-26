@@ -22,11 +22,11 @@ public class RaffleModule : BaseInteractionModule<RaffleModule>
         public string Title => "New raffle";
 
         [InputLabel("Title")]
-        [ModalTextInput("form title", TextInputStyle.Short, maxLength: 500)]
+        [ModalTextInput("form title", TextInputStyle.Short, maxLength: 256)]
         public string Header { get; set; }
 
         [InputLabel("Description")]
-        [ModalTextInput("form description", TextInputStyle.Paragraph)]
+        [ModalTextInput("form description", TextInputStyle.Paragraph, maxLength: 256)]
         public string Description { get; set; }
     }
 
@@ -43,12 +43,13 @@ public class RaffleModule : BaseInteractionModule<RaffleModule>
             embedBuilder.WithFooter(Translation.Message("Automation.Raffle.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
+            var reference = Guid.NewGuid();
             var componentBuilder = new ComponentBuilder()
-                .WithButton("Enter", $"raffle interaction:{Context.Interaction.Id}");
+                .WithButton("Enter", $"raffle interaction:{reference}");
 
             await RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build()).ConfigureAwait(false);
             var interactionMessage = await GetOriginalResponseAsync().ConfigureAwait(false);
-            await Mediator.Publish(new AddRaffleCommand(Context.Interaction.Id, Context.Guild.Id, Context.Channel.Id, interactionMessage.Id, modal.Header, DateTime.Now + duration)).ConfigureAwait(false);
+            await Mediator.Publish(new AddRaffleCommand(reference, Context.Guild.Id, Context.Channel.Id, interactionMessage.Id, modal.Header, DateTime.Now + duration)).ConfigureAwait(false);
         }
     }
 
@@ -57,7 +58,7 @@ public class RaffleModule : BaseInteractionModule<RaffleModule>
         [ComponentInteraction("interaction:*")]
         public async Task RaffleInteraction(string reference)
         {
-            var referenceId = ulong.Parse(reference);
+            var referenceId = Guid.Parse(reference);
             await Mediator.Publish(new AddRaffleEntryCommand(referenceId, Context.User.Id)).ConfigureAwait(false);
             await DeferAsync(true).ConfigureAwait(false);
         }

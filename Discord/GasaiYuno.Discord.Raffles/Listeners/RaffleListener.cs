@@ -67,7 +67,7 @@ internal class RaffleListener : IListener
                 {
                     var randomIndex = _random.Next(0, raffle.Entries.Count - 1);
                     var userWon = raffle.Entries[randomIndex];
-                    guildUser = guild.GetUser(userWon.User);
+                    guildUser = guild.GetUser(userWon);
                     if (guildUser != null) break;
                 }
                 if (guildUser == null) continue;

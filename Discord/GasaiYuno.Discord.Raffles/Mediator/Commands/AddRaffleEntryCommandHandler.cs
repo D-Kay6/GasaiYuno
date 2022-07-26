@@ -16,12 +16,9 @@ public class AddRaffleEntryCommandHandler : INotificationHandler<AddRaffleEntryC
     public async Task Handle(AddRaffleEntryCommand command, CancellationToken cancellationToken)
     {
         var raffle = await _unitOfWork.SingleOrDefaultAsync(x => x.Identity == command.RaffleId, cancellationToken).ConfigureAwait(false);
-        if (raffle == null) return;
+        if (raffle == null || raffle.Entries.Contains(command.UserId)) return;
         
-        raffle.Entries.Add(new RaffleEntry
-        {
-            User = command.UserId
-        });
+        raffle.Entries.Add(command.UserId);
         await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

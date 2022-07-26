@@ -5,7 +5,7 @@ namespace GasaiYuno.Discord.Raffles.Mediator.Commands;
 
 public record AddRaffleCommand : INotification
 {
-    public ulong Identity { get; }
+    public Guid Identity { get; }
     public ulong ServerId { get; }
     public ulong ChannelId { get; }
     public ulong MessageId { get; }
@@ -22,7 +22,7 @@ public record AddRaffleCommand : INotification
         EndDate = raffle.EndDate;
     }
     
-    public AddRaffleCommand(ulong identity, ulong server, ulong channel, ulong message, string title, DateTime endDate)
+    public AddRaffleCommand(Guid identity, ulong server, ulong channel, ulong message, string title, DateTime endDate)
     {
         Identity = identity;
         ServerId = server;
