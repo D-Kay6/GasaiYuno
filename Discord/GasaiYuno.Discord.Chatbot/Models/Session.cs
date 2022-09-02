@@ -5,6 +5,7 @@ namespace GasaiYuno.Discord.Chatbot.Models;
 
 internal class Session : ISession
 {
+    /// <inheritdoc/>
     public event Func<ISession, Task> SessionEnded;
 
     /// <inheritdoc/>

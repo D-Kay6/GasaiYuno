@@ -1,0 +1,370 @@
+{
+  "auto-channels": {
+    "name": "auto-channels",
+    "description": "Configure and manage the auto-channels.",
+    "info": {
+      "name": "info",
+      "description": "Display information on the use of auto-channels."
+    },
+    "details": {
+      "name": "details",
+      "description": "Display information of a specific auto-channel.",
+      "voice-channel": {
+        "name": "voice-channel",
+        "description": "The voice-channel used as an auto-channel."
+      }
+    },
+    "list": {
+      "name": "list",
+      "description": "Display short information of all the configurations."
+    },
+    "assign": {
+      "name": "assign",
+      "description": "Assign a voice-channel as an auto-channel.",
+      "channel": {
+        "name": "channel",
+        "description": "The channel to assign."
+      },
+      "type": {
+        "name": "type",
+        "description": "What kind of channels are generated."
+      },
+      "generation-name": {
+        "name": "generation-name",
+        "description": "The name of the generated channels."
+      }
+    },
+    "remove": {
+      "name": "remove",
+      "description": "Undo the assignment of an auto-channel.",
+      "voice-channel": {
+        "name": "voice-channel",
+        "description": "The channel to unassign."
+      }
+    },
+    "edit": {
+      "name": "edit",
+      "description": "Change a dynamic channel configuration.",
+      "voice-channel": {
+        "name": "voice-channel",
+        "description": "The channel to modify."
+      },
+      "generated-name": {
+        "name": "generated-name",
+        "description": "The new name for generated channels."
+      }
+    }
+  },
+  "role-distributor": {
+    "name": "role-distributor",
+    "description": "Manage the automated role distribution of message interactions.",
+    "button": {
+      "name": "button",
+      "description": "Create a message that gives roles when the button is pressed."
+    },
+    "list": {
+      "name": "list",
+      "description": "Create a message where users can select roles from a list."
+    }
+  },
+  "poll": {
+    "name": "poll",
+    "description": "Create new polls for users to answer.",
+    "new": {
+      "name": "new",
+      "description": "Create a new poll.",
+      "duration": {
+        "name": "duration",
+        "description": "The time until the result needs to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes"
+      },
+      "multi-select": {
+        "name": "multi-select",
+        "description": "Whether or not the poll allows for multiple options to be selected."
+      }
+    }
+  },
+  "raffle": {
+    "name": "raffle",
+    "description": "Create a new raffle for users to join.",
+    "new": {
+      "name": "new",
+      "description": "Create a new raffle for users to join.",
+      "duration": {
+        "name": "duration",
+        "description": "The time until the result need to be posted. Example: 4d3h2m -> 4 days, 3 hours, 2 minutes"
+      }
+    }
+  },
+  "chat": {
+    "name": "chat",
+    "description": "Engage in a casual, but probably still weird, conversation with me.",
+    "start": {
+      "name": "start",
+      "description": "Engage in a casual, but probably still weird, conversation with me.",
+      "message": {
+        "name": "message",
+        "description": "The message to start the conversation with."
+      }
+    },
+    "stop": {
+      "name": "stop",
+      "description": "End the ongoing conversation."
+    }
+  },
+  "run": {
+    "name": "run",
+    "description": "Run a custom command.",
+    "command": {
+      "name": "command",
+      "description": "The name of the custom command to run."
+    }
+  },
+  "custom-commands": {
+    "name": "custom-commands",
+    "description": "Manage customized commands and their respective response.",
+    "list": {
+      "name": "list",
+      "description": "Display all custom commands of this server."
+    },
+    "add": {
+      "name": "add",
+      "description": "Add a custom command for this server."
+    },
+    "remove": {
+      "name": "remove",
+      "description": "Remove one of this server's custom commands.",
+      "command": {
+        "name": "command",
+        "description": "The command without the prefix."
+      }
+    }
+  },
+  "music": {
+    "name": "music",
+    "description": "Play music in a channel or get the lyrics of a song.",
+    "join": {
+      "name": "join",
+      "description": "Connect me to the voice channel you're in."
+    },
+    "leave": {
+      "name": "leave",
+      "description": "Disconnect me from your voice channel."
+    },
+    "play": {
+      "name": "play",
+      "description": "Request a song to be played.",
+      "song": {
+        "name": "song",
+        "description": "Video-url, playlist-url, or name of a song you want to play."
+      }
+    },
+    "pause": {
+      "name": "pause",
+      "description": "Pause the currently playing song."
+    },
+    "resume": {
+      "name": "resume",
+      "description": "Continue playing the previously paused song."
+    },
+    "stop": {
+      "name": "stop",
+      "description": "Stop the current song and don't continue playing."
+    },
+    "playing": {
+      "name": "playing",
+      "description": "Show what song is currently playing."
+    },
+    "queue": {
+      "name": "queue",
+      "description": "Show the songs in the queue."
+    },
+    "shuffle": {
+      "name": "shuffle",
+      "description": "Shuffle the songs in the queue."
+    },
+    "skip": {
+      "name": "skip",
+      "description": "Skip a song and continue playing with the next one.",
+      "amount": {
+        "name": "amount",
+        "description": "The amount of songs to skip."
+      }
+    },
+    "clear": {
+      "name": "clear",
+      "description": "Remove all the songs from the queue."
+    },
+    "volume": {
+      "name": "volume",
+      "description": "Change the volume of the music.",
+      "volume": {
+        "name": "volume",
+        "description": "The new volume."
+      }
+    },
+    "lyrics": {
+      "name": "lyrics",
+      "description": "Get the lyrics of a song.",
+      "song": {
+        "name": "song",
+        "description": "The name of the song."
+      }
+    }
+  },
+  "birthday": {
+    "name": "birthday",
+    "description": "Sing a song for a happy fellow.",
+    "user": {
+      "name": "user",
+      "description": "The user to direct it towards."
+    }
+  },
+  "kill": {
+    "name": "kill",
+    "description": "Have me kill a user.",
+    "user": {
+      "name": "user",
+      "description": "user"
+    }
+  },
+  "neko": {
+    "name": "neko",
+    "description": "Get a random image of a neko.",
+    "random": {
+      "name": "random",
+      "description": "Get a random image of a neko.",
+      "category": {
+        "name": "category",
+        "description": "What category to pick from"
+      }
+    },
+    "lewd": {
+      "name": "lewd",
+      "description": "Get a random lewd image of a neko. Only usable in NSFW channels."
+    }
+  },
+  "invite": {
+    "name": "invite",
+    "description": "My invite link, so you, or someone else, can add me to a server."
+  },
+  "support": {
+    "name": "support",
+    "description": "Link to my support discord."
+  },
+  "disable-warning": {
+    "name": "disable-warning",
+    "description": "Disable the warning about the prefix no longer working."
+  },
+  "ban": {
+    "name": "ban",
+    "description": "Ban a user who misbehaves, or just because you feel like it.",
+    "user": {
+      "name": "user",
+      "description": "The user to ban."
+    },
+    "duration": {
+      "name": "duration",
+      "description": "How long to ban the user for."
+    },
+    "reason": {
+      "name": "reason",
+      "description": "The reason for the ban."
+    },
+    "days": {
+      "name": "days",
+      "description": "Until how many days back the messages of the user should be removed."
+    }
+  },
+  "kick": {
+    "name": "kick",
+    "description": "Kick a user who misbehaves, or just because you feel like it.",
+    "user": {
+      "name": "user",
+      "description": "The user to ban."
+    },
+    "reason": {
+      "name": "reason",
+      "description": "The reason for the ban."
+    }
+  },
+  "restart": {
+    "name": "restart",
+    "description": "Restart the bot (owner only)."
+  },
+  "shutdown": {
+    "name": "shutdown",
+    "description": "shut the bot down (owner only)."
+  },
+  "language": {
+    "name": "language",
+    "description": "Manage the language of the server.",
+    "current": {
+      "name": "current",
+      "description": "Show what language is currently being used."
+    },
+    "set": {
+      "name": "set",
+      "description": "Change the language for this server.",
+      "language": {
+        "name": "language",
+        "description": "The new language."
+      }
+    }
+  },
+  "welcome": {
+    "name": "welcome",
+    "description": "A welcome notification.",
+    "user": {
+      "name": "user",
+      "description": "Send a welcome notification for a specific user.",
+      "user": {
+        "name": "user",
+        "description": "user"
+      }
+    },
+    "enable": {
+      "name": "enable",
+      "description": "Enable the automated welcome notifications.",
+      "channel": {
+        "name": "channel",
+        "description": "The channel to send the messages in."
+      }
+    },
+    "disable": {
+      "name": "disable",
+      "description": "Disable the automated welcome notifications."
+    },
+    "message": {
+      "name": "message",
+      "description": "Configure the message of the notification.",
+      "current": {
+        "name": "current",
+        "description": "Display the current message used in the notification."
+      },
+      "change": {
+        "name": "change",
+        "description": "Change the message used in the notification."
+      }
+    },
+    "image": {
+      "name": "image",
+      "description": "Configure the image of the notification.",
+      "current": {
+        "name": "current",
+        "description": "Display the current image used in the notification."
+      },
+      "change": {
+        "name": "change",
+        "description": "Change the image used in the notification.",
+        "url": {
+          "name": "url",
+          "description": "The url of the image. If none is provided, the default image will be used."
+        }
+      },
+      "disable": {
+        "name": "disable",
+        "description": "Disable the image used in the notification."
+      }
+    }
+  }
+}

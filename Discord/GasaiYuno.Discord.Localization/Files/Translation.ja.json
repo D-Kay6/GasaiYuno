@@ -1,0 +1,370 @@
+{
+  "auto-channels": {
+    "name": "自動チャンネル",
+    "description": "自動チャネルを構成および管理します。",
+    "info": {
+      "name": "情報",
+      "description": "自動チャネルの使用に関する情報を表示します。"
+    },
+    "details": {
+      "name": "細部",
+      "description": "特定の自動チャネルの情報を表示します。",
+      "voice-channel": {
+        "name": "音声チャンネル",
+        "description": "自動チャネルとして使用される音声チャネル。"
+      }
+    },
+    "list": {
+      "name": "リスト",
+      "description": "すべての構成の短い情報を表示します。"
+    },
+    "assign": {
+      "name": "割り当てる",
+      "description": "音声チャネルを自動チャネルとして割り当てます。",
+      "channel": {
+        "name": "チャンネル",
+        "description": "割り当てるチャネル。"
+      },
+      "type": {
+        "name": "種類",
+        "description": "どのような種類のチャネルが生成されますか。"
+      },
+      "generation-name": {
+        "name": "世代名",
+        "description": "生成されたチャネルの名前。"
+      }
+    },
+    "remove": {
+      "name": "取り去る",
+      "description": "自動チャネルの割り当てを元に戻します。",
+      "voice-channel": {
+        "name": "音声チャンネル",
+        "description": "割り当てを解除するチャネル。"
+      }
+    },
+    "edit": {
+      "name": "編集",
+      "description": "動的チャネル構成を変更します。",
+      "voice-channel": {
+        "name": "音声チャンネル",
+        "description": "変更するチャネル。"
+      },
+      "generated-name": {
+        "name": "生成された名前",
+        "description": "生成されたチャネルの新しい名前。"
+      }
+    }
+  },
+  "role-distributor": {
+    "name": "役割ディストリビューター",
+    "description": "メッセージ対話の自動ロール配布を管理します。",
+    "button": {
+      "name": "ボタン",
+      "description": "ボタンが押されたときに役割を与えるメッセージを作成します。"
+    },
+    "list": {
+      "name": "リスト",
+      "description": "ユーザーがリストからロールを選択できるメッセージを作成します。"
+    }
+  },
+  "poll": {
+    "name": "投票",
+    "description": "ユーザーが回答するための新しい投票を作成します。",
+    "new": {
+      "name": "新機能",
+      "description": "新しいアンケートを作成します。",
+      "duration": {
+        "name": "期間",
+        "description": "結果を転記する必要があるまでの時間。例: 4d3h2m -> 4 日、3 時間、2 分"
+      },
+      "multi-select": {
+        "name": "複数選択",
+        "description": "ポーリングで複数のオプションを選択できるかどうか。"
+      }
+    }
+  },
+  "raffle": {
+    "name": "抽選",
+    "description": "ユーザーが参加するための新しいラッフルを作成します。",
+    "new": {
+      "name": "新機能",
+      "description": "ユーザーが参加するための新しいラッフルを作成します。",
+      "duration": {
+        "name": "期間",
+        "description": "結果を転記する必要があるまでの時間。例: 4d3h2m -> 4 日、3 時間、2 分"
+      }
+    }
+  },
+  "chat": {
+    "name": "チャット",
+    "description": "私とカジュアルな、しかしおそらくまだ奇妙な会話をしてください。",
+    "start": {
+      "name": "始める",
+      "description": "私とカジュアルな、しかしおそらくまだ奇妙な会話をしてください。",
+      "message": {
+        "name": "メッセージ",
+        "description": "会話を開始するメッセージ。"
+      }
+    },
+    "stop": {
+      "name": "止める",
+      "description": "進行中の会話を終了します。"
+    }
+  },
+  "run": {
+    "name": "走る",
+    "description": "カスタムコマンドを実行します。",
+    "command": {
+      "name": "命令",
+      "description": "実行するカスタム コマンドの名前。"
+    }
+  },
+  "custom-commands": {
+    "name": "カスタムコマンド",
+    "description": "カスタマイズされたコマンドとそれぞれの応答を管理します。",
+    "list": {
+      "name": "リスト",
+      "description": "このサーバーのすべてのカスタムコマンドを表示します。"
+    },
+    "add": {
+      "name": "足す",
+      "description": "このサーバーのカスタムコマンドを追加します。"
+    },
+    "remove": {
+      "name": "取り去る",
+      "description": "このサーバーのカスタムコマンドの 1 つを削除します。",
+      "command": {
+        "name": "命令",
+        "description": "プレフィックスのないコマンド。"
+      }
+    }
+  },
+  "music": {
+    "name": "音楽",
+    "description": "チャンネルで音楽を再生したり、曲の歌詞を取得したりします。",
+    "join": {
+      "name": "接続",
+      "description": "あなたがいる音声チャンネルに私を接続してください。"
+    },
+    "leave": {
+      "name": "去る",
+      "description": "あなたの音声チャンネルから私を切断してください。"
+    },
+    "play": {
+      "name": "遊ぶ",
+      "description": "再生する曲をリクエストします。",
+      "song": {
+        "name": "歌",
+        "description": "再生する曲の動画 URL、再生リスト URL、または名前。"
+      }
+    },
+    "pause": {
+      "name": "休止",
+      "description": "現在再生中の曲を一時停止します。"
+    },
+    "resume": {
+      "name": "レジュメ",
+      "description": "以前に一時停止した曲の再生を続けます。"
+    },
+    "stop": {
+      "name": "止める",
+      "description": "現在の曲を停止し、再生を続行しないでください。"
+    },
+    "playing": {
+      "name": "奏法",
+      "description": "現在再生中の曲を表示します。"
+    },
+    "queue": {
+      "name": "列",
+      "description": "キュー内の曲を表示します。"
+    },
+    "shuffle": {
+      "name": "シャッフル",
+      "description": "キュー内の曲をシャッフルします。"
+    },
+    "skip": {
+      "name": "スキップ",
+      "description": "曲をスキップして、次の曲で再生を続けます。",
+      "amount": {
+        "name": "量",
+        "description": "スキップする曲の量。"
+      }
+    },
+    "clear": {
+      "name": "クリア",
+      "description": "キューからすべての曲を削除します。"
+    },
+    "volume": {
+      "name": "容積",
+      "description": "音楽の音量を変更します。",
+      "volume": {
+        "name": "容積",
+        "description": "新しいボリューム。"
+      }
+    },
+    "lyrics": {
+      "name": "歌詞",
+      "description": "曲の歌詞を取得します。",
+      "song": {
+        "name": "歌",
+        "description": "曲の名前。"
+      }
+    }
+  },
+  "birthday": {
+    "name": "誕生日",
+    "description": "幸せな仲間のために歌を歌う。",
+    "user": {
+      "name": "利用者",
+      "description": "それを方向付けるユーザー。"
+    }
+  },
+  "kill": {
+    "name": "殺す",
+    "description": "私はユーザーを殺すことができます。",
+    "user": {
+      "name": "利用者",
+      "description": "利用者"
+    }
+  },
+  "neko": {
+    "name": "誰か",
+    "description": "ネコのランダムな画像を取得します。",
+    "random": {
+      "name": "ランダム",
+      "description": "ネコのランダムな画像を取得します。",
+      "category": {
+        "name": "カテゴリ",
+        "description": "どのカテゴリから選ぶべきか"
+      }
+    },
+    "lewd": {
+      "name": "嫌らしい",
+      "description": "ネコのランダムなわいせつな画像を取得します。NSFW チャネルでのみ使用できます。"
+    }
+  },
+  "invite": {
+    "name": "招く",
+    "description": "招待リンクをクリックすると、あなたや他の誰かが私をサーバーに追加できます。"
+  },
+  "support": {
+    "name": "支える",
+    "description": "私のサポートの不和へのリンク。"
+  },
+  "disable-warning": {
+    "name": "無効化警告",
+    "description": "プレフィックスが機能しなくなったという警告を無効にします。"
+  },
+  "ban": {
+    "name": "禁止",
+    "description": "不適切な動作をするユーザー、または単にそのように感じるという理由だけでユーザーを禁止します。",
+    "user": {
+      "name": "利用者",
+      "description": "禁止するユーザー。"
+    },
+    "duration": {
+      "name": "期間",
+      "description": "ユーザーを禁止する期間。"
+    },
+    "reason": {
+      "name": "理由",
+      "description": "禁止の理由。"
+    },
+    "days": {
+      "name": "日",
+      "description": "何日前まで、ユーザーのメッセージを削除する必要があります。"
+    }
+  },
+  "kick": {
+    "name": "蹴る",
+    "description": "不適切な動作をするユーザーを蹴ったり、気分が悪かったりするだけです。",
+    "user": {
+      "name": "利用者",
+      "description": "禁止するユーザー。"
+    },
+    "reason": {
+      "name": "理由",
+      "description": "禁止の理由。"
+    }
+  },
+  "restart": {
+    "name": "再起動",
+    "description": "ボットを再起動します (所有者のみ)。"
+  },
+  "shutdown": {
+    "name": "シャットダウン",
+    "description": "ボットをシャットダウンします (所有者のみ)。"
+  },
+  "language": {
+    "name": "言語",
+    "description": "サーバーの言語を管理します。",
+    "current": {
+      "name": "現在の",
+      "description": "現在使用されている言語を表示します。"
+    },
+    "set": {
+      "name": "セット",
+      "description": "このサーバーの言語を変更します。",
+      "language": {
+        "name": "言語",
+        "description": "新しい言語。"
+      }
+    }
+  },
+  "welcome": {
+    "name": "ようこそ",
+    "description": "ようこそ通知。",
+    "user": {
+      "name": "利用者",
+      "description": "特定のユーザーに対してウェルカム通知を送信します。",
+      "user": {
+        "name": "利用者",
+        "description": "利用者"
+      }
+    },
+    "enable": {
+      "name": "エネーブル",
+      "description": "自動ウェルカム通知を有効にします。",
+      "channel": {
+        "name": "チャンネル",
+        "description": "メッセージの送信先チャネル。"
+      }
+    },
+    "disable": {
+      "name": "無効にする",
+      "description": "自動ウェルカム通知を無効にします。"
+    },
+    "message": {
+      "name": "メッセージ",
+      "description": "通知のメッセージを構成します。",
+      "current": {
+        "name": "現在の",
+        "description": "通知で使用されている現在のメッセージを表示します。"
+      },
+      "change": {
+        "name": "変える",
+        "description": "通知で使用されるメッセージを変更します。"
+      }
+    },
+    "image": {
+      "name": "画像",
+      "description": "通知のイメージを構成します。",
+      "current": {
+        "name": "現在の",
+        "description": "通知で使用されている現在の画像を表示します。"
+      },
+      "change": {
+        "name": "変える",
+        "description": "通知で使用されているイメージを変更します。",
+        "url": {
+          "name": "url",
+          "description": "イメージの URL。何も指定しない場合は、既定のイメージが使用されます。"
+        }
+      },
+      "disable": {
+        "name": "無効にする",
+        "description": "通知で使用されるイメージを無効にします。"
+      }
+    }
+  }
+}

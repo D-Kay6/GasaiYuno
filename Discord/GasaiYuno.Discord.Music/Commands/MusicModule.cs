@@ -126,7 +126,8 @@ public class MusicModule : BaseInteractionModule<MusicModule>
                     for (var i = 0; i < Math.Min(searchResponse.Tracks.Count, 10); i++)
                     {
                         var responseTrack = searchResponse.Tracks.ElementAt(i);
-                        menuBuilder.AddOption(responseTrack.Title, i.ToString(), responseTrack.Author);
+                        var title = responseTrack.Title.Length > 100 ? responseTrack.Title[..97] + "..." : responseTrack.Title;
+                        menuBuilder.AddOption(title, i.ToString(), responseTrack.Author);
                     }
 
                     var selectionMessage = await ModifyOriginalResponseAsync(x =>

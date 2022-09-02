@@ -17,7 +17,7 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
     public Task InfoCommand() => RespondAsync(Translation.Message("Automation.Channel.Info"), ephemeral: true);
 
     [SlashCommand("details", "Display information of a specific auto-channel.")]
-    public async Task DetailsCommand([Summary(description: "The name of the configuration.")] IVoiceChannel voiceChannel)
+    public async Task DetailsCommand([Summary(description: "The voice-channel used as an auto-channel.")] IVoiceChannel voiceChannel)
     {
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null)

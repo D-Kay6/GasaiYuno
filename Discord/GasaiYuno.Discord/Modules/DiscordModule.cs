@@ -19,18 +19,15 @@ public class DiscordModule : Module
     public string Token { get; init; }
     public int ConnectionTimeout { get; init; }
     public int HandlerTimeout { get; init; }
-    public int TotalShards { get; init; }
+    public int? TotalShards { get; init; }
+    public LogSeverity LogLevel { get; init; }
 
     protected override void Load(ContainerBuilder builder)
     {
         builder.Register(_ => new DiscordSocketConfig
         {
-#if !DEBUG
             TotalShards = TotalShards,
-            LogLevel = LogSeverity.Verbose,
-#else
-            LogLevel = LogSeverity.Debug,
-#endif
+            LogLevel = LogLevel,
             ConnectionTimeout = ConnectionTimeout,
             HandlerTimeout = HandlerTimeout,
             GatewayIntents = GatewayIntents.DirectMessages |
