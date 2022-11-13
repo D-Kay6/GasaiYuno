@@ -7,6 +7,7 @@ using GasaiYuno.Discord.Music.Services;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using System.Reflection;
 using Victoria;
+using Victoria.Node;
 using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Music;
@@ -19,7 +20,7 @@ internal class RegistrationModule : Module
     {
         builder.RegisterMediatR(Assembly.GetExecutingAssembly());
 
-        builder.Register(_ => new LavaConfig()).InstancePerDependency();
+        builder.Register(_ => new NodeConfiguration()).InstancePerDependency();
         
         builder.RegisterType<MusicNode>().InstancePerLifetimeScope();
         builder.RegisterType<MusicListener>().As<IListener>().InstancePerLifetimeScope();

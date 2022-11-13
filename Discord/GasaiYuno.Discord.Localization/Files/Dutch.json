@@ -68,7 +68,12 @@
             "Length": "De songtekst is te lang voor mij om te kunnen sturen."
           },
           "Multiple": "Ik heb meerdere resultaten gevonden voor **{0}**.",
-          "Selection": "Kies alsjeblieft het nummer uit:"
+          "Selection": "Kies alsjeblieft het nummer uit:",
+          "Cancel": {
+            "Title": "== Annuleren ==",
+            "Description": "Annuleer het selecteren van een nummer.",
+            "Performed": "Geannuleerd"
+          }
         },
         "Track": {
           "Exception": {

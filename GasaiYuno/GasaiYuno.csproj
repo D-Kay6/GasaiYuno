@@ -5,7 +5,7 @@
 		<DebugType>embedded</DebugType>
 		<LangVersion>default</LangVersion>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<PackageId>gasaiyuno.discord.app</PackageId>
 		<Authors>D-Kay</Authors>
@@ -21,7 +21,7 @@
 		<PackageReference Include="Autofac" Version="6.4.0" />
 		<PackageReference Include="Autofac.Configuration" Version="6.0.0" />
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.SlowCheetah" Version="4.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -33,19 +33,17 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="Serilog.Sinks.Seq" Version="5.2.0" />
-		<PackageReference Include="RavenDB.Client" Version="5.4.2" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="5.2.1" />
+		<PackageReference Include="RavenDB.Client" Version="5.4.4" />
 		<PackageReference Include="RestSharp" Version="108.0.2" />
 		<PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="108.0.2" />
-		<PackageReference Include="Autofac" Version="6.4.0" />
 		<PackageReference Include="Discord.Net" Version="3.8.1" />
 		<PackageReference Include="Fergun.Interactive" Version="1.6.0" />
-		<PackageReference Include="MediatR" Version="10.0.1" />
-		<PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="8.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+		<PackageReference Include="MediatR" Version="11.0.0" />
+		<PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="Victoria" Version="5.2.8" />
 		<PackageReference Include="Neko-Love.Net" Version="1.0.0" />
 		<PackageReference Include="Nekos.Net" Version="3.2.0" />
 	</ItemGroup>

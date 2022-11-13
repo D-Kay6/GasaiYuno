@@ -5,9 +5,8 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Music.Models.Audio;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Victoria;
-using Victoria.Enums;
-using Victoria.EventArgs;
+using Victoria.Node.EventArgs;
+using Victoria.Player;
 
 namespace GasaiYuno.Discord.Music.Listeners;
 
@@ -32,8 +31,8 @@ internal class MusicListener : IListener
     {
         _client.LoggedOut += OnLoggedOut;
         _client.UserVoiceStateUpdated += ChangeVoiceChannelAsync;
-        _musicNode.OnTrackStarted += TrackStartAsync;
-        _musicNode.OnTrackEnded += TrackEndAsync;
+        _musicNode.OnTrackStart += TrackStartAsync;
+        _musicNode.OnTrackEnd += TrackEndAsync;
         _musicNode.OnTrackStuck += TrackStuckAsync;
         _musicNode.OnTrackException += TrackExceptionAsync;
 
@@ -70,7 +69,7 @@ internal class MusicListener : IListener
         }
     }
 
-    private async Task TrackStartAsync(TrackStartEventArgs e)
+    private async Task TrackStartAsync(TrackStartEventArg<MusicPlayer, PlayableTrack> e)
     {
         var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id)).ConfigureAwait(false);
         var embedBuilder = new EmbedBuilder()
@@ -79,11 +78,11 @@ internal class MusicListener : IListener
         await e.Player.TextChannel.SendMessageAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
     }
 
-    private async Task TrackEndAsync(TrackEndedEventArgs e)
+    private async Task TrackEndAsync(TrackEndEventArg<MusicPlayer, PlayableTrack> e)
     {
         switch (e.Reason)
         {
-            case TrackEndReason.Stopped when e.Player.Queue.Count == 0: 
+            case TrackEndReason.Stopped when e.Player.Vueue.Count == 0: 
                 await e.Player.StopAsync().ConfigureAwait(false);
                 await _musicNode.LeaveAsync(e.Player.VoiceChannel).ConfigureAwait(false);
                 break;
@@ -100,13 +99,13 @@ internal class MusicListener : IListener
         }
     }
 
-    private async Task TrackStuckAsync(TrackStuckEventArgs e)
+    private async Task TrackStuckAsync(TrackStuckEventArg<MusicPlayer, PlayableTrack> e)
     {
         _logger.LogError("PlayableTrack {@PlayableTrack} got stuck. Time: {Duration} Player {@Player}", e.Track, e.Threshold, e.Player);
         await PlayNextAsync(e.Player).ConfigureAwait(false);
     }
 
-    private async Task TrackExceptionAsync(TrackExceptionEventArgs e)
+    private async Task TrackExceptionAsync(TrackExceptionEventArg<MusicPlayer, PlayableTrack> e)
     {
         _logger.LogError("Could not play track {@PlayableTrack}. Reason: {@Message}. Player {@Player}", e.Track, e.Exception, e.Player);
 
@@ -121,21 +120,15 @@ internal class MusicListener : IListener
         await PlayNextAsync(e.Player).ConfigureAwait(false);
     }
 
-    private async Task PlayNextAsync(LavaPlayer lavaPlayer)
+    private async Task PlayNextAsync(MusicPlayer player)
     {
-        if (lavaPlayer is not MusicPlayer player)
-        {
-            _logger.LogError("{@LavaPlayer} was not assignable to the correct type", lavaPlayer);
-            return;
-        }
-
         try
         {
-            if (!player.Queue.TryDequeue(out var lavaTrack) || lavaTrack is not PlayableTrack track)
+            if (!player.Vueue.TryDequeue(out var track))
             {
-                if (player.Queue.Count != 0)
+                if (player.Vueue.Count != 0)
                 {
-                    _logger.LogError("Unable to get item from {@Player} {@Queue}", player, player.Queue);
+                    _logger.LogError("Unable to get item from {@Player} {@Vueue}", player, player.Vueue);
                     return;
                 }
 
@@ -144,7 +137,7 @@ internal class MusicListener : IListener
                 return;
             }
 
-            await _musicNode.MoveChannelAsync(track.TextChannel).ConfigureAwait(false);
+            player.SetTextChannel(track.TextChannel);
             await player.PlayAsync(track).ConfigureAwait(false);
         }
         catch (Exception e)

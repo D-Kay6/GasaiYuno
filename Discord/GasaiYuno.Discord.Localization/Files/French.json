@@ -68,7 +68,12 @@
             "Length": "Le texte est trop long pour que je puisse l'envoyer. (j'avoue j'ai la flemme)"
           },
           "Multiple": "J'ai trouvé plusieurs résultats pour **{0}**.",
-          "Selection": "Veuillez choisir la chanson (choisis bien):"
+          "Selection": "Veuillez choisir la chanson (choisis bien):",
+          "Cancel": {
+            "Title": "== Annuler ==",
+            "Description": "Annulez la sélection de chanson.",
+            "Performed": "Annulé"
+          }
         },
         "Track": {
           "Exception": {

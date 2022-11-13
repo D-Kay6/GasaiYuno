@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Victoria;
+using Victoria.Player;
 
 namespace GasaiYuno.Discord.Music.Models.Audio;
 
