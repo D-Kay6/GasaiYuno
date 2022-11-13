@@ -77,7 +77,7 @@ public class DiscordConnectionClient : DiscordShardedClient
         {
             _logger.LogInformation("All shards are ready");
             if (Ready != null) await Ready.Invoke().ConfigureAwait(false);
-            await _mediator.Publish(new ClientReadyEvent(this));
+            await _mediator.Publish(new ClientReadyEvent(this)).ConfigureAwait(false);
         }
     }
 

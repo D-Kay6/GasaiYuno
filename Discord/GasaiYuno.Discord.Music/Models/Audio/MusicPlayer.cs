@@ -39,7 +39,7 @@ public class MusicPlayer : LavaPlayer
             }
         }
         
-        await Task.Delay(delay ?? TimeSpan.Zero);
+        await Task.Delay(delay ?? TimeSpan.Zero).ConfigureAwait(false);
         var skippedTrack = Track;
         if (nextTrack != null)
             await PlayAsync(nextTrack).ConfigureAwait(false);

@@ -36,8 +36,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
 
         if (_musicNode.TryGetPlayer(Context.Guild, out var player))
         {
-            await RespondAsync(Translation.Message(player.VoiceChannel.Id == user.VoiceChannel.Id ? "Entertainment.Music.Channel.Invalid.Same" : "Entertainment.Music.Channel.Invalid.Different"),
-                ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Translation.Message(player.VoiceChannel.Id == user.VoiceChannel.Id ? "Entertainment.Music.Channel.Invalid.Same" : "Entertainment.Music.Channel.Invalid.Different"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
@@ -135,8 +134,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
                         x.Content = Translation.Message("Entertainment.Music.Track.Multiple", query);
                         x.Components = new ComponentBuilder().WithSelectMenu(menuBuilder).Build();
                     }).ConfigureAwait(false);
-                    var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1))
-                        .ConfigureAwait(false);
+                    var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1)).ConfigureAwait(false);
                     if (!reactionResult.IsSuccess || reactionResult.Value == null || reactionResult.Value?.Data.Values.First() == "cancel")
                     {
                         if (reactionResult.Value != null)
@@ -503,10 +501,8 @@ public class MusicModule : BaseInteractionModule<MusicModule>
             typingState.Dispose();
         }
 
-        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build())
-            .ConfigureAwait(false);
-        var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1))
-            .ConfigureAwait(false);
+        var selectionMessage = await ReplyAsync(Translation.Message("Entertainment.Music.Lyrics.Multiple", input), components: new ComponentBuilder().WithSelectMenu(menuBuilder).Build()).ConfigureAwait(false);
+        var reactionResult = await Interactivity.NextMessageComponentAsync(x => x.User.Id == Context.User.Id && x.Message.Id == selectionMessage.Id, timeout: TimeSpan.FromMinutes(1)).ConfigureAwait(false);
         if (!reactionResult.IsSuccess || reactionResult.Value == null)
         {
             await selectionMessage.DeleteAsync().ConfigureAwait(false);

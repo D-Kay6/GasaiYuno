@@ -19,6 +19,6 @@ public class RegisterCommandsEventHandler : INotificationHandler<RegisterCommand
     /// <inheritdoc />
     public async Task Handle(RegisterCommandsEvent command, CancellationToken cancellationToken)
     {
-        await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
+        await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider).ConfigureAwait(false);
     }
 }

@@ -21,7 +21,7 @@ internal class GetTranslationRequestHandler : IRequestHandler<GetTranslationRequ
         var language = request.Language;
         if (request.ServerId != 0)
         {
-            var server = await _mediator.Send(new GetServerRequest(request.ServerId), cancellationToken);
+            var server = await _mediator.Send(new GetServerRequest(request.ServerId), cancellationToken).ConfigureAwait(false);
             language = server?.Language ?? _localization.DefaultLanguage;
         }
         return _localization.GetTranslation(language);

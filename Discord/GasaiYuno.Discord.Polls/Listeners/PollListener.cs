@@ -68,7 +68,7 @@ internal class PollListener : IListener
                 var embedBuilder = new EmbedBuilder();
                 embedBuilder.WithTitle(translation.Message("Automation.Poll.Result.Title"));
                 embedBuilder.AddField(poll.Text, selectedOptions);
-                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id));
+                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id)).ConfigureAwait(false);
                 await _mediator.Publish(new RemovePollCommand(poll.Server, poll.Channel, poll.Message)).ConfigureAwait(false);
             }
         }

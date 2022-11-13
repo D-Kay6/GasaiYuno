@@ -16,8 +16,7 @@ public class AutoChannelAutocompleteHandler : AutocompleteHandler
     }
 
     /// <inheritdoc />
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter,
-        IServiceProvider services)
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
     {
         var input = autocompleteInteraction.Data?.Current?.Value?.ToString();
         var results = new List<AutocompleteResult>();

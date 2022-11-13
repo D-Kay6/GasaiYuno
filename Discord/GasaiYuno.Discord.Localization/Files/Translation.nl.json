@@ -112,7 +112,7 @@
     }
   },
   "run": {
-    "name": "rennen",
+    "name": "uitvoeren",
     "description": "Voer een aangepaste opdracht uit.",
     "command": {
       "name": "bevelen",
@@ -134,7 +134,7 @@
       "name": "verwijderen",
       "description": "Verwijder een van de aangepaste opdrachten van deze server.",
       "command": {
-        "name": "bevelen",
+        "name": "opdracht",
         "description": "De opdracht zonder het voorvoegsel."
       }
     }

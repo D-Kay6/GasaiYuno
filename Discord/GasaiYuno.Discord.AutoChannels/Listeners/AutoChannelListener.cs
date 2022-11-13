@@ -36,6 +36,19 @@ internal class AutoChannelListener : IListener
         return Task.CompletedTask;
     }
 
+    public async Task Update()
+    {
+        foreach (var server in _client.Guilds)
+        {
+            var autoChannels = await _mediator.Send(new ListAutoChannelsRequest(server.Id)).ConfigureAwait(false);
+            foreach (var autoChannel in autoChannels)
+            {
+                autoChannel.RelatedChannels = autoChannel.GeneratedChannels.ToList();
+                await _mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
+            }
+        }
+    }
+
     private async Task ChannelDestroyed(SocketChannel channel)
     {
         if (channel is not SocketVoiceChannel voiceChannel) return;
@@ -44,12 +57,12 @@ internal class AutoChannelListener : IListener
         var autoChannel = await _mediator.Send(new GetAutoChannelRequest(voiceChannel.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null) return;
         
-        foreach (var generatedChannel in autoChannel.GeneratedChannels)
+        foreach (var relatedChannel in autoChannel.RelatedChannels)
         {
-            var generatedVoiceChannel = voiceChannel.Guild.GetVoiceChannel(generatedChannel);
-            if (generatedVoiceChannel == null || generatedVoiceChannel.ConnectedUsers.Count > 0) continue;
+            var relatedVoiceChannel = voiceChannel.Guild.GetVoiceChannel(relatedChannel);
+            if (relatedVoiceChannel == null || relatedVoiceChannel.ConnectedUsers.Count > 0) continue;
             
-            await generatedVoiceChannel.DeleteAsync().ConfigureAwait(false);
+            await relatedVoiceChannel.DeleteAsync().ConfigureAwait(false);
         }
 
         await _mediator.Publish(new RemoveAutoChannelCommand(autoChannel)).ConfigureAwait(false);
@@ -84,12 +97,12 @@ internal class AutoChannelListener : IListener
                 await Task.Delay(100).ConfigureAwait(false);
 
             var autoChannels = await _mediator.Send(new ListAutoChannelsRequest(channel.Guild.Id, AutomationType.Temporary)).ConfigureAwait(false);
-            var autoChannel = autoChannels.FirstOrDefault(x => x.GeneratedChannels.Contains(channel.Id));
+            var autoChannel = autoChannels.FirstOrDefault(x => x.RelatedChannels.Contains(channel.Id));
             if (autoChannel == null || channel.Guild.GetChannel(channel.Id) == null) return;
             try
             {
                 await channel.DeleteAsync().ConfigureAwait(false);
-                autoChannel.GeneratedChannels.Remove(channel.Id);
+                autoChannel.RelatedChannels.Remove(channel.Id);
                 await _mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -117,7 +130,7 @@ internal class AutoChannelListener : IListener
             newChannel = await DuplicateChannelAsync(channel, user, autoChannel.GenerationName).ConfigureAwait(false);
             if (autoChannel.Type == AutomationType.Temporary)
             {
-                autoChannel.GeneratedChannels.Add(newChannel.Id);
+                autoChannel.RelatedChannels.Add(newChannel.Id);
                 await _mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
             }
         }
@@ -130,7 +143,7 @@ internal class AutoChannelListener : IListener
                 try
                 {
                     await newChannel.DeleteAsync().ConfigureAwait(false);
-                    autoChannel.GeneratedChannels.Remove(newChannel.Id);
+                    autoChannel.RelatedChannels.Remove(newChannel.Id);
                     await _mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
                 }
                 catch (Exception ex)

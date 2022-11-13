@@ -57,7 +57,7 @@ internal class MusicListener : IListener
             if (voiceChannel.ConnectedUsers.Count != 1) return;
             if (!voiceChannel.ConnectedUsers.First().Id.Equals(_client.CurrentUser.Id)) return;
 
-            var translation = await _mediator.Send(new GetTranslationRequest(voiceChannel.Guild.Id));
+            var translation = await _mediator.Send(new GetTranslationRequest(voiceChannel.Guild.Id)).ConfigureAwait(false);
             if (player.TextChannel != null)
                 await player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Channel.Stop")).ConfigureAwait(false);
 
@@ -72,7 +72,7 @@ internal class MusicListener : IListener
 
     private async Task TrackStartAsync(TrackStartEventArgs e)
     {
-        var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id));
+        var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id)).ConfigureAwait(false);
         var embedBuilder = new EmbedBuilder()
             .WithTitle(translation.Message("Entertainment.Music.Track.Current"))
             .WithDescription(translation.Message("Entertainment.Music.Track.Item", e.Track.Title.Trim(), e.Track.Duration));
@@ -91,7 +91,7 @@ internal class MusicListener : IListener
                 await PlayNextAsync(e.Player).ConfigureAwait(false);
                 break;
             case TrackEndReason.LoadFailed:
-                var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id));
+                var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id)).ConfigureAwait(false);
                 if (e.Player.TextChannel != null)
                     await e.Player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
 
@@ -110,7 +110,7 @@ internal class MusicListener : IListener
     {
         _logger.LogError("Could not play track {@PlayableTrack}. Reason: {@Message}. Player {@Player}", e.Track, e.Exception, e.Player);
 
-        var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id));
+        var translation = await _mediator.Send(new GetTranslationRequest(e.Player.VoiceChannel.Guild.Id)).ConfigureAwait(false);
         if (e.Player.TextChannel != null)
         {
             var message = translation.Message("Entertainment.Music.Track.Exception.Message", e.Track.Title);
@@ -150,7 +150,7 @@ internal class MusicListener : IListener
         catch (Exception e)
         {
             _logger.LogError(e, "Something went wrong trying to play the next song");
-            await PlayNextAsync(player);
+            await PlayNextAsync(player).ConfigureAwait(false);
         }
     }
     

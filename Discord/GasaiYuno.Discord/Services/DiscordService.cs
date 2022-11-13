@@ -28,10 +28,13 @@ public class DiscordService : BackgroundService
         {
             try
             {
-                await using var scope = _lifetimeScope.BeginLifetimeScope("DiscordLifetime");
-                var lifetimeService = scope.Resolve<ILifetimeService>();
-                await lifetimeService.StartAsync(cancellationToken);
-                keepAlive = lifetimeService.KeepAlive;
+                var scope = _lifetimeScope.BeginLifetimeScope("DiscordLifetime");
+                await using (scope.ConfigureAwait(false))
+                {
+                    var lifetimeService = scope.Resolve<ILifetimeService>();
+                    await lifetimeService.StartAsync(cancellationToken).ConfigureAwait(false);
+                    keepAlive = lifetimeService.KeepAlive;
+                }
             }
             catch (Exception e)
             {

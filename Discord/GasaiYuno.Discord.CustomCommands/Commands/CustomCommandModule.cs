@@ -86,7 +86,7 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
             embedBuilder.WithDescription(fieldMessages[0]);
-            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true);
+            await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
     }
 

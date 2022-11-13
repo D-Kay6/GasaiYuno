@@ -55,7 +55,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
 
         notification.Channel = channel.Id;
         await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention), ephemeral: true);
+        await RespondAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention), ephemeral: true).ConfigureAwait(false);
     }
 
     [SlashCommand("disable", "Disable the automated welcome notifications.")]

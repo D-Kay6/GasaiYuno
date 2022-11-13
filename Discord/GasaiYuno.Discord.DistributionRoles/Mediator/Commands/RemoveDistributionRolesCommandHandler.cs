@@ -19,6 +19,6 @@ public class RemoveDistributionRolesCommandHandler : INotificationHandler<Remove
         if (distributionRoles == null || !distributionRoles.Any()) return;
 
         _unitOfWork.RemoveRange(distributionRoles);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

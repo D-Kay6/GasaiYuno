@@ -32,9 +32,9 @@ public static class Retry
             try
             {
                 if (attempted > 0)
-                    await Task.Delay(retryInterval);
+                    await Task.Delay(retryInterval).ConfigureAwait(false);
 
-                return await action();
+                return await action().ConfigureAwait(false);
             }
             catch (Exception ex)
             {

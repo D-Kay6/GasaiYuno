@@ -16,7 +16,7 @@ public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
         _logger = logger;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
         var typeName = request.GetGenericTypeName();
         _logger.LogInformation("----- Validating command {CommandType}", typeName);
@@ -33,6 +33,6 @@ public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
             throw new ValidationException($"Command Validation Errors for type {typeof(TRequest).Name}", new FluentValidation.ValidationException("Validation exception", failures));
         }
 
-        return await next();
+        return next();
     }
 }

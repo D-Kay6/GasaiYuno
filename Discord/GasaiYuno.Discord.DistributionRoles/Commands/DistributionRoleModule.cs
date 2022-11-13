@@ -122,8 +122,7 @@ public class DistributionRoleModule : BaseInteractionModule<DistributionRoleModu
         [ComponentInteraction("selection:*")]
         public async Task SelectionInteraction(string selectorId, string[] selectedRoles)
         {
-            await Mediator.Publish(new UpdateDistributionRolesCommand(Context.Guild.Id, Context.Channel.Id, Context.Interaction.Message.Id, selectorId, selectedRoles.Select(ulong.Parse).ToArray()))
-                .ConfigureAwait(false);
+            await Mediator.Publish(new UpdateDistributionRolesCommand(Context.Guild.Id, Context.Channel.Id, Context.Interaction.Message.Id, selectorId, selectedRoles.Select(ulong.Parse).ToArray())).ConfigureAwait(false);
             await DeferAsync(true).ConfigureAwait(false);
         }
 
@@ -217,7 +216,7 @@ public class DistributionRoleModule : BaseInteractionModule<DistributionRoleModu
             var distributionRole = await Mediator.Send(new GetDistributionRoleRequest(Context.Guild.Id, Context.Channel.Id, Context.Interaction.Message.Id)).ConfigureAwait(false);
             if (distributionRole == null) return;
 
-            await DeferAsync(true);
+            await DeferAsync(true).ConfigureAwait(false);
             var rolesToGive = selectedRoles.Select(ulong.Parse).ToList();
             foreach (var roleId in distributionRole.Roles.Keys)
             {

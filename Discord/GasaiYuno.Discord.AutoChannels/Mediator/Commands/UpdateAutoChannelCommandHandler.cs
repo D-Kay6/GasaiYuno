@@ -19,6 +19,8 @@ public class UpdateAutoChannelCommandHandler : INotificationHandler<UpdateAutoCh
         if (autoChannel == null) return;
 
         autoChannel.GenerationName = command.GenerationName;
+        if (command.RelatedChannels != null)
+            autoChannel.RelatedChannels = command.RelatedChannels;
         if (command.GeneratedChannels != null)
             autoChannel.GeneratedChannels = command.GeneratedChannels;
         

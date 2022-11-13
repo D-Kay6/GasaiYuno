@@ -31,7 +31,7 @@ public class MessageModule : BaseInteractionModule<MessageModule>
         message ??= await GetMessageAsync().ConfigureAwait(false);
         if (message == null)
         {
-            await RespondAsync("I could not find the message. Are you sure there are any?", ephemeral: true);
+            await RespondAsync("I could not find the message. Are you sure there are any?", ephemeral: true).ConfigureAwait(false);
             return;
         }
 

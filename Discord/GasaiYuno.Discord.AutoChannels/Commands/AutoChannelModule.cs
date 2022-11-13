@@ -107,6 +107,6 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
 
         autoChannel.GenerationName = generatedName;
         await Mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true);
+        await RespondAsync(Translation.Message("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true).ConfigureAwait(false);
     }
 }

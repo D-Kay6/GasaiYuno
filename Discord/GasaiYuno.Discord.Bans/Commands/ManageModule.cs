@@ -22,7 +22,7 @@ public class ManageModule : BaseInteractionModule<ManageModule>
     public async Task RestartCommand()
     {
         await RespondAsync(Translation.Message("Moderation.Manage.Restart"), ephemeral: true).ConfigureAwait(false);
-        await _lifetimeService.RestartAsync();
+        await _lifetimeService.RestartAsync().ConfigureAwait(false);
     }
 
     [DefaultMemberPermissions(GuildPermission.Administrator)]
@@ -30,6 +30,6 @@ public class ManageModule : BaseInteractionModule<ManageModule>
     public async Task ShutdownCommand()
     {
         await RespondAsync(Translation.Message("Moderation.Manage.Shutdown"), ephemeral: true).ConfigureAwait(false);
-        await _lifetimeService.StopAsync();
+        await _lifetimeService.StopAsync().ConfigureAwait(false);
     }
 }

@@ -29,19 +29,19 @@
 //        try
 //        {
 //            if (_dbContext.HasActiveTransaction)
-//                return await next();
+//                return await next().ConfigureAwait(false);
 
 //            var strategy = _dbContext.Database.CreateExecutionStrategy();
 //            await strategy.ExecuteAsync(async () =>
 //            {
-//                await using var transaction = await _dbContext.BeginTransactionAsync();
+//                await using var transaction = await _dbContext.BeginTransactionAsync().ConfigureAwait(false);
 //                using (LogContext.PushProperty("TransactionContext", transaction.TransactionId))
 //                {
 //                    _logger.LogInformation("Beginning transaction {TransactionId} for {CommandName} ({@Command})", transaction.TransactionId, typeName, request);
-//                    response = await next();
+//                    response = await next().ConfigureAwait(false);
 
 //                    _logger.LogInformation("Committing transaction {TransactionId} for {CommandName}", transaction.TransactionId, typeName);
-//                    await _dbContext.CommitTransactionAsync(transaction);
+//                    await _dbContext.CommitTransactionAsync(transaction).ConfigureAwait(false);
 //                }
 //            });
 
