@@ -91,7 +91,8 @@
             "Description": "Cancele la selección de canciones.",
             "Performed": "Cancelado"
           }
-        }
+        },
+        "Youtube": "Como muchos antes que yo, tuve que eliminar la integración de YouTube de mi reproductor de música. [ingresar] En cambio, puede escuchar música de Youtube iniciando la actividad de Youtube desde Discord."
       }
     },
     "Moderation": {

@@ -85,6 +85,12 @@ public class MusicModule : BaseInteractionModule<MusicModule>
     [SlashCommand("play", "Request a song to be played.")]
     public async Task MusicPlayAsync([Summary("song", "Video-url, playlist-url, or name of a song you want to play.")] string query)
     {
+        if (Uri.TryCreate(query, UriKind.Absolute, out var uriResult) && uriResult.Host.Contains("youtu", StringComparison.InvariantCultureIgnoreCase))
+        {
+            await RespondAsync(Translation.Message("Entertainment.Music"), ephemeral: true).ConfigureAwait(false);
+            return;
+        }
+
         if (Context.User is not SocketGuildUser user) return;
         if (_musicNode.TryGetPlayer(Context.Guild, out var player) && player.PlayerState is PlayerState.Playing or PlayerState.Paused)
         {
@@ -103,8 +109,6 @@ public class MusicModule : BaseInteractionModule<MusicModule>
 
         await RespondAsync(Translation.Message("Entertainment.Music.Track.Search", query), ephemeral: true).ConfigureAwait(false);
         var searchResponse = await _musicNode.SearchAsync(SearchType.Direct, query).ConfigureAwait(false);
-        if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _musicNode.SearchAsync(SearchType.YouTube, query).ConfigureAwait(false);
-        if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _musicNode.SearchAsync(SearchType.YouTubeMusic, query).ConfigureAwait(false);
         if (searchResponse.Status is SearchStatus.NoMatches) searchResponse = await _musicNode.SearchAsync(SearchType.SoundCloud, query).ConfigureAwait(false);
 
         var tracks = new List<PlayableTrack>();

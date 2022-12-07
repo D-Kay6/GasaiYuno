@@ -91,7 +91,8 @@
             "Description": "Annulez la sélection de chanson.",
             "Performed": "Annulé"
           }
-        }
+        },
+        "Youtube": "Comme tant d'autres avant moi, j'ai dû supprimer l'intégration YouTube de mon lecteur de musique. [enter]Au lieu de cela, vous pouvez écouter de la musique de Youtube en démarrant l'activité Youtube depuis Discord."
       }
     },
     "Moderation": {
