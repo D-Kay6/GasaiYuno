@@ -37,7 +37,8 @@ internal class Program
             Log.Information("Booting up...");
             await Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .UseSerilog((context, _, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
+                .UseSerilog((context, _, loggerConfiguration) =>
+                    loggerConfiguration.ReadFrom.Configuration(context.Configuration))
                 .ConfigureServices(ConfigureServices)
                 .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
                 .UseConsoleLifetime()

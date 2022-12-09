@@ -1,16 +1,16 @@
 ﻿using Discord;
-using Victoria.Player;
 
 namespace GasaiYuno.Discord.Music.Models.Audio;
 
-public class PlayableTrack : LavaTrack
+public sealed class TrackContext
 {
     public ITextChannel TextChannel { get; }
+
     public string Requester { get; }
 
-    public PlayableTrack(LavaTrack lavaTrack, string requester, ITextChannel textChannel) : base(lavaTrack)
+    public TrackContext(ITextChannel textChannel, string requester)
     {
-        Requester = requester;
         TextChannel = textChannel;
+        Requester = requester;
     }
 }

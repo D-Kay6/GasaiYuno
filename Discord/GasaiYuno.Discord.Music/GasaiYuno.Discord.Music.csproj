@@ -12,6 +12,7 @@
 
 	<PropertyGroup>
 		<OutputPath>..\..\bin\$(Configuration)\</OutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +23,8 @@
 		<PackageReference Include="RestSharp" Version="108.0.3" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Victoria" Version="6.0.1026" />
+		<PackageReference Include="Lavalink4NET.Discord.NET" Version="3.0.0-preview.13" />
+		<PackageReference Include="Lavalink4NET.Logging.Microsoft" Version="3.0.0-preview.13" />
 	</ItemGroup>
 
 </Project>

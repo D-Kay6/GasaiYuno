@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Commands.TypeConverters;

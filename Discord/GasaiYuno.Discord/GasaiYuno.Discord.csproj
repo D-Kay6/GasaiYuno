@@ -12,6 +12,7 @@
 
 	<PropertyGroup>
 		<OutputPath>..\..\bin\$(Configuration)\</OutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +23,6 @@
 		<PackageReference Include="Discord.Net" Version="3.8.1" />
 		<PackageReference Include="FluentValidation" Version="11.4.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
-		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 	</ItemGroup>
 
