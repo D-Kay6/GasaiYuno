@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace GasaiYuno.Discord.Core.Extensions;
+﻿namespace GasaiYuno.Discord.Core.Extensions;
 
 public static class GenericTypeExtensions
 {

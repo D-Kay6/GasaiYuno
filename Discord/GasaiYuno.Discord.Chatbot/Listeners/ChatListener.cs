@@ -3,8 +3,6 @@ using GasaiYuno.Discord.Chatbot.Interfaces;
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Requests;
 using MediatR;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Chatbot.Listeners;
 
@@ -15,14 +13,12 @@ internal class ChatListener : IListener
     private readonly DiscordShardedClient _client;
     private readonly ISessionService _sessionService;
     private readonly IMediator _mediator;
-    private readonly ILogger<ChatListener> _logger;
 
-    public ChatListener(DiscordShardedClient client, ISessionService sessionService, IMediator mediator, ILogger<ChatListener> logger)
+    public ChatListener(DiscordShardedClient client, ISessionService sessionService, IMediator mediator)
     {
         _client = client;
         _sessionService = sessionService;
         _mediator = mediator;
-        _logger = logger;
     }
 
     public Task Start()

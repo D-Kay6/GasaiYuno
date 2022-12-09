@@ -68,7 +68,12 @@
             "Length": "De songtekst is te lang voor mij om te kunnen sturen."
           },
           "Multiple": "Ik heb meerdere resultaten gevonden voor **{0}**.",
-          "Selection": "Kies alsjeblieft het nummer uit:"
+          "Selection": "Kies alsjeblieft het nummer uit:",
+          "Cancel": {
+            "Title": "== Annuleren ==",
+            "Description": "Annuleer het selecteren van een nummer.",
+            "Performed": "Geannuleerd"
+          }
         },
         "Track": {
           "Exception": {
@@ -86,7 +91,8 @@
             "Description": "Annuleer het selecteren van een nummer.",
             "Performed": "Geannuleerd"
           }
-        }
+        },
+        "Youtube": "Zoals zovelen voor mij, heb ik de YouTube integratie van mijn muziekspeler moeten verwijderen. [enter]In plaats daarvan kun je naar muziek van YouTube luisteren door de YouTube activiteit te starten vanuit Discord."
       }
     },
     "Moderation": {

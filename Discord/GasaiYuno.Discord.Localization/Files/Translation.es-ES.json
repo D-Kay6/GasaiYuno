@@ -1,0 +1,370 @@
+{
+  "auto-channels": {
+    "name": "canales-automáticos",
+    "description": "Configure y administre los canales automáticos.",
+    "info": {
+      "name": "información",
+      "description": "Mostrar información sobre el uso de canales automáticos."
+    },
+    "details": {
+      "name": "detalles",
+      "description": "Mostrar información de un canal automático específico.",
+      "voice-channel": {
+        "name": "canal-de-voz",
+        "description": "El canal de voz utilizado como canal automático."
+      }
+    },
+    "list": {
+      "name": "lista",
+      "description": "Mostrar información breve de todas las configuraciones."
+    },
+    "assign": {
+      "name": "asignar",
+      "description": "Asigne un canal de voz como canal automático.",
+      "channel": {
+        "name": "canal",
+        "description": "El canal que se va a asignar."
+      },
+      "type": {
+        "name": "tipo",
+        "description": "Qué tipo de canales se generan."
+      },
+      "generation-name": {
+        "name": "nombre-de-generación",
+        "description": "Nombre de los canales generados."
+      }
+    },
+    "remove": {
+      "name": "eliminar",
+      "description": "Deshacer la asignación de un canal automático.",
+      "voice-channel": {
+        "name": "canal-de-voz",
+        "description": "El canal que se va a anular la asignación."
+      }
+    },
+    "edit": {
+      "name": "editar",
+      "description": "Cambiar una configuración de canal dinámico.",
+      "voice-channel": {
+        "name": "canal-de-voz",
+        "description": "Canal que se va a modificar."
+      },
+      "generated-name": {
+        "name": "nombre-generado",
+        "description": "El nuevo nombre de los canales generados."
+      }
+    }
+  },
+  "role-distributor": {
+    "name": "rol-distribuidor",
+    "description": "Administre la distribución automatizada de roles de las interacciones de mensajes.",
+    "button": {
+      "name": "botón",
+      "description": "Cree un mensaje que otorgue roles cuando se presione el botón."
+    },
+    "list": {
+      "name": "lista",
+      "description": "Cree un mensaje en el que los usuarios puedan seleccionar roles de una lista."
+    }
+  },
+  "poll": {
+    "name": "encuesta",
+    "description": "Cree nuevas encuestas para que los usuarios respondan.",
+    "new": {
+      "name": "nuevo",
+      "description": "Cree una nueva encuesta.",
+      "duration": {
+        "name": "duración",
+        "description": "El tiempo hasta que el resultado debe ser publicado. Ejemplo: 4d3h2m -> 4 días, 3 horas, 2 minutos"
+      },
+      "multi-select": {
+        "name": "selección-múltiple",
+        "description": "Si la encuesta permite o no seleccionar múltiples opciones."
+      }
+    }
+  },
+  "raffle": {
+    "name": "sorteo",
+    "description": "Crea un nuevo sorteo para que los usuarios se unan.",
+    "new": {
+      "name": "nuevo",
+      "description": "Crea un nuevo sorteo para que los usuarios se unan.",
+      "duration": {
+        "name": "duración",
+        "description": "El tiempo hasta que el resultado debe publicarse. Ejemplo: 4d3h2m -> 4 días, 3 horas, 2 minutos"
+      }
+    }
+  },
+  "chat": {
+    "name": "charlar",
+    "description": "Participa en una conversación casual, pero probablemente aún extraña, conmigo.",
+    "start": {
+      "name": "empezar",
+      "description": "Participa en una conversación casual, pero probablemente aún extraña, conmigo.",
+      "message": {
+        "name": "mensaje",
+        "description": "El mensaje con el que se va a iniciar la conversación."
+      }
+    },
+    "stop": {
+      "name": "parar",
+      "description": "Termine la conversación en curso."
+    }
+  },
+  "run": {
+    "name": "correr",
+    "description": "Ejecute un comando personalizado.",
+    "command": {
+      "name": "mandar",
+      "description": "Nombre del comando personalizado que se va a ejecutar."
+    }
+  },
+  "custom-commands": {
+    "name": "comandos-personalizados",
+    "description": "Gestiona comandos personalizados y su respectiva respuesta.",
+    "list": {
+      "name": "lista",
+      "description": "Mostrar todos los comandos personalizados de este servidor."
+    },
+    "add": {
+      "name": "agregar",
+      "description": "Agregue un comando personalizado para este servidor."
+    },
+    "remove": {
+      "name": "eliminar",
+      "description": "Elimine uno de los comandos personalizados de este servidor.",
+      "command": {
+        "name": "mandar",
+        "description": "El comando sin el prefijo."
+      }
+    }
+  },
+  "music": {
+    "name": "música",
+    "description": "Reproduce música en un canal u obtén la letra de una canción.",
+    "join": {
+      "name": "juntar",
+      "description": "Conéctame al canal de voz en el que te encuentras."
+    },
+    "leave": {
+      "name": "salir",
+      "description": "Desconéctame de tu canal de voz."
+    },
+    "play": {
+      "name": "jugar",
+      "description": "Solicitar que se reproduzca una canción.",
+      "song": {
+        "name": "canción",
+        "description": "URL de vídeo, URL de lista de reproducción o nombre de una canción que desea reproducir."
+      }
+    },
+    "pause": {
+      "name": "pausa",
+      "description": "Pausa la canción que se está reproduciendo actualmente."
+    },
+    "resume": {
+      "name": "reanudar",
+      "description": "Continúa reproduciendo la canción previamente pausada."
+    },
+    "stop": {
+      "name": "parar",
+      "description": "Detenga la canción actual y no continúe reproduciéndose."
+    },
+    "playing": {
+      "name": "jugando",
+      "description": "Muestra qué canción se está reproduciendo actualmente."
+    },
+    "queue": {
+      "name": "cola",
+      "description": "Muestra las canciones en la cola."
+    },
+    "shuffle": {
+      "name": "aleatorio",
+      "description": "Baraja las canciones en la cola."
+    },
+    "skip": {
+      "name": "saltarse",
+      "description": "Sáltate una canción y continúa jugando con la siguiente.",
+      "amount": {
+        "name": "importe",
+        "description": "La cantidad de canciones que se van a omitir."
+      }
+    },
+    "clear": {
+      "name": "claro",
+      "description": "Elimina todas las canciones de la cola."
+    },
+    "volume": {
+      "name": "volumen",
+      "description": "Cambia el volumen de la música.",
+      "volume": {
+        "name": "volumen",
+        "description": "El nuevo volumen."
+      }
+    },
+    "lyrics": {
+      "name": "letras",
+      "description": "Consigue la letra de una canción.",
+      "song": {
+        "name": "canción",
+        "description": "El nombre de la canción."
+      }
+    }
+  },
+  "birthday": {
+    "name": "cumpleaños",
+    "description": "Canta una canción para un tipo feliz.",
+    "user": {
+      "name": "usuario",
+      "description": "El usuario hacia el que dirigirlo."
+    }
+  },
+  "kill": {
+    "name": "matar",
+    "description": "Haz que mate a un usuario.",
+    "user": {
+      "name": "usuario",
+      "description": "usuario"
+    }
+  },
+  "neko": {
+    "name": "alguien",
+    "description": "Obtén una imagen aleatoria de un neko.",
+    "random": {
+      "name": "aleatorio",
+      "description": "Obtén una imagen aleatoria de un neko.",
+      "category": {
+        "name": "categoría",
+        "description": "De qué categoría elegir"
+      }
+    },
+    "lewd": {
+      "name": "lascivo",
+      "description": "Obtén una imagen lasciva al azar de un neko. Solo utilizable en canales NSFW."
+    }
+  },
+  "invite": {
+    "name": "invitar",
+    "description": "Mi enlace de invitación, para que usted, o alguien más, pueda agregarme a un servidor."
+  },
+  "support": {
+    "name": "apoyo",
+    "description": "Enlace a mi discordia de apoyo."
+  },
+  "disable-warning": {
+    "name": "disable-warning",
+    "description": "Deshabilite la advertencia acerca de que el prefijo ya no funciona."
+  },
+  "ban": {
+    "name": "prohibición",
+    "description": "Prohíbe a un usuario que se porte mal, o simplemente porque te apetece.",
+    "user": {
+      "name": "usuario",
+      "description": "El usuario que se va a prohibir."
+    },
+    "duration": {
+      "name": "duración",
+      "description": "Cuánto tiempo prohibir al usuario."
+    },
+    "reason": {
+      "name": "razón",
+      "description": "La razón de la prohibición."
+    },
+    "days": {
+      "name": "días",
+      "description": "Hasta cuántos días atrás se deben eliminar los mensajes del usuario."
+    }
+  },
+  "kick": {
+    "name": "patear",
+    "description": "Patea a un usuario que se porta mal, o simplemente porque te apetece.",
+    "user": {
+      "name": "usuario",
+      "description": "El usuario que se va a prohibir."
+    },
+    "reason": {
+      "name": "razón",
+      "description": "La razón de la prohibición."
+    }
+  },
+  "restart": {
+    "name": "reanudar",
+    "description": "Reinicie el bot (solo el propietario)."
+  },
+  "shutdown": {
+    "name": "apagado",
+    "description": "cierre el bot (solo el propietario)."
+  },
+  "language": {
+    "name": "idioma",
+    "description": "Administrar el idioma del servidor.",
+    "current": {
+      "name": "actual",
+      "description": "Muestre qué idioma se está utilizando actualmente."
+    },
+    "set": {
+      "name": "poner",
+      "description": "Cambie el idioma de este servidor.",
+      "language": {
+        "name": "idioma",
+        "description": "El nuevo lenguaje."
+      }
+    }
+  },
+  "welcome": {
+    "name": "bienvenido",
+    "description": "Una notificación de bienvenida.",
+    "user": {
+      "name": "usuario",
+      "description": "Envíe una notificación de bienvenida para un usuario específico.",
+      "user": {
+        "name": "usuario",
+        "description": "usuario"
+      }
+    },
+    "enable": {
+      "name": "habilitar",
+      "description": "Habilite las notificaciones de bienvenida automatizadas.",
+      "channel": {
+        "name": "canal",
+        "description": "El canal en el que se van a enviar los mensajes."
+      }
+    },
+    "disable": {
+      "name": "inutilizar",
+      "description": "Deshabilite las notificaciones de bienvenida automatizadas."
+    },
+    "message": {
+      "name": "mensaje",
+      "description": "Configure el mensaje de la notificación.",
+      "current": {
+        "name": "actual",
+        "description": "Mostrar el mensaje actual utilizado en la notificación."
+      },
+      "change": {
+        "name": "cambio",
+        "description": "Cambie el mensaje utilizado en la notificación."
+      }
+    },
+    "image": {
+      "name": "imagen",
+      "description": "Configure la imagen de la notificación.",
+      "current": {
+        "name": "actual",
+        "description": "Mostrar la imagen actual utilizada en la notificación."
+      },
+      "change": {
+        "name": "cambio",
+        "description": "Cambie la imagen utilizada en la notificación.",
+        "url": {
+          "name": "url",
+          "description": "La dirección URL de la imagen. Si no se proporciona ninguno, se utilizará la imagen predeterminada."
+        }
+      },
+      "disable": {
+        "name": "inutilizar",
+        "description": "Deshabilite la imagen utilizada en la notificación."
+      }
+    }
+  }
+}

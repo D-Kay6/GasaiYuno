@@ -26,7 +26,7 @@ public class AddPollCommandHandler : INotificationHandler<AddPollCommand>
             Message = command.MessageId,
             EndDate = command.EndDate,
             Text = command.Text,
-            Options = command.Options.Select(x => new PollOption{Value = x}).ToList()
+            Options = command.Options
         };
         await _unitOfWork.AddAsync(poll, cancellationToken).ConfigureAwait(false);
         await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

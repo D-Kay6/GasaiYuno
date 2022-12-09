@@ -60,7 +60,7 @@ public class StickyMessageListener : IListener
             
             if (!string.IsNullOrEmpty(stickyMessage.Image))
             {
-                var image = await _restClient.DownloadStreamAsync(new RestRequest(stickyMessage.Image));
+                var image = await _restClient.DownloadStreamAsync(new RestRequest(stickyMessage.Image)).ConfigureAwait(false);
                 if (image != null)
                 {
                     await channel.SendFileAsync(image, string.Empty, stickyMessage.Text).ConfigureAwait(false);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace GasaiYuno.Discord.Core.Models;
+﻿namespace GasaiYuno.Discord.Core.Models;
 
 public static class Retry
 {
@@ -37,9 +32,9 @@ public static class Retry
             try
             {
                 if (attempted > 0)
-                    await Task.Delay(retryInterval);
+                    await Task.Delay(retryInterval).ConfigureAwait(false);
 
-                return await action();
+                return await action().ConfigureAwait(false);
             }
             catch (Exception ex)
             {

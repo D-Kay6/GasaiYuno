@@ -2,11 +2,13 @@
 using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Music.Interfaces.Lyrics;
 using GasaiYuno.Discord.Music.Listeners;
-using GasaiYuno.Discord.Music.Models.Audio;
 using GasaiYuno.Discord.Music.Services;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using System.Reflection;
-using Victoria;
+using Lavalink4NET;
+using Lavalink4NET.DiscordNet;
+using Lavalink4NET.Logging;
+using Lavalink4NET.Logging.Microsoft;
 using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Music;
@@ -19,9 +21,16 @@ internal class RegistrationModule : Module
     {
         builder.RegisterMediatR(Assembly.GetExecutingAssembly());
 
-        builder.Register(_ => new LavaConfig()).InstancePerDependency();
-        
-        builder.RegisterType<MusicNode>().InstancePerLifetimeScope();
+        builder.Register(_ => new LavalinkNodeOptions
+        {
+            RestUri = "http://localhost:2333",
+            WebSocketUri = "ws://localhost:2333",
+            DisconnectOnStop = true
+        }).InstancePerDependency();
+
+        builder.RegisterType<MicrosoftExtensionsLogger>().As<ILogger>().InstancePerLifetimeScope();
+        builder.RegisterType<LavalinkNode>().As<IAudioService>().InstancePerLifetimeScope();
+        builder.RegisterType<DiscordClientWrapper>().As<IDiscordClientWrapper>().InstancePerLifetimeScope();
         builder.RegisterType<MusicListener>().As<IListener>().InstancePerLifetimeScope();
         builder.RegisterType<LyricsService>().As<ILyricsService>().WithParameter("token", Token).InstancePerDependency();
     }

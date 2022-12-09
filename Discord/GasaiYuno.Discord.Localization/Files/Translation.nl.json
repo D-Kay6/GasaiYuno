@@ -1,0 +1,370 @@
+{
+  "auto-channels": {
+    "name": "automatische-kanalen",
+    "description": "Configureer en beheer de automatische kanalen.",
+    "info": {
+      "name": "info",
+      "description": "Informatie weergeven over het gebruik van automatische kanalen."
+    },
+    "details": {
+      "name": "bijzonderheden",
+      "description": "Informatie van een specifiek automatisch kanaal weergeven.",
+      "voice-channel": {
+        "name": "voice-kanaal",
+        "description": "Het spraakkanaal dat wordt gebruikt als een automatisch kanaal."
+      }
+    },
+    "list": {
+      "name": "lijst",
+      "description": "Geef korte informatie weer van alle configuraties."
+    },
+    "assign": {
+      "name": "toewijzen",
+      "description": "Wijs een spraakkanaal toe als een automatisch kanaal.",
+      "channel": {
+        "name": "kanaal",
+        "description": "Het kanaal dat moet worden toegewezen."
+      },
+      "type": {
+        "name": "type",
+        "description": "Wat voor soort kanalen worden gegenereerd."
+      },
+      "generation-name": {
+        "name": "generatie-naam",
+        "description": "De naam van de gegenereerde kanalen."
+      }
+    },
+    "remove": {
+      "name": "verwijderen",
+      "description": "Maak de toewijzing van een automatisch kanaal ongedaan.",
+      "voice-channel": {
+        "name": "voice-kanaal",
+        "description": "Het kanaal om de toewijzing ongedaan te maken."
+      }
+    },
+    "edit": {
+      "name": "bewerken",
+      "description": "Wijzig een dynamische kanaalconfiguratie.",
+      "voice-channel": {
+        "name": "voice-kanaal",
+        "description": "Het kanaal dat moet worden gewijzigd."
+      },
+      "generated-name": {
+        "name": "gegenereerde-naam",
+        "description": "De nieuwe naam voor gegenereerde kanalen."
+      }
+    }
+  },
+  "role-distributor": {
+    "name": "rolverdeler",
+    "description": "Beheer de geautomatiseerde roldistributie van berichtinteracties.",
+    "button": {
+      "name": "knoop",
+      "description": "Maak een bericht dat rollen geeft wanneer de knop wordt ingedrukt."
+    },
+    "list": {
+      "name": "lijst",
+      "description": "Maak een bericht waarin gebruikers rollen uit een lijst kunnen selecteren."
+    }
+  },
+  "poll": {
+    "name": "peiling",
+    "description": "Maak nieuwe polls die gebruikers kunnen beantwoorden.",
+    "new": {
+      "name": "nieuw",
+      "description": "Maak een nieuwe poll.",
+      "duration": {
+        "name": "duur",
+        "description": "De tijd totdat het resultaat moet worden gepost. Voorbeeld: 4d3h2m -> 4 dagen, 3 uur, 2 minuten"
+      },
+      "multi-select": {
+        "name": "multi-select",
+        "description": "Of de poll het mogelijk maakt om meerdere opties te selecteren."
+      }
+    }
+  },
+  "raffle": {
+    "name": "loterij",
+    "description": "Maak een nieuwe loterij waar gebruikers aan mee kunnen doen.",
+    "new": {
+      "name": "nieuw",
+      "description": "Maak een nieuwe loterij waar gebruikers aan mee kunnen doen.",
+      "duration": {
+        "name": "duur",
+        "description": "De tijd totdat het resultaat moet worden gepost. Voorbeeld: 4d3h2m -> 4 dagen, 3 uur, 2 minuten"
+      }
+    }
+  },
+  "chat": {
+    "name": "babbelen",
+    "description": "Ga een ongedwongen, maar waarschijnlijk nog steeds raar gesprek met me aan.",
+    "start": {
+      "name": "beginnen",
+      "description": "Ga een ongedwongen, maar waarschijnlijk nog steeds raar gesprek met me aan.",
+      "message": {
+        "name": "bericht",
+        "description": "De boodschap om het gesprek mee aan te gaan."
+      }
+    },
+    "stop": {
+      "name": "stoppen",
+      "description": "Beëindig het lopende gesprek."
+    }
+  },
+  "run": {
+    "name": "uitvoeren",
+    "description": "Voer een aangepaste opdracht uit.",
+    "command": {
+      "name": "bevelen",
+      "description": "De naam van de aangepaste opdracht die moet worden uitgevoerd."
+    }
+  },
+  "custom-commands": {
+    "name": "custom-opdrachten",
+    "description": "Beheer aangepaste opdrachten en hun respectieve reactie.",
+    "list": {
+      "name": "lijst",
+      "description": "Alle aangepaste opdrachten van deze server weergeven."
+    },
+    "add": {
+      "name": "toevoegen",
+      "description": "Voeg een aangepaste opdracht voor deze server toe."
+    },
+    "remove": {
+      "name": "verwijderen",
+      "description": "Verwijder een van de aangepaste opdrachten van deze server.",
+      "command": {
+        "name": "opdracht",
+        "description": "De opdracht zonder het voorvoegsel."
+      }
+    }
+  },
+  "music": {
+    "name": "muziek",
+    "description": "Speel muziek af in een kanaal of ontvang de tekst van een nummer.",
+    "join": {
+      "name": "verbinden",
+      "description": "Verbind me met het spraakkanaal waarin je je bevindt."
+    },
+    "leave": {
+      "name": "verlaten",
+      "description": "Koppel me los van je stemkanaal."
+    },
+    "play": {
+      "name": "afspelen",
+      "description": "Vraag om een nummer af te spelen.",
+      "song": {
+        "name": "lied",
+        "description": "Video-url, playlist-url of naam van een nummer dat je wilt afspelen."
+      }
+    },
+    "pause": {
+      "name": "pauzeren",
+      "description": "Pauzeer het nummer dat momenteel wordt afgespeeld."
+    },
+    "resume": {
+      "name": "hervatten",
+      "description": "Ga verder met het afspelen van het eerder gepauzeerde nummer."
+    },
+    "stop": {
+      "name": "stoppen",
+      "description": "Stop het huidige nummer en speel niet verder."
+    },
+    "playing": {
+      "name": "spelende",
+      "description": "Laat zien welk nummer momenteel wordt afgespeeld."
+    },
+    "queue": {
+      "name": "rij",
+      "description": "Toon de nummers in de wachtrij."
+    },
+    "shuffle": {
+      "name": "schudden",
+      "description": "Schud de nummers in de wachtrij."
+    },
+    "skip": {
+      "name": "overslaan",
+      "description": "Sla een nummer over en speel verder met het volgende nummer.",
+      "amount": {
+        "name": "aantal",
+        "description": "Het aantal nummers dat moet worden overgeslagen."
+      }
+    },
+    "clear": {
+      "name": "duidelijk",
+      "description": "Verwijder alle nummers uit de wachtrij."
+    },
+    "volume": {
+      "name": "volume",
+      "description": "Wijzig het volume van de muziek.",
+      "volume": {
+        "name": "volume",
+        "description": "Het nieuwe volume."
+      }
+    },
+    "lyrics": {
+      "name": "tekst",
+      "description": "Krijg de tekst van een nummer.",
+      "song": {
+        "name": "lied",
+        "description": "De naam van het nummer."
+      }
+    }
+  },
+  "birthday": {
+    "name": "verjaardag",
+    "description": "Zing een lied voor een gelukkige kerel.",
+    "user": {
+      "name": "gebruiker",
+      "description": "De gebruiker om het naartoe te leiden."
+    }
+  },
+  "kill": {
+    "name": "doden",
+    "description": "Laat me een gebruiker doden.",
+    "user": {
+      "name": "gebruiker",
+      "description": "gebruiker"
+    }
+  },
+  "neko": {
+    "name": "iemand",
+    "description": "Krijg een willekeurige afbeelding van een neko.",
+    "random": {
+      "name": "willekeurig",
+      "description": "Krijg een willekeurige afbeelding van een neko.",
+      "category": {
+        "name": "categorie",
+        "description": "Uit welke categorie u moet kiezen"
+      }
+    },
+    "lewd": {
+      "name": "wellustig",
+      "description": "Krijg een willekeurige ontuchtige afbeelding van een neko. Alleen bruikbaar in NSFW-kanalen."
+    }
+  },
+  "invite": {
+    "name": "uitnodigen",
+    "description": "Mijn uitnodigingslink, zodat jij, of iemand anders, mij aan een server kan toevoegen."
+  },
+  "support": {
+    "name": "steunen",
+    "description": "Link naar mijn steun onenigheid."
+  },
+  "disable-warning": {
+    "name": "disable-warning",
+    "description": "Schakel de waarschuwing uit dat het voorvoegsel niet meer werkt."
+  },
+  "ban": {
+    "name": "verbod",
+    "description": "Ban een gebruiker die zich misdraagt, of gewoon omdat je daar zin in hebt.",
+    "user": {
+      "name": "gebruiker",
+      "description": "De gebruiker te verbannen."
+    },
+    "duration": {
+      "name": "duur",
+      "description": "Hoe lang de gebruiker moet worden verbannen."
+    },
+    "reason": {
+      "name": "reden",
+      "description": "De reden voor het verbod."
+    },
+    "days": {
+      "name": "dagen",
+      "description": "Tot hoeveel dagen terug de berichten van de gebruiker moeten worden verwijderd."
+    }
+  },
+  "kick": {
+    "name": "schoppen",
+    "description": "Schop een gebruiker die zich misdraagt, of gewoon omdat jij daar zin in hebt.",
+    "user": {
+      "name": "gebruiker",
+      "description": "De gebruiker te verbannen."
+    },
+    "reason": {
+      "name": "reden",
+      "description": "De reden voor het verbod."
+    }
+  },
+  "restart": {
+    "name": "herstarten",
+    "description": "Start de bot opnieuw op (alleen eigenaar)."
+  },
+  "shutdown": {
+    "name": "afsluiten",
+    "description": "sluit de bot af (alleen eigenaar)."
+  },
+  "language": {
+    "name": "taal",
+    "description": "Beheer de taal van de server.",
+    "current": {
+      "name": "actueel",
+      "description": "Laat zien welke taal er momenteel wordt gebruikt."
+    },
+    "set": {
+      "name": "set",
+      "description": "Wijzig de taal voor deze server.",
+      "language": {
+        "name": "taal",
+        "description": "De nieuwe taal."
+      }
+    }
+  },
+  "welcome": {
+    "name": "welkom",
+    "description": "Een welkome mededeling.",
+    "user": {
+      "name": "gebruiker",
+      "description": "Stuur een welkomstmelding voor een specifieke gebruiker.",
+      "user": {
+        "name": "gebruiker",
+        "description": "gebruiker"
+      }
+    },
+    "enable": {
+      "name": "inschakelen",
+      "description": "Schakel de geautomatiseerde welkomstmeldingen in.",
+      "channel": {
+        "name": "kanaal",
+        "description": "Het kanaal om de berichten in te sturen."
+      }
+    },
+    "disable": {
+      "name": "uitschakelen",
+      "description": "Schakel de automatische welkomstmeldingen uit."
+    },
+    "message": {
+      "name": "bericht",
+      "description": "Configureer het bericht van de melding.",
+      "current": {
+        "name": "actueel",
+        "description": "Geef het huidige bericht weer dat in de melding wordt gebruikt."
+      },
+      "change": {
+        "name": "veranderen",
+        "description": "Wijzig het bericht dat in de melding wordt gebruikt."
+      }
+    },
+    "image": {
+      "name": "beeld",
+      "description": "Configureer de afbeelding van de melding.",
+      "current": {
+        "name": "actueel",
+        "description": "Geef de huidige afbeelding weer die in de melding wordt gebruikt."
+      },
+      "change": {
+        "name": "veranderen",
+        "description": "Wijzig de afbeelding die in de melding wordt gebruikt.",
+        "url": {
+          "name": "url",
+          "description": "De url van de afbeelding. Als er geen wordt verstrekt, wordt de standaardafbeelding gebruikt."
+        }
+      },
+      "disable": {
+        "name": "uitschakelen",
+        "description": "Schakel de afbeelding uit die in de melding wordt gebruikt."
+      }
+    }
+  }
+}

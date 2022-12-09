@@ -1,10 +1,7 @@
 ﻿using Discord.Interactions;
 using GasaiYuno.Discord.Core.Mediator.Events;
 using MediatR;
-using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Localization.Mediator.Events;
 
@@ -22,6 +19,6 @@ internal sealed class RegisterCommandsEventHandler : INotificationHandler<Regist
     /// <inheritdoc />
     public async Task Handle(RegisterCommandsEvent command, CancellationToken cancellationToken)
     {
-        await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
+        await _interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider).ConfigureAwait(false);
     }
 }

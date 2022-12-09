@@ -68,7 +68,12 @@
             "Length": "The lyrics is too long for me to be able to send it."
           },
           "Multiple": "I found multiple results for **{0}**.",
-          "Selection": "Please select the song:"
+          "Selection": "Please select the song:",
+          "Cancel": {
+            "Title": "== Cancel ==",
+            "Description": "Cancel the song selection.",
+            "Performed": "Cancelled"
+          }
         },
         "Track": {
           "Exception": {
@@ -86,7 +91,8 @@
             "Description": "Cancel the song selection.",
             "Performed": "Cancelled" 
           }
-        }
+        },
+        "Youtube": "Like so many before me, I've had to remove the YouTube integration from my music player. [enter]Instead, you can listen to music from Youtube by starting the Youtube activity from within Discord."
       }
     },
     "Moderation": {

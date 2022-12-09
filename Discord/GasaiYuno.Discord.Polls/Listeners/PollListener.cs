@@ -5,7 +5,6 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Polls.Mediator.Commands;
 using GasaiYuno.Discord.Polls.Mediator.Requests;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace GasaiYuno.Discord.Polls.Listeners;
 
@@ -15,14 +14,12 @@ internal class PollListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<PollListener> _logger;
     private readonly Timer _timer;
 
-    public PollListener(DiscordShardedClient client, IMediator mediator, ILogger<PollListener> logger)
+    public PollListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
 
         _timer = new Timer(CheckPolls, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
     }
@@ -63,17 +60,15 @@ internal class PollListener : IListener
                 if (channel == null) continue;
 
                 var translation = await _mediator.Send(new GetTranslationRequest(poll.Server)).ConfigureAwait(false);
-                var totalScore = poll.Selections.Select(x => x.SelectedOption).GroupBy(x => x).ToList();
-                var maxScore = totalScore.MaxBy(x => x.Count())?.Key ?? -1;
-                var highestIndexes = totalScore.Where(x => x.Count() == maxScore).Select(x => x.Key).ToList();
-                var options = highestIndexes.Select(index => poll.Options[index]).ToList();
-                var selectedOptions = options.Any() ? string.Join("\n", options) : translation.Message("Automation.Poll.Result.None");
+                var maxScore = poll.Options.Max(x => x.Selectors.Count);
+                var winningOptions = poll.Options.Where(x => x.Selectors.Count == maxScore).Select(x => x.Value).ToList();
+                var selectedOptions = winningOptions.Any() ? string.Join("\n", winningOptions) : translation.Message("Automation.Poll.Result.None");
 
                 var message = await channel.GetMessageAsync(poll.Message).ConfigureAwait(false);
                 var embedBuilder = new EmbedBuilder();
                 embedBuilder.WithTitle(translation.Message("Automation.Poll.Result.Title"));
                 embedBuilder.AddField(poll.Text, selectedOptions);
-                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id));
+                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id)).ConfigureAwait(false);
                 await _mediator.Publish(new RemovePollCommand(poll.Server, poll.Channel, poll.Message)).ConfigureAwait(false);
             }
         }

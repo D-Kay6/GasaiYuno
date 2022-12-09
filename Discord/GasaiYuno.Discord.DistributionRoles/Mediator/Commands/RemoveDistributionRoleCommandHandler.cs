@@ -19,6 +19,6 @@ public class DeleteDistributionRoleCommandHandler : INotificationHandler<RemoveD
         if (distributionRole == null) return;
 
         _unitOfWork.Remove(distributionRole);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

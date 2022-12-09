@@ -18,7 +18,7 @@ public class CustomCommandAutocompleteHandler : AutocompleteHandler
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
     {
         var command = autocompleteInteraction.Data?.Current?.Value?.ToString();
-        var commands = await _mediator.Send(new SearchCustomCommandsRequest(context.Guild.Id, command));
+        var commands = await _mediator.Send(new SearchCustomCommandsRequest(context.Guild.Id, command)).ConfigureAwait(false);
         return AutocompletionResult.FromSuccess(commands.Take(25).Select(x => new AutocompleteResult(x.Command, x.Command)));
     }
 }

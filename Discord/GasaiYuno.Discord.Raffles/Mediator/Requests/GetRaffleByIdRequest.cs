@@ -5,9 +5,9 @@ namespace GasaiYuno.Discord.Raffles.Mediator.Requests;
 
 public record GetRaffleByIdRequest : IRequest<Raffle>
 {
-    public ulong Id { get; }
+    public Guid Id { get; }
     
-    public GetRaffleByIdRequest(ulong id)
+    public GetRaffleByIdRequest(Guid id)
     {
         Id = id;
     }

@@ -5,13 +5,13 @@ namespace GasaiYuno.Discord.Polls.Mediator.Commands;
 
 public record AddPollCommand : INotification
 {
-    public ulong Identity { get; }
+    public Guid Identity { get; }
     public ulong ServerId { get; }
     public ulong ChannelId { get; }
     public ulong MessageId { get; }
     public DateTime EndDate { get; }
     public string Text { get; }
-    public string[] Options { get; }
+    public List<PollOption> Options { get; }
 
     public AddPollCommand(Poll poll)
     {
@@ -21,10 +21,10 @@ public record AddPollCommand : INotification
         MessageId = poll.Message;
         EndDate = poll.EndDate;
         Text = poll.Text;
-        Options = poll.Options.Select(x => x.Value).ToArray();
+        Options = poll.Options;
     }
     
-    public AddPollCommand(ulong identity, ulong server, ulong channel, ulong message, DateTime endDate, string text, string[] options)
+    public AddPollCommand(Guid identity, ulong server, ulong channel, ulong message, DateTime endDate, string text, string[] options)
     {
         Identity = identity;
         ServerId = server;
@@ -32,6 +32,6 @@ public record AddPollCommand : INotification
         MessageId = message;
         EndDate = endDate;
         Text = text;
-        Options = options;
+        Options = options.Select(x => new PollOption(x)).ToList();
     }
 }

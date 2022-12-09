@@ -4,9 +4,6 @@ using GasaiYuno.Discord.Core.Mediator.Events;
 using GasaiYuno.Discord.Mediator.Commands;
 using GasaiYuno.Discord.Mediator.Requests;
 using MediatR;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Mediator.Events;
 

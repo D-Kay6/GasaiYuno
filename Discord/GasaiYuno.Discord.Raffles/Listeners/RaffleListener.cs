@@ -5,7 +5,6 @@ using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Raffles.Mediator.Commands;
 using GasaiYuno.Discord.Raffles.Mediator.Requests;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace GasaiYuno.Discord.Raffles.Listeners;
 
@@ -15,15 +14,13 @@ internal class RaffleListener : IListener
 
     private readonly DiscordShardedClient _client;
     private readonly IMediator _mediator;
-    private readonly ILogger<RaffleListener> _logger;
     private readonly Timer _timer;
     private readonly Random _random;
 
-    public RaffleListener(DiscordShardedClient client, IMediator mediator, ILogger<RaffleListener> logger)
+    public RaffleListener(DiscordShardedClient client, IMediator mediator)
     {
         _client = client;
         _mediator = mediator;
-        _logger = logger;
 
         _timer = new Timer(CheckRaffles, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         _random = new Random();
@@ -70,7 +67,7 @@ internal class RaffleListener : IListener
                 {
                     var randomIndex = _random.Next(0, raffle.Entries.Count - 1);
                     var userWon = raffle.Entries[randomIndex];
-                    guildUser = guild.GetUser(userWon.User);
+                    guildUser = guild.GetUser(userWon);
                     if (guildUser != null) break;
                 }
                 if (guildUser == null) continue;
@@ -79,7 +76,7 @@ internal class RaffleListener : IListener
                 var embedBuilder = new EmbedBuilder();
                 embedBuilder.WithTitle(translation.Message("Automation.Raffle.Result.Title"));
                 embedBuilder.AddField(raffle.Title, translation.Message("Automation.Raffle.Result.Winner", guildUser.Mention));
-                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id));
+                await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id)).ConfigureAwait(false);
                 await _mediator.Publish(new RemoveRaffleCommand(raffle.Server, raffle.Channel, raffle.Message)).ConfigureAwait(false);
             }
         }

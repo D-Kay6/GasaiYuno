@@ -9,7 +9,6 @@ namespace GasaiYuno.Discord.Bans.Commands;
 [EnabledInDm(false)]
 public class BanModule : BaseInteractionModule<BanModule>
 {
-    [DefaultPermission(false)]
     [DefaultMemberPermissions(GuildPermission.BanMembers)]
     [RequireUserPermission(GuildPermission.BanMembers)]
     [SlashCommand("ban", "Ban a user who misbehaves, or just because you feel like it.")]

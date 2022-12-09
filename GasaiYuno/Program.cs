@@ -4,7 +4,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System.Reflection;
 using System.Runtime.Loader;
 
 namespace GasaiYuno;
@@ -30,15 +29,16 @@ internal class Program
             return;
         }
         
-        var executionFolder = Path.GetDirectoryName(System.AppContext.BaseDirectory);
-        AssemblyLoadContext.Default.Resolving += (AssemblyLoadContext context, AssemblyName assembly) => context.LoadFromAssemblyPath(Path.Combine(executionFolder, $"{assembly.Name}.dll"));
+        var executionFolder = Path.GetDirectoryName(AppContext.BaseDirectory);
+        AssemblyLoadContext.Default.Resolving += (context, assembly) => context.LoadFromAssemblyPath(Path.Combine(executionFolder ?? string.Empty, $"{assembly.Name}.dll"));
 
         try
         {
             Log.Information("Booting up...");
             await Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .UseSerilog((context, _, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(context.Configuration))
+                .UseSerilog((context, _, loggerConfiguration) =>
+                    loggerConfiguration.ReadFrom.Configuration(context.Configuration))
                 .ConfigureServices(ConfigureServices)
                 .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
                 .UseConsoleLifetime()

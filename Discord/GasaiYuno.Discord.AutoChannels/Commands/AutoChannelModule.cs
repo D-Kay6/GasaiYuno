@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using GasaiYuno.Discord.AutoChannels.Commands.Autocomplete;
 using GasaiYuno.Discord.AutoChannels.Mediator.Commands;
 using GasaiYuno.Discord.AutoChannels.Mediator.Requests;
 using GasaiYuno.Discord.AutoChannels.Models;
@@ -18,7 +17,7 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
     public Task InfoCommand() => RespondAsync(Translation.Message("Automation.Channel.Info"), ephemeral: true);
 
     [SlashCommand("details", "Display information of a specific auto-channel.")]
-    public async Task DetailsCommand([Summary(description: "The name of the configuration.")] IVoiceChannel voiceChannel)
+    public async Task DetailsCommand([Summary(description: "The voice-channel used as an auto-channel.")] IVoiceChannel voiceChannel)
     {
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null)
@@ -108,6 +107,6 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
 
         autoChannel.GenerationName = generatedName;
         await Mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true);
+        await RespondAsync(Translation.Message("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true).ConfigureAwait(false);
     }
 }

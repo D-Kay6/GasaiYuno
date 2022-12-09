@@ -3,9 +3,6 @@ using GasaiYuno.Discord.Core.Models;
 using GasaiYuno.Discord.Localization.Interfaces;
 using GasaiYuno.Discord.Localization.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace GasaiYuno.Discord.Localization;
 

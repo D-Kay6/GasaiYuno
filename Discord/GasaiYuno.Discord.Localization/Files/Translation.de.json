@@ -1,0 +1,370 @@
+{
+  "auto-channels": {
+    "name": "automatische-kanäle",
+    "description": "Konfigurieren und verwalten Sie die automatischen Kanäle.",
+    "info": {
+      "name": "info",
+      "description": "Zeigen Sie Informationen zur Verwendung von Auto-Kanälen an."
+    },
+    "details": {
+      "name": "details",
+      "description": "Zeigen Sie Informationen zu einem bestimmten Autokanal an.",
+      "voice-channel": {
+        "name": "sprachkanal",
+        "description": "Der Sprachkanal, der als automatischer Kanal verwendet wird."
+      }
+    },
+    "list": {
+      "name": "liste",
+      "description": "Zeigen Sie kurze Informationen zu allen Konfigurationen an."
+    },
+    "assign": {
+      "name": "zuweisen",
+      "description": "Weisen Sie einen Sprachkanal als automatischen Kanal zu.",
+      "channel": {
+        "name": "kanal",
+        "description": "Der zuzuweisende Kanal."
+      },
+      "type": {
+        "name": "art",
+        "description": "Welche Art von Kanälen generiert werden."
+      },
+      "generation-name": {
+        "name": "generationsname",
+        "description": "Der Name der generierten Kanäle."
+      }
+    },
+    "remove": {
+      "name": "entfernen",
+      "description": "Machen Sie die Zuweisung eines automatischen Kanals rückgängig.",
+      "voice-channel": {
+        "name": "sprachkanal",
+        "description": "Der Kanal, dessen Zuweisung aufgehoben werden soll."
+      }
+    },
+    "edit": {
+      "name": "redigieren",
+      "description": "Ändern einer dynamischen Kanalkonfiguration.",
+      "voice-channel": {
+        "name": "sprachkanal",
+        "description": "Der zu ändernde Kanal."
+      },
+      "generated-name": {
+        "name": "generierter_name",
+        "description": "Der neue Name für generierte Kanäle."
+      }
+    }
+  },
+  "role-distributor": {
+    "name": "rollenverteiler",
+    "description": "Verwalten Sie die automatisierte Rollenverteilung von Nachrichteninteraktionen.",
+    "button": {
+      "name": "knopf",
+      "description": "Erstellen Sie eine Meldung, die Rollen angibt, wenn die Schaltfläche gedrückt wird."
+    },
+    "list": {
+      "name": "liste",
+      "description": "Erstellen Sie eine Nachricht, in der Benutzer Rollen aus einer Liste auswählen können."
+    }
+  },
+  "poll": {
+    "name": "umfrage",
+    "description": "Erstellen Sie neue Umfragen, die Benutzer beantworten können.",
+    "new": {
+      "name": "neu",
+      "description": "Erstellen Sie eine neue Umfrage.",
+      "duration": {
+        "name": "dauer",
+        "description": "Die Zeit bis zum Ergebnis muss gepostet werden. Beispiel: 4d3h2m -> 4 Tage, 3 Stunden, 2 Minuten"
+      },
+      "multi-select": {
+        "name": "mehrfachauswahl",
+        "description": "Ob die Umfrage die Auswahl mehrerer Optionen zulässt oder nicht."
+      }
+    }
+  },
+  "raffle": {
+    "name": "verlosung",
+    "description": "Erstellen Sie eine neue Verlosung, an der Benutzer teilnehmen können.",
+    "new": {
+      "name": "neu",
+      "description": "Erstellen Sie eine neue Verlosung, an der Benutzer teilnehmen können.",
+      "duration": {
+        "name": "dauer",
+        "description": "Die Zeit bis zum Ergebnis muss veröffentlicht werden. Beispiel: 4d3h2m -> 4 Tage 3 Stunden 2 Minuten"
+      }
+    }
+  },
+  "chat": {
+    "name": "plaudern",
+    "description": "Lass dich auf ein lockeres, aber wahrscheinlich immer noch seltsames Gespräch mit mir ein.",
+    "start": {
+      "name": "anfangen",
+      "description": "Lass dich auf ein lockeres, aber wahrscheinlich immer noch seltsames Gespräch mit mir ein.",
+      "message": {
+        "name": "nachricht",
+        "description": "Die Nachricht, mit der die Konversation beginnen soll."
+      }
+    },
+    "stop": {
+      "name": "aufhören",
+      "description": "Beenden Sie die laufende Konversation."
+    }
+  },
+  "run": {
+    "name": "laufen",
+    "description": "Führen Sie einen benutzerdefinierten Befehl aus.",
+    "command": {
+      "name": "befehl",
+      "description": "Der Name des auszuführenden benutzerdefinierten Befehls."
+    }
+  },
+  "custom-commands": {
+    "name": "benutzerdefinierte-befehle",
+    "description": "Verwalten Sie benutzerdefinierte Befehle und ihre jeweilige Antwort.",
+    "list": {
+      "name": "liste",
+      "description": "Zeigen Sie alle benutzerdefinierten Befehle dieses Servers an."
+    },
+    "add": {
+      "name": "hinzufügen",
+      "description": "Fügen Sie einen benutzerdefinierten Befehl für diesen Server hinzu."
+    },
+    "remove": {
+      "name": "entfernen",
+      "description": "Entfernen Sie einen der benutzerdefinierten Befehle dieses Servers.",
+      "command": {
+        "name": "befehl",
+        "description": "Der Befehl ohne Präfix."
+      }
+    }
+  },
+  "music": {
+    "name": "musik",
+    "description": "Spielen Sie Musik in einem Kanal ab oder holen Sie sich die Texte eines Songs.",
+    "join": {
+      "name": "verbinden",
+      "description": "Verbinde mich mit dem Sprachkanal, in dem du dich befindest."
+    },
+    "leave": {
+      "name": "verlassen",
+      "description": "Trennen Sie mich von Ihrem Sprachkanal."
+    },
+    "play": {
+      "name": "spielen",
+      "description": "Fordern Sie einen Song an, der abgespielt werden soll.",
+      "song": {
+        "name": "lied",
+        "description": "Video-URL, Playlist-URL oder Name eines Songs, den Sie abspielen möchten."
+      }
+    },
+    "pause": {
+      "name": "pause",
+      "description": "Pausieren Sie den aktuell gespielten Song."
+    },
+    "resume": {
+      "name": "fortsetzen",
+      "description": "Spielen Sie den zuvor angehaltenen Song weiter ab."
+    },
+    "stop": {
+      "name": "aufhören",
+      "description": "Stoppen Sie den aktuellen Song und spielen Sie ihn nicht weiter."
+    },
+    "playing": {
+      "name": "abgespielt",
+      "description": "Zeigen Sie, welcher Song gerade abgespielt wird."
+    },
+    "queue": {
+      "name": "schlange",
+      "description": "Zeigen Sie die Songs in der Warteschlange an."
+    },
+    "shuffle": {
+      "name": "durchmischung",
+      "description": "Mischen Sie die Songs in der Warteschlange."
+    },
+    "skip": {
+      "name": "hüpfen",
+      "description": "Überspringen Sie einen Song und spielen Sie mit dem nächsten weiter.",
+      "amount": {
+        "name": "menge",
+        "description": "Die Anzahl der zu überspringenden Songs."
+      }
+    },
+    "clear": {
+      "name": "klar",
+      "description": "Entfernen Sie alle Songs aus der Warteschlange."
+    },
+    "volume": {
+      "name": "volumen",
+      "description": "Ändern Sie die Lautstärke der Musik.",
+      "volume": {
+        "name": "volumen",
+        "description": "Der neue Band."
+      }
+    },
+    "lyrics": {
+      "name": "liedtext",
+      "description": "Holen Sie sich den Text eines Songs.",
+      "song": {
+        "name": "lied",
+        "description": "Der Name des Songs."
+      }
+    }
+  },
+  "birthday": {
+    "name": "geburtstag",
+    "description": "Singen Sie ein Lied für einen glücklichen Kerl.",
+    "user": {
+      "name": "benutzer",
+      "description": "Der Benutzer, um es zu lenken."
+    }
+  },
+  "kill": {
+    "name": "töten",
+    "description": "Lass mich einen Benutzer töten.",
+    "user": {
+      "name": "benutzer",
+      "description": "Benutzer"
+    }
+  },
+  "neko": {
+    "name": "jemand",
+    "description": "Holen Sie sich ein zufälliges Bild eines Neko.",
+    "random": {
+      "name": "zufällig",
+      "description": "Holen Sie sich ein zufälliges Bild eines Neko.",
+      "category": {
+        "name": "kategorie",
+        "description": "Aus welcher Kategorie Sie auswählen sollten"
+      }
+    },
+    "lewd": {
+      "name": "unzüchtig",
+      "description": "Holen Sie sich ein zufälliges unzüchtiges Bild eines Neko. Nur in NSFW-Kanälen verwendbar."
+    }
+  },
+  "invite": {
+    "name": "einladen",
+    "description": "Mein Einladungslink, damit Sie oder jemand anderes mich zu einem Server hinzufügen können."
+  },
+  "support": {
+    "name": "unterstützen",
+    "description": "Link zu meinem Support-Discord."
+  },
+  "disable-warning": {
+    "name": "deaktivieren-warnung",
+    "description": "Deaktivieren Sie die Warnung, dass das Präfix nicht mehr funktioniert."
+  },
+  "ban": {
+    "name": "verbot",
+    "description": "Sperren Sie einen Benutzer, der sich schlecht benimmt, oder einfach nur, weil Sie Lust dazu haben.",
+    "user": {
+      "name": "benutzer",
+      "description": "Der Benutzer zu sperren."
+    },
+    "duration": {
+      "name": "dauer",
+      "description": "Wie lange der Benutzer gesperrt werden soll."
+    },
+    "reason": {
+      "name": "grund",
+      "description": "Der Grund für das Verbot."
+    },
+    "days": {
+      "name": "tage",
+      "description": "Bis vor wie vielen Tagen sollten die Nachrichten des Benutzers entfernt werden."
+    }
+  },
+  "kick": {
+    "name": "treten",
+    "description": "Treten Sie einen Benutzer, der sich schlecht benimmt oder einfach nur, weil Sie Lust dazu haben.",
+    "user": {
+      "name": "benutzer",
+      "description": "Der Benutzer zu sperren."
+    },
+    "reason": {
+      "name": "grund",
+      "description": "Der Grund für das Verbot."
+    }
+  },
+  "restart": {
+    "name": "neustarten",
+    "description": "Starten Sie den Bot neu (nur Besitzer)."
+  },
+  "shutdown": {
+    "name": "herunterfahren",
+    "description": "Fahren Sie den Bot herunter (nur Besitzer)."
+  },
+  "language": {
+    "name": "sprache",
+    "description": "Verwalten Sie die Sprache des Servers.",
+    "current": {
+      "name": "strömung",
+      "description": "Zeigen Sie, welche Sprache derzeit verwendet wird."
+    },
+    "set": {
+      "name": "garnitur",
+      "description": "Ändern Sie die Sprache für diesen Server.",
+      "language": {
+        "name": "sprache",
+        "description": "Die neue Sprache."
+      }
+    }
+  },
+  "welcome": {
+    "name": "willkommen",
+    "description": "Eine willkommene Benachrichtigung.",
+    "user": {
+      "name": "benutzer",
+      "description": "Senden Sie eine Willkommensbenachrichtigung für einen bestimmten Benutzer.",
+      "user": {
+        "name": "benutzer",
+        "description": "Benutzer"
+      }
+    },
+    "enable": {
+      "name": "ermöglichen",
+      "description": "Aktivieren Sie die automatischen Begrüßungsbenachrichtigungen.",
+      "channel": {
+        "name": "kanal",
+        "description": "Der Kanal, in dem die Nachrichten gesendet werden sollen."
+      }
+    },
+    "disable": {
+      "name": "abschalten",
+      "description": "Deaktivieren Sie die automatischen Begrüßungsbenachrichtigungen."
+    },
+    "message": {
+      "name": "nachricht",
+      "description": "Konfigurieren Sie die Nachricht der Benachrichtigung.",
+      "current": {
+        "name": "strömung",
+        "description": "Zeigt die aktuelle Meldung an, die in der Benachrichtigung verwendet wird."
+      },
+      "change": {
+        "name": "veränderung",
+        "description": "Ändern Sie die in der Benachrichtigung verwendete Nachricht."
+      }
+    },
+    "image": {
+      "name": "bild",
+      "description": "Konfigurieren Sie das Abbild der Benachrichtigung.",
+      "current": {
+        "name": "strömung",
+        "description": "Zeigen Sie das aktuelle Bild an, das in der Benachrichtigung verwendet wird."
+      },
+      "change": {
+        "name": "veränderung",
+        "description": "Ändern Sie das in der Benachrichtigung verwendete Bild.",
+        "url": {
+          "name": "url",
+          "description": "Die URL des Bildes. Wenn keine angegeben wird, wird das Standardbild verwendet."
+        }
+      },
+      "disable": {
+        "name": "abschalten",
+        "description": "Deaktivieren Sie das in der Benachrichtigung verwendete Bild."
+      }
+    }
+  }
+}

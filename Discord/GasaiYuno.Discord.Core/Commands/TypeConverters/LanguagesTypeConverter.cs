@@ -2,9 +2,6 @@
 using Discord.Interactions;
 using GasaiYuno.Discord.Core.Extensions;
 using GasaiYuno.Discord.Core.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Core.Commands.TypeConverters;
 

@@ -3,7 +3,6 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Chatbot.Interfaces;
 using GasaiYuno.Discord.Core.Commands;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Chatbot.Commands;
 
@@ -31,8 +30,7 @@ public class ChatModule : BaseInteractionModule<ChatModule>
         }
 
         await RespondAsync(Translation.Message("Entertainment.Chat.Thread"), ephemeral: true).ConfigureAwait(false);
-        var thread = await ((Context.Channel as SocketTextChannel)!).CreateThreadAsync($"Chat with {Context.User.Username}", ThreadType.PublicThread, ThreadArchiveDuration.OneHour)
-            .ConfigureAwait(false);
+        var thread = await ((Context.Channel as SocketTextChannel)!).CreateThreadAsync($"Chat with {Context.User.Username}", ThreadType.PublicThread, ThreadArchiveDuration.OneHour).ConfigureAwait(false);
         await thread.AddUserAsync(Context.User as SocketGuildUser).ConfigureAwait(false);
         session = _sessionService.CreateSession(SessionId, Context.User.Id, thread);
         if (!string.IsNullOrWhiteSpace(input))

@@ -1,7 +1,5 @@
 ﻿using GasaiYuno.Discord.Core.Interfaces;
 using Raven.Client.Documents.Session;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GasaiYuno.Discord.Persistence;
 

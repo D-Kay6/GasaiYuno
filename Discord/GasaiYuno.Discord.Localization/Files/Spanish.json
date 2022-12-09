@@ -68,7 +68,12 @@
             "Length": "La letra es demasiado larga para poder enviarla"
           },
           "Multiple": "Encontré varios resultados para **{0}**.",
-          "Selection": "Por favor, seleccione la canción:"
+          "Selection": "Por favor, seleccione la canción:",
+          "Cancel": {
+            "Title": "== Cancelar ==",
+            "Description": "Cancele la selección de canciones.",
+            "Performed": "Cancelado"
+          }
         },
         "Track": {
           "Exception": {
@@ -86,7 +91,8 @@
             "Description": "Cancele la selección de canciones.",
             "Performed": "Cancelado"
           }
-        }
+        },
+        "Youtube": "Como muchos antes que yo, tuve que eliminar la integración de YouTube de mi reproductor de música. [ingresar] En cambio, puede escuchar música de Youtube iniciando la actividad de Youtube desde Discord."
       }
     },
     "Moderation": {

@@ -1,6 +1,5 @@
 ﻿using GasaiYuno.Discord.Core.Attributes;
 using GasaiYuno.Discord.Core.Models;
-using System.Linq;
 using System.Reflection;
 
 namespace GasaiYuno.Discord.Core.Extensions;
