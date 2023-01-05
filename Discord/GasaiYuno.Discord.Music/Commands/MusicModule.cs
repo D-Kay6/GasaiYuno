@@ -119,9 +119,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
         }
 
         await RespondAsync(Translation.Message("Entertainment.Music.Track.Search", query), ephemeral: true).ConfigureAwait(false);
-        var searchResponse = await _audioService.LoadTracksAsync(query!).ConfigureAwait(false);
-        if (searchResponse.LoadType is TrackLoadType.NoMatches)
-            searchResponse = await _audioService.LoadTracksAsync(query!, SearchMode.SoundCloud).ConfigureAwait(false);
+        var searchResponse = await _audioService.LoadTracksAsync(query!, SearchMode.SoundCloud).ConfigureAwait(false);
 
         var tracks = new List<LavalinkTrack>();
         switch (searchResponse.LoadType)
@@ -133,9 +131,10 @@ public class MusicModule : BaseInteractionModule<MusicModule>
                 var resultTrack = searchResponse.Tracks!.FirstOrDefault(x => query.Equals(x.Title) || query.Equals(x.Uri!.ToString()));
                 if (resultTrack == null)
                 {
+                    var id = query.Replace(" ", ";;");
                     var menuBuilder = new SelectMenuBuilder()
                         .WithPlaceholder(Translation.Message("Entertainment.Music.Track.Selection"))
-                        .WithCustomId("music track_selection:" + query)
+                        .WithCustomId("music track_selection:" + id)
                         .WithMinValues(1).WithMaxValues(1)
                         .AddOption(Translation.Message("Entertainment.Music.Track.Cancel.Title"), "cancel", Translation.Message("Entertainment.Music.Track.Cancel.Description"), new Emoji("❌"));
                     for (var i = 0; i < Math.Min(searchResponse.Tracks.Length, 10); i++)
@@ -494,9 +493,10 @@ public class MusicModule : BaseInteractionModule<MusicModule>
                 return;
             }
 
+            var id = input.Replace(" ", ";;");
             menuBuilder = new SelectMenuBuilder()
                 .WithPlaceholder(Translation.Message("Entertainment.Music.Lyrics.Selection"))
-                .WithCustomId("music lyrics_selection:" + input)
+                .WithCustomId("music lyrics_selection:" + id)
                 .WithMinValues(1).WithMaxValues(1)
                 .AddOption(Translation.Message("Entertainment.Music.Lyrics.Cancel.Title"), "cancel", Translation.Message("Entertainment.Music.Lyrics.Cancel.Description"), new Emoji("❌"));
             ;
@@ -533,9 +533,9 @@ public class MusicModule : BaseInteractionModule<MusicModule>
         }
 
         [ComponentInteraction("track_selection:*")]
-        public async Task MusicTrackInteraction(string query, string[] selectedTracks)
+        public async Task MusicTrackInteraction(string id, string[] selectedTracks)
         {
-            if (selectedTracks.Length == 0)
+            if (selectedTracks.Length == 0 || id.IsNullOrWhiteSpace())
                 return;
 
             if (selectedTracks[0].Equals("cancel"))
@@ -568,9 +568,8 @@ public class MusicModule : BaseInteractionModule<MusicModule>
             }
 
             await DeferAsync(true).ConfigureAwait(false);
-            var searchResponse = await _audioService.LoadTracksAsync(query!).ConfigureAwait(false);
-            if (searchResponse.LoadType is TrackLoadType.NoMatches)
-                searchResponse = await _audioService.LoadTracksAsync(query!, SearchMode.SoundCloud).ConfigureAwait(false);
+            var query = id.Replace(";;", " ");
+            var searchResponse = await _audioService.LoadTracksAsync(query, SearchMode.SoundCloud).ConfigureAwait(false);
             if (searchResponse.LoadType is not TrackLoadType.SearchResult)
                 return;
 
@@ -593,9 +592,9 @@ public class MusicModule : BaseInteractionModule<MusicModule>
         }
 
         [ComponentInteraction("lyrics_selection:*")]
-        public async Task MusicLyricsInteraction(string query, string[] selectedLyrics)
+        public async Task MusicLyricsInteraction(string id, string[] selectedLyrics)
         {
-            if (selectedLyrics.Length == 0)
+            if (selectedLyrics.Length == 0 || id.IsNullOrWhiteSpace())
                 return;
 
             if (selectedLyrics[0].Equals("cancel"))
@@ -608,6 +607,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
                 return;
             }
 
+            var query = id.Replace(";;", " ");
             var options = await _lyricsService.Search(query).ConfigureAwait(false);
             if (options == null || options.Length == 0)
                 return;
