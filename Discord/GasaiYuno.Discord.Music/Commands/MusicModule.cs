@@ -94,7 +94,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
     {
         if (Uri.TryCreate(query, UriKind.Absolute, out var uriResult) && uriResult.Host.Contains("youtu", StringComparison.InvariantCultureIgnoreCase))
         {
-            await RespondAsync(Translation.Message("Entertainment.Music"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Translation.Message("Entertainment.Music.Youtube"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
