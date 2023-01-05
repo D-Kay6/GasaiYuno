@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text.RegularExpressions;
+using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using GasaiYuno.Discord.Core.Commands;
@@ -92,7 +93,7 @@ public class MusicModule : BaseInteractionModule<MusicModule>
     [SlashCommand("play", "Request a song to be played.")]
     public async Task PlayMusicCommand([Summary("song", "Video-url, playlist-url, or name of a song you want to play.")] string query)
     {
-        if (Uri.TryCreate(query, UriKind.Absolute, out var uriResult) && uriResult.Host.Contains("youtu", StringComparison.InvariantCultureIgnoreCase))
+        if (Regex.IsMatch(query, @"youtu(?:\.be|be\.com)"))
         {
             await RespondAsync(Translation.Message("Entertainment.Music.Youtube"), ephemeral: true).ConfigureAwait(false);
             return;
