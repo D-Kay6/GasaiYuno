@@ -9,6 +9,7 @@ using Lavalink4NET;
 using Lavalink4NET.DiscordNet;
 using Lavalink4NET.Logging;
 using Lavalink4NET.Logging.Microsoft;
+using Lavalink4NET.MemoryCache;
 using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Music;
@@ -29,6 +30,7 @@ internal class RegistrationModule : Module
         }).InstancePerDependency();
 
         builder.RegisterType<MicrosoftExtensionsLogger>().As<ILogger>().InstancePerLifetimeScope();
+        builder.RegisterType<LavalinkCache>().As<ILavalinkCache>().InstancePerLifetimeScope();
         builder.RegisterType<LavalinkNode>().As<IAudioService>().InstancePerLifetimeScope();
         builder.RegisterType<DiscordClientWrapper>().As<IDiscordClientWrapper>().InstancePerLifetimeScope();
         builder.RegisterType<MusicListener>().As<IListener>().InstancePerLifetimeScope();

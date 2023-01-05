@@ -26,7 +26,7 @@ public class LyricsService : ILyricsService
     {
         if (maxOptions > 50) maxOptions = 50;
         var response = await _restClient.ExecuteGetAsync(new RestRequest($"search?q={song}&per_page={maxOptions}")).ConfigureAwait(false);
-        var lyricsResult = JsonConvert.DeserializeObject<LyricsResult<LyricsSearchResponse>>(response.Content);
+        var lyricsResult = JsonConvert.DeserializeObject<LyricsResult<LyricsSearchResponse>>(response.Content!);
         return lyricsResult?.Response.Hits.Select(x => x.Result as ILyricsOption).ToArray();
     }
 
@@ -35,7 +35,7 @@ public class LyricsService : ILyricsService
         string[] lyricsSections;
         var htmlDocument = new HtmlDocument();
         var response = await _restClient.ExecuteGetAsync(new RestRequest(new Uri(selection.Url))).ConfigureAwait(false);
-        var startIndex = response.Content.IndexOf(LyricsIndexerStart, StringComparison.InvariantCultureIgnoreCase);
+        var startIndex = response.Content!.IndexOf(LyricsIndexerStart, StringComparison.InvariantCultureIgnoreCase);
         if (startIndex < 0)
         {
             htmlDocument.LoadHtml(response.Content);
