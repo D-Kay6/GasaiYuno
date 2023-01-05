@@ -34,7 +34,6 @@ public class DiscordModule : Module
                              GatewayIntents.Guilds |
                              GatewayIntents.GuildBans |
                              GatewayIntents.GuildMembers |
-                             GatewayIntents.GuildPresences |
                              GatewayIntents.GuildIntegrations |
                              GatewayIntents.GuildVoiceStates |
                              GatewayIntents.GuildMessages |

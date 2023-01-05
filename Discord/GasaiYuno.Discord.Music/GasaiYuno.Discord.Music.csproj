@@ -26,6 +26,7 @@
 		<PackageReference Include="Lavalink4NET.Discord.NET" Version="3.0.0-preview.14" />
 		<PackageReference Include="Lavalink4NET.MemoryCache" Version="3.0.0-preview.14" />
 		<PackageReference Include="Lavalink4NET.Logging.Microsoft" Version="3.0.0-preview.14" />
+		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 	</ItemGroup>
 
 </Project>
