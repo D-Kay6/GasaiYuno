@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>GasaiYuno.Persistence</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Autofac" Version="8.0.0" />
+        <PackageReference Include="RavenDB.Client" Version="6.0.103" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GasaiYuno.Persistence.Abstraction\GasaiYuno.Persistence.Abstraction.csproj" />
+    </ItemGroup>
+
+</Project>

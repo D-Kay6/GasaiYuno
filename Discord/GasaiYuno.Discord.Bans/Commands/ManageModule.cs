@@ -21,7 +21,7 @@ public class ManageModule : BaseInteractionModule<ManageModule>
     [SlashCommand("restart", "Restart the bot (owner only).")]
     public async Task RestartCommand()
     {
-        await RespondAsync(Translation.Message("Moderation.Manage.Restart"), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Moderation.Manage.Restart"), ephemeral: true).ConfigureAwait(false);
         await _lifetimeService.RestartAsync().ConfigureAwait(false);
     }
 
@@ -29,7 +29,7 @@ public class ManageModule : BaseInteractionModule<ManageModule>
     [SlashCommand("shutdown", "shut the bot down (owner only).")]
     public async Task ShutdownCommand()
     {
-        await RespondAsync(Translation.Message("Moderation.Manage.Shutdown"), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Moderation.Manage.Shutdown"), ephemeral: true).ConfigureAwait(false);
         await _lifetimeService.StopAsync().ConfigureAwait(false);
     }
 }

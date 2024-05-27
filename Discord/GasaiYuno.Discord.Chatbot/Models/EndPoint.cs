@@ -9,9 +9,8 @@ internal class EndPoint
 
     public EndPoint(string apiKey)
     {
-        _restClient = new RestClient("https://www.cleverbot.com/");
+        _restClient = new RestClient("https://www.cleverbot.com/", configureSerialization: x => x.UseNewtonsoftJson());
         _restClient.AddDefaultParameter("key", apiKey);
-        _restClient.UseNewtonsoftJson();
     }
 
     public async Task<Reply> GetReplyAsync(string message, string state)

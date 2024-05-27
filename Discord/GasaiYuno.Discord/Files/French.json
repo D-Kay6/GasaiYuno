@@ -1,0 +1,200 @@
+{
+  "Entertainment": {
+    "Birthday": "Hourra ! C'est notre petit {0} anniversaire[enter][enter]Joyeux anniversaire à toi :notes:[enter]Joyeux anniversaire à toi[enter]Joyeux anniversaire mon cher {1} :notes:[enter]Joyeux anniversaire à toi[enter][enter]De la part de vrais et bons amis :notes:[enter]D'anciens et de nouveaux amis[enter]Pleins de bonheur, de réussite :notes:[enter]Et profite bien de ta journée.",
+    "Kill": {
+      "Default": "Viens ici {0}. On va s'amuser un peu...",
+      "Creator": "Comment osez-vous m'ordonner de tuer {0}.[enter]Je devrais VOUS tuer pour avoir même pensé à quelque chose comme ça !",
+      "Self": "Pourquoi me suiciderais-je ?"
+    },
+    "Chat": {
+      "Invalid": {
+        "Exists": "Nous avons déjà une conversation en cours sur ce serveur ? N'hésitez pas à la terminer par `/chat stop` .",
+        "None": "Mais... nous ne sommes même pas engagés dans une conversation..."
+      },
+      "Thread": "I've started a new thread to house our conversation.",
+      "Start": "Tu veux discuter avec moi ? Est tu sûr d'être prêt pour ça ?[enter]Commencez la conversation et je vous répondrai.",
+      "End": "Ehhh ? Mais ça commençait à devenir intéressant...",
+      "Timeout": "Puisque vous ne me répondez plus, je mets fin à la conversation ici."
+    },
+    "CustomCommand": {
+      "Invalid": {
+        "Exists": "`{0}` est déjà une commande personnalisée.",
+        "Missing": "Je n'ai pas trouvé de commandes personnalisées nommées `{0}`.",
+        "None": "Il n'y a pas de commandes personnalisées sur ce serveur."
+      },
+      "Default": "Il y a {1} commandes personnalisées sur ce serveur.[enter][enter]Pour exécuter une commande personnalisée, il suffit d'utiliser le préfixe de commande de ce serveur suivi du titre de la commande[enter]Par exemple: `{0}bye` -> `Cya`[enter][enter]Vous pouvez ajouter une commande personnalisée avec **{0}customcommand add _<command title>_ _<response>_**.[enter]Si vous souhaitez que le titre de la commande soit composé de plusieurs mots, combinez-les entre guillemets. (i.e. \"say hi\").[enter]La réponse sera envoyée dans le même canal que celui dans lequel la commande personnalisée est envoyée.[enter][enter]Vous pouvez également supprimer une commande personnalisée avec **{0}customcommand remove _<command title>_**.",
+      "Title": "Commandes personnalisées",
+      "Added": "J'ai ajouté `{0}` commandes personnalisées à ce serveur. :thumbsup:",
+      "Removed": "J'ai retiré `{0}` commandes personnalisées de ce serveur. :thumbsup:"
+    },
+    "Music": {
+      "Exception": "Quelque chose ne fonctionne pas ? Venez sur mon serveur support si le problème persiste.",
+      "Channel": {
+        "Stop": "Le lecteur de musique a été arrêté.[enter]Tous les utilisateurs ont quitté le salon vocal, on m'a laissé seul.",
+        "Required": {
+          "Any": "Vous devez être dans un salon vocal pour écouter de la musique, cela paraît logique.",
+          "Same": "Vous devez être dans le même salon vocal que moi pour pouvoir le faire, ne soyez pas timide."
+        },
+        "Invalid": {
+          "None": "Je ne suis actuellement pas dans un salon vocal.",
+          "Same": "Je suis déjà dans le même salon vocal que vous, vous ne me voyez pas ?"
+        }
+      },
+      "Player": {
+        "Volume": "Le volume de la musique est passé à {0}.",
+        "Inactive": "Je ne joue actuellement aucune musique.",
+        "IsPaused": "La musique est déjà en pause, s'agirait de doser.",
+        "Paused": "Pause de la musique... N'oubliez pas de me réactiver !",
+        "IsResumed": "La musique n'est pas en pause.",
+        "Resumed": "Suite de la chanson actuelle... Tu as des bons goûts musicaux",
+        "Stop": "Arrêt de la musique."
+      },
+      "Queue": {
+        "Added": "Ajouté à la file d'attente :",
+        "List": "Prochains sons :",
+        "Details": "Position dans la file d'attente : {0} | Durée : {1:h\\:mm\\:ss}",
+        "Remaining": "Et {0} autres superbes chansons.",
+        "Empty": "Il n'y a pas de musique dans la file d'attente. Ajoutez une chanson pour commencer à écouter de la musique, faites pétés la playlist",
+        "Shuffling": "Mélange...",
+        "Shuffled": "La file d'attente a été mélangée.",
+        "Cleared": "File d'attente effacée :ok_hand:.",
+        "Skipped": "Je skip ce son __{0}__ ."
+      },
+      "Lyrics": {
+        "Invalid": {
+          "None": "Désolé, je n'ai pas pu trouver de paroles, après tu as google ta vu donc fait un effort.",
+          "Format": "Je n'ai pas pu comprendre les paroles. Peux-tu réessayer plus tard ? soit indulgent mv.",
+          "Length": "Le texte est trop long pour que je puisse l'envoyer. (j'avoue j'ai la flemme)"
+        },
+        "Multiple": "J'ai trouvé plusieurs résultats pour **{0}**.",
+        "Selection": "Veuillez choisir la chanson (choisis bien):",
+        "Cancel": {
+          "Title": "== Annuler ==",
+          "Description": "Annulez la sélection de chanson.",
+          "Performed": "Annulé"
+        }
+      },
+      "Track": {
+        "Exception": {
+          "Message": "Il y a eu une erreur en essayant de jouer `{0}`.",
+          "Reason": "La raison : {0}",
+          "Expired": "Désolé, le résultat de la recherche a expiré. Veuillez réessayer."
+        },
+        "Current": "En cours de lecture :",
+        "Item": "**{0}** {1:h\\:mm\\:ss}",
+        "Preview": "(aperçu)",
+        "Invalid": "Je n'ai pas pu trouver une chanson valable à jouer.",
+        "Search": "Recherche de **{0}**...",
+        "Multiple": "J'ai trouvé plusieurs chansons correspondant à **{0}**.",
+        "Selection": "Veuillez choisir une chanson :",
+        "Cancel": {
+          "Title": "== Annuler ==",
+          "Description": "Annulez la sélection de chanson.",
+          "Performed": "Annulé"
+        }
+      },
+      "Youtube": "Comme tant d'autres avant moi, j'ai dû supprimer l'intégration YouTube de mon lecteur de musique. [enter]Au lieu de cela, vous pouvez écouter de la musique de Youtube en démarrant l'activité Youtube depuis Discord."
+    }
+  },
+  "Moderation": {
+    "Manage": {
+      "Restart": "Redémarrage...",
+      "Shutdown": "Arrêt..."
+    },
+    "Kick": {
+      "User": "Utilisateur",
+      "Reason": "Raison"
+    },
+    "Ban": {
+      "User": "Utilisateur",
+      "Duration": "Durée",
+      "Reason": "Raison"
+    },
+    "Language": {
+      "Default": "Je suis actuellement configuré pour `{0}`.",
+      "Unsupported": "`{0}` n'est pas (pour l'instant) un langage supporté. Si vous voulez aider à la traduction, rejoignez mon serveur de soutien et faites-le savoir à mon créateur.",
+      "Set": "Je vais maintenant utiliser cette langue `{0}` sur ce serveur.",
+      "List": "Ce sont les langues que je parle actuellement (ta vu je gère): {0}[enter]Attention, certaines traductions sont en cours de réalisation et peuvent contenir des messages qui doivent encore être traduits.[enter]Si vous voulez que votre langue soit supportée ou aider à améliorer une traduction déjà existante, venez sur mon serveur de support."
+    }
+  },
+  "Automation": {
+    "Channel": {
+      "Invalid": {
+        "Channel": "That is not an auto-channel. Did you intent to make it one?",
+        "Channels": "I could not find any auto-channels. Did you forget to make them?",
+        "GenerationName": "The name for duplicated channels may not be empty.",
+        "Exists": "{0} already is an auto-channel. Did you forget?"
+      },
+      "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
+      "Details": {
+        "Title": "Auto-Channels",
+        "Type": "Type",
+        "GenerationName": "Generated name"
+      },
+      "Created": "{0} is now an auto-channel.",
+      "Removed": "{0} is no longer an auto-channel.",
+      "Renamed": "Duplicated channels from {0} will now be named `{1}`."
+    },
+    "Poll": {
+      "Title": "Sondage",
+      "EndDate": "Date de fin :",
+      "Selector": {
+        "Single": "Sélectionner une option",
+        "Multiple": "Sélectionnez une ou plusieurs options"
+      },
+      "Result": {
+        "Title": "Un sondage est terminé.",
+        "None": "Il n'y a pas eu de soumissions, donc pas de résultats."
+      }
+    },
+    "Raffle": {
+      "Footer": "Postulez en cliquant sur le bouton ci-dessous.",
+      "EndDate": "Date de fin :",
+      "Result": {
+        "Title": "Une tombola est terminée.",
+        "Winner": "Gagnant: {0}"
+      }
+    }
+  },
+  "Notification": {
+    "Welcome": {
+      "Exception": "Un problème est survenu dans la notification de bienvenue de votre serveur. `{0}`.[enter] Cela peut être dû à la suppression et à la recréation du salon configuré.[enter] J'ai désactivé la notification pour le moment.[enter] Vous pouvez le réactiver en utilisant à nouveau la commande de configuration.",
+      "Invalid": {
+        "Enabled": "La notification de bienvenue est déjà active sur ce salon.",
+        "Disabled": "La notification de bienvenue n'est pas active."
+      },
+      "Enabled": "Je vais maintenant accueillir tout nouveau membre dans {0}.",
+      "Disabled": "La notification de bienvenue a été désactivée. Vous pouvez toujours utiliser ma commande normale pour l'activer manuellement.",
+      "Message": {
+        "Invalid": "Le message ne doit pas être vide.",
+        "Current": "Le message de bienvenue est :",
+        "Changed": "Le message de bienvenue a été changé en :"
+      },
+      "Image": {
+        "Invalid": "Je n'ai pas pu obtenir l'image à partir de cette url. Cela pourrait être dû à un format invalide.",
+        "None": "Je n'affiche pas d'image avec la notification.",
+        "Current": "Je vais afficher cette image avec la notification.",
+        "Enabled": "J'ai ajouté l'image à la notification.",
+        "Disabled": "Je vais arrêter d'ajouter l'image à la notification."
+      }
+    }
+  },
+  "Info": {
+    "Support": "Je suis désolé d'apprendre que vous avez des problèmes avec moi, je fais de mon mieux pour vous satisfaire (sans arrière-pensée). Venez rejoindre mon serveur de support 'https://discord.gg/YFqUMDT'. Peut-être que quelqu'un là-bas peut vous aider.",
+    "Invite": "Vous pouvez m'inviter sur votre serveur avec ce lien : https://discord.com/api/oauth2/authorize?client_id=286972781273546762&permissions=8&scope=bot%20applications.commands [enter]Si vous avez besoin du support, rejoignez mon serveur à l'adresse suivante 'https://discord.gg/YFqUMDT'."
+  },
+  "Generic": {
+    "Exception": "Un problème est survenu. Veuillez vous rendre sur mon serveur support (https://discord.gg/YFqUMDT) si le problème persiste.",
+    "Invalid": {
+      "User": "Je n'ai pas pu trouver un utilisateur du nom de `{0}`.",
+      "Role": "Je n'ai pas pu trouver ce rôle `{0}`.",
+      "Message": "Je ne peux pas envoyer un message vide.",
+      "Argument": "Ehmm... Je pense que vous avez fait une erreur quelque part. Essayez d'utiliser `{0}help` si vous avez oublié la syntaxe.",
+      "Permission": "Vous n'avez pas les bonnes autorisations pour pouvoir faire ça.",
+      "Command": "Désolé, je pense que tu as fait une erreur quelque part. Vérifiez que vous avez le bon format.",
+      "Execution": "Je suis incapable de faire ça. {0}"
+    },
+    "Forever": "Toujours",
+    "None": "Aucun"
+  }
+}

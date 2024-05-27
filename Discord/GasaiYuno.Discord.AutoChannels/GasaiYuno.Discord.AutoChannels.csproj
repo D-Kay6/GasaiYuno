@@ -19,4 +19,10 @@
         <ProjectReference Include="..\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Files\Translations.AutoChannels.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

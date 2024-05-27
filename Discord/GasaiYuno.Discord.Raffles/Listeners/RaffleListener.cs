@@ -74,8 +74,8 @@ internal class RaffleListener : IListener
 
                 var translation = await _mediator.Send(new GetTranslationRequest(raffle.Server)).ConfigureAwait(false);
                 var embedBuilder = new EmbedBuilder();
-                embedBuilder.WithTitle(translation.Message("Automation.Raffle.Result.Title"));
-                embedBuilder.AddField(raffle.Title, translation.Message("Automation.Raffle.Result.Winner", guildUser.Mention));
+                embedBuilder.WithTitle(translation.Translate("Automation.Raffle.Result.Title"));
+                embedBuilder.AddField(raffle.Title, translation.Translate("Automation.Raffle.Result.Winner", guildUser.Mention));
                 await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id)).ConfigureAwait(false);
                 await _mediator.Publish(new RemoveRaffleCommand(raffle.Server, raffle.Channel, raffle.Message)).ConfigureAwait(false);
             }

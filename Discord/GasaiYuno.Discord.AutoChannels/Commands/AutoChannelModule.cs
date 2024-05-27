@@ -14,7 +14,7 @@ namespace GasaiYuno.Discord.AutoChannels.Commands;
 public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
 {
     [SlashCommand("info", "Display information on the use of auto-channels.")]
-    public Task InfoCommand() => RespondAsync(Translation.Message("Automation.Channel.Info"), ephemeral: true);
+    public Task InfoCommand() => RespondAsync(Localization.Translate("Automation.Channel.Info"), ephemeral: true);
 
     [SlashCommand("details", "Display information of a specific auto-channel.")]
     public async Task DetailsCommand([Summary(description: "The voice-channel used as an auto-channel.")] IVoiceChannel voiceChannel)
@@ -22,14 +22,14 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null)
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         var embedBuilder = new EmbedBuilder();
         embedBuilder.WithTitle(voiceChannel.Name);
-        embedBuilder.AddField(Translation.Message("Automation.Channel.Details.Type"), autoChannel.Type.ToString(), true);
-        embedBuilder.AddField(Translation.Message("Automation.Channel.Details.GenerationName"), autoChannel.GenerationName, true);
+        embedBuilder.AddField(Localization.Translate("Automation.Channel.Details.Type"), autoChannel.Type.ToString(), true);
+        embedBuilder.AddField(Localization.Translate("Automation.Channel.Details.GenerationName"), autoChannel.GenerationName, true);
         await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
     }
 
@@ -39,12 +39,12 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
         var autoChannels = await Mediator.Send(new ListAutoChannelsRequest(Context.Guild.Id)).ConfigureAwait(false);
         if (!autoChannels.Any())
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.Channels"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.Channels"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         var embedBuilder = new EmbedBuilder();
-        embedBuilder.WithTitle(Translation.Message("Automation.Channel.Details.Title"));
+        embedBuilder.WithTitle(Localization.Translate("Automation.Channel.Details.Title"));
         var groupedAutoChannels = autoChannels.GroupBy(x => x.Type);
         foreach (var groupedAutoChannel in groupedAutoChannels)
         {
@@ -65,12 +65,12 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, channel.Id)).ConfigureAwait(false);
         if (autoChannel != null)
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.Exists", channel.Name), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.Exists", channel.Name), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         await Mediator.Publish(new AddAutoChannelCommand(Context.Guild.Id, channel.Id, type, generationName)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Automation.Channel.Created", channel.Mention), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Automation.Channel.Created", channel.Mention), ephemeral: true).ConfigureAwait(false);
     }
 
     [SlashCommand("remove", "Undo the assignment of an auto-channel.")]
@@ -79,12 +79,12 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null)
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         await Mediator.Publish(new RemoveAutoChannelCommand(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Automation.Channel.Removed", voiceChannel.Mention), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Automation.Channel.Removed", voiceChannel.Mention), ephemeral: true).ConfigureAwait(false);
     }
 
     [SlashCommand("edit", "Change a dynamic channel configuration.")]
@@ -95,18 +95,18 @@ public class AutoChannelModule : BaseInteractionModule<AutoChannelModule>
         var autoChannel = await Mediator.Send(new GetAutoChannelRequest(Context.Guild.Id, voiceChannel.Id)).ConfigureAwait(false);
         if (autoChannel == null)
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.Channel"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         if (string.IsNullOrWhiteSpace(generatedName))
         {
-            await RespondAsync(Translation.Message("Automation.Channel.Invalid.GenerationName"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Automation.Channel.Invalid.GenerationName"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         autoChannel.GenerationName = generatedName;
         await Mediator.Publish(new UpdateAutoChannelCommand(autoChannel)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Automation.Channel.Renamed", voiceChannel.Mention, autoChannel.GenerationName), ephemeral: true).ConfigureAwait(false);
     }
 }

@@ -2,9 +2,9 @@
 using Discord.Interactions;
 using GasaiYuno.Discord.Core.Commands;
 using GasaiYuno.Discord.Core.Extensions;
+using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Commands;
 using GasaiYuno.Discord.Core.Models;
-using GasaiYuno.Discord.Localization.Interfaces;
 
 namespace GasaiYuno.Discord.Localization.Commands;
 
@@ -14,15 +14,15 @@ namespace GasaiYuno.Discord.Localization.Commands;
 [Group("language", "Manage the language of the server.")]
 public class LanguageModule : BaseInteractionModule<LanguageModule>
 {
-    private readonly ILocalization _localization;
+    private readonly ILocalizationService _localizationService;
 
-    public LanguageModule(ILocalization localization)
+    public LanguageModule(ILocalizationService localizationService)
     {
-        _localization = localization;
+        _localizationService = localizationService;
     }
 
     [SlashCommand("current", "Show what language is currently being used.")]
-    public Task CurrentLanguageCommand() => RespondAsync(Translation.Message("Moderation.Language.Default", Server.Language.ToLocalized()), ephemeral: true);
+    public Task CurrentLanguageCommand() => RespondAsync(Localization.Translate("Moderation.Language.Default", Server.Language.ToLocalized()), ephemeral: true);
 
     [SlashCommand("set", "Change the language for this server.")]
     public async Task SetLanguageCommand([Summary("language", "The new language.")] Languages language)
@@ -30,7 +30,7 @@ public class LanguageModule : BaseInteractionModule<LanguageModule>
         Server.Language = language;
         await Mediator.Publish(new UpdateServerCommand(Server)).ConfigureAwait(false);
 
-        Translation = _localization.GetTranslation(language);
-        await RespondAsync(Translation.Message("Moderation.Language.Set", language.ToLocalized()), ephemeral: true).ConfigureAwait(false);
+        Localization = _localizationService.GetLocalization(language);
+        await RespondAsync(Localization.Translate("Moderation.Language.Set", language.ToLocalized()), ephemeral: true).ConfigureAwait(false);
     }
 }

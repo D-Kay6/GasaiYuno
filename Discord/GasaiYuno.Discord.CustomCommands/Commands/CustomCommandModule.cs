@@ -19,7 +19,7 @@ public class CustomCommandResponderModule : BaseInteractionModule<CustomCommandM
         var customCommand = await Mediator.Send(new GetCustomCommandRequest(Context.Guild.Id, command)).ConfigureAwait(false);
         if (customCommand == null)
         {
-            await RespondAsync(Translation.Message("Generic.Invalid.Command"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Generic.Invalid.Command"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
@@ -38,7 +38,7 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
         var commands = await Mediator.Send(new ListCustomCommandsRequest(Context.Guild.Id)).ConfigureAwait(false);
         if (!commands.Any())
         {
-            await RespondAsync(Translation.Message("Entertainment.CustomCommand.Invalid.None"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Entertainment.CustomCommand.Invalid.None"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
@@ -68,7 +68,7 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
             foreach (var fieldMessage in fieldMessages)
             {
                 var embedBuilder = new EmbedBuilder();
-                embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
+                embedBuilder.WithTitle(Localization.Translate("Entertainment.CustomCommand.Title"));
                 embedBuilder.WithDescription(fieldMessage);
                 pages.Add(PageBuilder.FromEmbedBuilder(embedBuilder));
             }
@@ -84,7 +84,7 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
         else
         {
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(Translation.Message("Entertainment.CustomCommand.Title"));
+            embedBuilder.WithTitle(Localization.Translate("Entertainment.CustomCommand.Title"));
             embedBuilder.WithDescription(fieldMessages[0]);
             await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
@@ -101,12 +101,12 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
         var customCommand = await Mediator.Send(new GetCustomCommandRequest(Context.Guild.Id, command.Trim())).ConfigureAwait(false);
         if (customCommand == null)
         {
-            await RespondAsync(Translation.Message("Entertainment.CustomCommand.Invalid.Missing", command), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Entertainment.CustomCommand.Invalid.Missing", command), ephemeral: true).ConfigureAwait(false);
             return;
         }
         
         await Mediator.Send(new RemoveCustomCommandCommand(customCommand)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Entertainment.CustomCommand.Removed", command), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Entertainment.CustomCommand.Removed", command), ephemeral: true).ConfigureAwait(false);
     }
 
     public class CommandModal : IModal
@@ -131,12 +131,12 @@ public class CustomCommandModule : BaseInteractionModule<CustomCommandModule>
             var conflictingCommand = await Mediator.Send(new GetCustomCommandRequest(Context.Guild.Id, modal.Name.Trim())).ConfigureAwait(false);
             if (conflictingCommand != null)
             {
-                await RespondAsync(Translation.Message("Entertainment.CustomCommand.Invalid.Exists", conflictingCommand.Command), ephemeral: true).ConfigureAwait(false);
+                await RespondAsync(Localization.Translate("Entertainment.CustomCommand.Invalid.Exists", conflictingCommand.Command), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
             await Mediator.Publish(new AddCustomCommandCommand(Context.Guild.Id, modal.Name.Trim(), modal.Response.Trim())).ConfigureAwait(false);
-            await RespondAsync(Translation.Message("Entertainment.CustomCommand.Added", modal.Name), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Entertainment.CustomCommand.Added", modal.Name), ephemeral: true).ConfigureAwait(false);
         }
     }
 }

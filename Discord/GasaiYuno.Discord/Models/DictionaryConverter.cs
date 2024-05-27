@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace GasaiYuno.Discord.Localization.Models;
+namespace GasaiYuno.Discord.Models;
 
 internal class DictionaryConverter : JsonConverter
 {

@@ -1,15 +1,19 @@
 ﻿using Discord;
+using Lavalink4NET.Player;
 
 namespace GasaiYuno.Discord.Music.Models.Audio;
 
-public sealed class TrackContext
+public record TrackContext
 {
-    public ITextChannel TextChannel { get; }
+    public LavalinkTrack Track { get; init; }
 
-    public string Requester { get; }
+    public ITextChannel TextChannel { get; init; }
 
-    public TrackContext(ITextChannel textChannel, string requester)
+    public string Requester { get; init; }
+
+    public TrackContext(LavalinkTrack track, ITextChannel textChannel, string requester)
     {
+        Track = track;
         TextChannel = textChannel;
         Requester = requester;
     }

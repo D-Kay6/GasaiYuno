@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GasaiYuno.Discord.Mediator.Commands;
 
-internal sealed class DeleteImageCommandHandler : IRequestHandler<DeleteImageCommand>
+internal sealed class DeleteImageCommandHandler : INotificationHandler<DeleteImageCommand>
 {
     private readonly IImageStorage _imageStorage;
 
@@ -13,9 +13,8 @@ internal sealed class DeleteImageCommandHandler : IRequestHandler<DeleteImageCom
         _imageStorage = imageStorage;
     }
 
-    public async Task<Unit> Handle(DeleteImageCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteImageCommand request, CancellationToken cancellationToken)
     {
         await _imageStorage.DeleteImageAsync(request.Path).ConfigureAwait(false);
-        return Unit.Value;
     }
 }

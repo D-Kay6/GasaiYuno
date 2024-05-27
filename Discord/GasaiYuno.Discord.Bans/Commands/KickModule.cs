@@ -16,9 +16,9 @@ public class KickModule : BaseInteractionModule<KickModule>
 
         var embedBuilder = new EmbedBuilder();
         embedBuilder.WithThumbnailUrl(user.GetAvatarUrl());
-        embedBuilder.AddField(Translation.Message("Moderation.Kick.User"), user.Mention);
+        embedBuilder.AddField(Localization.Translate("Moderation.Kick.User"), user.Mention);
         if (!string.IsNullOrWhiteSpace(reason))
-            embedBuilder.AddField(Translation.Message("Moderation.Kick.Reason"), reason);
+            embedBuilder.AddField(Localization.Translate("Moderation.Kick.Reason"), reason);
 
         await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
     }

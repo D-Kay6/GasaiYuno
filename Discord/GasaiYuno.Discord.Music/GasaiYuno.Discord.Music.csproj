@@ -20,13 +20,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RestSharp" Version="108.0.3" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Lavalink4NET.Discord.NET" Version="3.0.0-preview.14" />
-		<PackageReference Include="Lavalink4NET.MemoryCache" Version="3.0.0-preview.14" />
-		<PackageReference Include="Lavalink4NET.Logging.Microsoft" Version="3.0.0-preview.14" />
-		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+		<PackageReference Include="RestSharp" Version="111.1.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Lavalink4NET.Discord.NET" Version="3.0.1" />
+		<PackageReference Include="Lavalink4NET.MemoryCache" Version="3.0.1" />
+		<PackageReference Include="Lavalink4NET.Logging.Microsoft" Version="3.0.1" />
+		<PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
 	</ItemGroup>
 
 </Project>

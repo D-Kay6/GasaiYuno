@@ -3,25 +3,21 @@ using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Music.Interfaces.Lyrics;
 using GasaiYuno.Discord.Music.Listeners;
 using GasaiYuno.Discord.Music.Services;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using System.Reflection;
+using GasaiYuno.Discord.Core;
 using Lavalink4NET;
 using Lavalink4NET.DiscordNet;
 using Lavalink4NET.Logging;
 using Lavalink4NET.Logging.Microsoft;
 using Lavalink4NET.MemoryCache;
-using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Music;
 
-internal class RegistrationModule : Module
+internal class RegistrationModule : RegistrationModuleBase
 {
     public string Token { get; init; }
 
-    protected override void Load(ContainerBuilder builder)
+    protected override void RegisterComponents(ContainerBuilder builder)
     {
-        builder.RegisterMediatR(Assembly.GetExecutingAssembly());
-
         builder.Register(_ => new LavalinkNodeOptions
         {
             RestUri = "http://localhost:2333",

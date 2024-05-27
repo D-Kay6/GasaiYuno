@@ -206,9 +206,9 @@ public class SlashCommandListener : IListener
 
         var server = await _mediator.Send(new GetServerRequest(context.Guild.Id, context.Guild.Name)).ConfigureAwait(false);
         var translation = await _mediator.Send(new GetTranslationRequest(server.Language)).ConfigureAwait(false);
-        var message = translation.Message("Generic.Invalid.Command");
+        var message = translation.Translate("Generic.Invalid.Command");
         if (!string.IsNullOrEmpty(result.ErrorReason))
-            message = translation.Message("Generic.Invalid.Execution", result.ErrorReason);
+            message = translation.Translate("Generic.Invalid.Execution", result.ErrorReason);
 
         await context.Interaction.RespondAsync(message).ConfigureAwait(false);
     }
@@ -223,9 +223,9 @@ public class SlashCommandListener : IListener
 
         // var server = await _mediator.Send(new GetServerRequest(context.Guild.Id, context.Guild.Name)).ConfigureAwait(false);
         // var translation = await _mediator.Send(new GetTranslationRequest(server.Language)).ConfigureAwait(false);
-        // var message = translation.Message("Generic.Invalid.Command");
+        // var message = translation.Translate("Generic.Invalid.Command");
         // if (!string.IsNullOrEmpty(result.ErrorReason)) 
-        //     message = translation.Message("Generic.Invalid.Execution", result.ErrorReason);
+        //     message = translation.Translate("Generic.Invalid.Execution", result.ErrorReason);
         //
         // await context.Interaction.RespondAsync(message).ConfigureAwait(false);
     }
@@ -240,9 +240,9 @@ public class SlashCommandListener : IListener
 
         // var server = await _mediator.Send(new GetServerRequest(context.Guild.Id, context.Guild.Name)).ConfigureAwait(false);
         // var translation = await _mediator.Send(new GetTranslationRequest(server.Language)).ConfigureAwait(false);
-        // var message = translation.Message("Generic.Invalid.Command");
+        // var message = translation.Translate("Generic.Invalid.Command");
         // if (!string.IsNullOrEmpty(result.ErrorReason)) 
-        //     message = translation.Message("Generic.Invalid.Execution", result.ErrorReason);
+        //     message = translation.Translate("Generic.Invalid.Execution", result.ErrorReason);
         //
         // await context.Interaction.RespondAsync(message).ConfigureAwait(false);
     }

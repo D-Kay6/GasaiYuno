@@ -49,13 +49,13 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
         var notification = await Mediator.Send(new GetNotificationRequest(Context.Guild.Id, NotificationType.Welcome)).ConfigureAwait(false);
         if (notification.Channel == channel.Id)
         {
-            await RespondAsync(Translation.Message("Notification.Welcome.Invalid.Enabled"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Notification.Welcome.Invalid.Enabled"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         notification.Channel = channel.Id;
         await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Notification.Welcome.Enabled", channel.Mention), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Notification.Welcome.Enabled", channel.Mention), ephemeral: true).ConfigureAwait(false);
     }
 
     [SlashCommand("disable", "Disable the automated welcome notifications.")]
@@ -64,13 +64,13 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
         var notification = await Mediator.Send(new GetNotificationRequest(Context.Guild.Id, NotificationType.Welcome)).ConfigureAwait(false);
         if (notification.Channel == null)
         {
-            await RespondAsync(Translation.Message("Notification.Welcome.Invalid.Disabled"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Notification.Welcome.Invalid.Disabled"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
         notification.Channel = null;
         await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
-        await RespondAsync(Translation.Message("Notification.Welcome.Disabled"), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Notification.Welcome.Disabled"), ephemeral: true).ConfigureAwait(false);
     }
 
     [Group("message", "Configure the message of the notification.")]
@@ -81,7 +81,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
         {
             var notification = await Mediator.Send(new GetNotificationRequest(Context.Guild.Id, NotificationType.Welcome)).ConfigureAwait(false);
             var embedBuilder = new EmbedBuilder()
-                .WithTitle(Translation.Message("Notification.Welcome.Message.Current"))
+                .WithTitle(Localization.Translate("Notification.Welcome.Message.Current"))
                 .WithDescription(notification.Message);
             await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
         }
@@ -106,7 +106,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
             {
                 if (string.IsNullOrWhiteSpace(modal.Message))
                 {
-                    await RespondAsync(Translation.Message("Notification.Welcome.Message.Invalid"), ephemeral: true).ConfigureAwait(false);
+                    await RespondAsync(Localization.Translate("Notification.Welcome.Message.Invalid"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
 
@@ -115,7 +115,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
                 await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
 
                 var embedBuilder = new EmbedBuilder()
-                    .WithTitle(Translation.Message("Notification.Welcome.Message.Changed"))
+                    .WithTitle(Localization.Translate("Notification.Welcome.Message.Changed"))
                     .WithDescription(notification.Message);
                 await RespondAsync(embed: embedBuilder.Build(), ephemeral: true).ConfigureAwait(false);
             }
@@ -132,9 +132,9 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
         {
             var notification = await Mediator.Send(new GetNotificationRequest(Context.Guild.Id, NotificationType.Welcome)).ConfigureAwait(false);
             if (string.IsNullOrEmpty(notification.Image))
-                await RespondAsync(Translation.Message("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
+                await RespondAsync(Localization.Translate("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
             else
-                await RespondWithFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Current"), ephemeral: true).ConfigureAwait(false);
+                await RespondWithFileAsync(new FileAttachment(notification.Image), Localization.Translate("Notification.Welcome.Image.Current"), ephemeral: true).ConfigureAwait(false);
         }
 
         [SlashCommand("change", "Change the image used in the notification.")]
@@ -154,13 +154,13 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
                 catch (Exception e)
                 {
                     Logger.LogError(e, "The image {Url} could not be obtained", imageUrl);
-                    await RespondAsync(Translation.Message("Notification.Welcome.Image.Invalid"), ephemeral: true).ConfigureAwait(false);
+                    await RespondAsync(Localization.Translate("Notification.Welcome.Image.Invalid"), ephemeral: true).ConfigureAwait(false);
                     return;
                 }
             }
 
             await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
-            await RespondWithFileAsync(new FileAttachment(notification.Image), Translation.Message("Notification.Welcome.Image.Enabled"), ephemeral: true).ConfigureAwait(false);
+            await RespondWithFileAsync(new FileAttachment(notification.Image), Localization.Translate("Notification.Welcome.Image.Enabled"), ephemeral: true).ConfigureAwait(false);
         }
 
         [SlashCommand("disable", "Disable the image used in the notification.")]
@@ -169,7 +169,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
             var notification = await Mediator.Send(new GetNotificationRequest(Context.Guild.Id, NotificationType.Welcome)).ConfigureAwait(false);
             if (string.IsNullOrEmpty(notification.Image))
             {
-                await RespondAsync(Translation.Message("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
+                await RespondAsync(Localization.Translate("Notification.Welcome.Image.None"), ephemeral: true).ConfigureAwait(false);
                 return;
             }
 
@@ -184,7 +184,7 @@ public class WelcomeModule : BaseInteractionModule<WelcomeModule>
 
             notification.Image = null;
             await Mediator.Publish(new UpdateNotificationCommand(notification)).ConfigureAwait(false);
-            await RespondAsync(Translation.Message("Notification.Welcome.Image.Disabled"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Notification.Welcome.Image.Disabled"), ephemeral: true).ConfigureAwait(false);
         }
     }
 }

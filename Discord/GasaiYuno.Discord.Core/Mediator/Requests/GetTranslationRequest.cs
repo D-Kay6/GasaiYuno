@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GasaiYuno.Discord.Core.Mediator.Requests;
 
-public sealed record GetTranslationRequest : IRequest<ITranslation>
+public sealed record GetTranslationRequest : IRequest<ILocalization>
 {
     public ulong ServerId { get; init; }
     public Languages Language { get; init; }

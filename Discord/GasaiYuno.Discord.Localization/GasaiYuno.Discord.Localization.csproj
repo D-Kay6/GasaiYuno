@@ -20,40 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Files\English.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\French.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Spanish.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Dutch.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.en-GB.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.nl.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.de.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.es-ES.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.ja.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Files\Translation.ru.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 </Project>

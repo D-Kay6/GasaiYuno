@@ -1,0 +1,200 @@
+{
+  "Entertainment": {
+    "Birthday": "Hoera! Het is onze kleine {0} verjaardag![enter][enter]Er is er een jarig, hoera, hoera :notes:[enter]Dat kun je wel zien dat is {1}[enter]Dat vinden we allen zo prettig, ja, ja[enter]En daarom zingen wij blij :notes:[enter][enter]",
+    "Kill": {
+      "Default": "Kom eens hier, {0}. Het is tijd voor een beetje plezier...",
+      "Creator": "Hoe durf je me te bevelen {0} te vermoorden.[enter]Ik zou JOU moeten vermoorden omdat je zoiets in je hoofd haalt!",
+      "Self": "Waarom zou ik mezelf vermoorden?"
+    },
+    "Chat": {
+      "Invalid": {
+        "Exists": "We zijn al in gesprek op deze server, niet waar? Voel je vrij om deze te beëindigen met `/chat stop`.",
+        "None": "Maar... We zijn niet eens in gesprek."
+      },
+      "Thread": "Ik heb een nieuwe thread geöpend om ons gesprek in te houden.",
+      "Start": "Jij wilt met me praten? Weet je zeker dat je daar klaar voor bent?[enter]Begin maar met typen en ik reageer op je.",
+      "End": "Uuuhm? Maar het begon net interessant te worden...",
+      "Timeout": "Aangezien je niet meer reageert, beëindig ik hierbij ons gesprek."
+    },
+    "CustomCommand": {
+      "Invalid": {
+        "Exists": "`{0}` is al een custom commando.",
+        "Missing": "Ik kon geen custom commandos vinden genaamd `{0}`.",
+        "None": "Er zijn geen custom commandos op deze server."
+      },
+      "Default": "Er zijn {1} custom commandos op deze server.[enter][enter]Om een custom commando uit te voeren, gebruik gewoon mijn commandovoorvoegsel van deze server gevolgd door de naam van het commando.[enter]Example: `{0}doei` -> `Tot ziens!`[enter][enter]Je kunt een custom commando aanmaken met **{0}customcommand add _<command title>_ _<response>_**.[enter]Als je een commando wil maken met meerdere woorden, zet deze dan in aanhalingstekens (bv. \"zeg hi\").[enter]Het antwoord wordt in het zelfde kanaal gestuurd als het custom commando is gegeven.[enter][enter]Je kunt ook een custom command verwijderen met **{0}customcommand remove _<command title>_**.",
+      "Title": "Custom Commandos",
+      "Added": "Ik heb `{0}` toegevoegd aan de custom commandos van deze server. :thumbsup:",
+      "Removed": "Ik heb `{0}` verwijderd uit de custom commandos van deze server. :thumbsup:"
+    },
+    "Music": {
+      "Exception": "Er is iets fout gegaan. Kom naar mijn supportserver als dit probleem aan blijft houden.",
+      "Channel": {
+        "Stop": "De muziekspeler is gestopt.[enter]Alle gebruikers hebben het voicekanaal verlaten.",
+        "Required": {
+          "Any": "Je moet in een voicekanaal aanwezig zijn om naar muziek te luisteren.",
+          "Same": "Je moet in het zelfde voicekanaal zijn als ik om dit te kunnen doen."
+        },
+        "Invalid": {
+          "None": "Ik zit momenteel niet in een voicekanaal.",
+          "Same": "Ik zit al in hetzelfde voicekanaal als jij."
+        }
+      },
+      "Player": {
+        "Volume": "Het volume van de muziek is veranderd naar {0}.",
+        "Inactive": "Ik ben op het moment geen muziek aan het afspelen.",
+        "IsPaused": "De muziek is al gepauzeerd.",
+        "Paused": "Muziek aan het pauzeren...",
+        "IsResumed": "De muziek is niet gepauzeerd.",
+        "Resumed": "Huidig nummer weer laten afspelen...",
+        "Stop": "Gestopt met muziek afspelen."
+      },
+      "Queue": {
+        "Added": "Toegevoegd aan wachtrij:",
+        "List": "Volgende:",
+        "Details": "Positie in de wachtrij: {0} | Duur: {1:h\\:mm\\:ss}",
+        "Remaining": "En nog {0} nummers te gaan.",
+        "Empty": "Er staat geen muziek in de wachtrij. Voeg een nummer toe om muziek te luisteren.",
+        "Shuffling": "Husselen...",
+        "Shuffled": "De wachtrij is gehusseld.",
+        "Cleared": "Wachtrij leeggehaald :ok_hand:.",
+        "Skipped": "__{0}__ nummer(s) overgeslagen."
+      },
+      "Lyrics": {
+        "Invalid": {
+          "None": "Sorry, ik heb geen songteksten kunnen vinden.",
+          "Format": "Ik kon de songtekst niet begrijpen. Zou je het later opnieuw kunnen proberen?",
+          "Length": "De songtekst is te lang voor mij om te kunnen sturen."
+        },
+        "Multiple": "Ik heb meerdere resultaten gevonden voor **{0}**.",
+        "Selection": "Kies alsjeblieft het nummer uit:",
+        "Cancel": {
+          "Title": "== Annuleren ==",
+          "Description": "Annuleer het selecteren van een nummer.",
+          "Performed": "Geannuleerd"
+        }
+      },
+      "Track": {
+        "Exception": {
+          "Message": "Er was een probleem bij het afspelen van `{0}`.",
+          "Reason": "Oorzaak: {0}",
+          "Expired": "Het zoekresultaat is helaas verlopen. Probeer het opnieuw."
+        },
+        "Current": "Speelt nu:",
+        "Item": "**{0}** {1:h\\:mm\\:ss}",
+        "Preview": "(voorbeeld)",
+        "Invalid": "Ik kon geen afspeelbaar nummer vinden.",
+        "Search": "Zoeken naar **{0}**...",
+        "Multiple": "Ik heb meerdere nummers gevonden die overeenkomen met **{0}**.",
+        "Selection": "Kies alsjeblieft een nummer uit:",
+        "Cancel": {
+          "Title": "== Annuleren ==",
+          "Description": "Annuleer het selecteren van een nummer.",
+          "Performed": "Geannuleerd"
+        }
+      },
+      "Youtube": "Zoals zovelen voor mij, heb ik de YouTube integratie van mijn muziekspeler moeten verwijderen. [enter]In plaats daarvan kun je naar muziek van YouTube luisteren door de YouTube activiteit te starten vanuit Discord."
+    }
+  },
+  "Moderation": {
+    "Manage": {
+      "Restart": "Opnieuw opstarten...",
+      "Shutdown": "Uitschakelen..."
+    },
+    "Kick": {
+      "User": "Gebruiker",
+      "Reason": "Reden"
+    },
+    "Ban": {
+      "User": "Gebruiker",
+      "Duration": "Duur",
+      "Reason": "Reden"
+    },
+    "Language": {
+      "Default": "Ik sta momenteel ingesteld op `{0}`.",
+      "Unsupported": "`{0}` wordt (nog) niet ondersteund. Als je wilt helpen met vertalen, ga naar mijn supportserver en laat mijn maker weten dat je wil helpen.",
+      "Set": "Ik zal nu `{0}` spreken op deze server.",
+      "List": "Dit zijn de talen die ik momenteel ondersteun: {0}[enter]Wees ervan bewust dat sommige vertalingen nog verwerkt worden en berichten bevat die nog vertaald moeten worden.[enter]Als je jouw taal ondersteund wil hebben of je wil helpen met het verbeteren van bestaande vertalingen, kom naar mijn supportserver."
+    }
+  },
+  "Automation": {
+    "Channel": {
+      "Invalid": {
+        "Channel": "That is not an auto-channel. Did you intent to make it one?",
+        "Channels": "I could not find any auto-channels. Did you forget to make them?",
+        "GenerationName": "The name for duplicated channels may not be empty.",
+        "Exists": "{0} already is an auto-channel. Did you forget?"
+      },
+      "Info": "Auto-channels help you to keep your server clean by removing the need for voice channels that only serve to provide a channel for if and when users need it.[enter]Think of channels like `voice 1`, `voice 2`, etc.[enter]When a user joins an auto-channel, I will duplicate that channel, including all settings, and move the user to this new channel.[enter]I'll also provide the user with the `Manage Channel` permission, for that channel only, so they can modify it to their needs.[enter][enter]The duplicated channel can be of two types: __Permanent__ and __Temporary__.[enter]Permanent channels will, as the name suggests, remain on the server until it is manually removed.[enter]Temporary channels I will remove once everyone has left said channel.[enter]This way, you won't get any clutter of channels.[enter][enter]You can also change the name I should give to the duplicated channel.[enter]This name accepts a parameter in the form of `[user]` where I will enter the possessive form of the user's name.[enter]Example: `[user] channel` ->_ `D-Kay's channel`",
+      "Details": {
+        "Title": "Auto-Channels",
+        "Type": "Type",
+        "GenerationName": "Generated name"
+      },
+      "Created": "{0} is now an auto-channel.",
+      "Removed": "{0} is no longer an auto-channel.",
+      "Renamed": "Duplicated channels from {0} will now be named `{1}`."
+    },
+    "Poll": {
+      "Title": "Peiling",
+      "EndDate": "Eind datum:",
+      "Selector": {
+        "Single": "Selecteer een optie",
+        "Multiple": "Kies een of meerdere opties"
+      },
+      "Result": {
+        "Title": "Een peiling is geëindigd.",
+        "None": "Er waren geen inzendingen, dus ook geen resultaten."
+      }
+    },
+    "Raffle": {
+      "Footer": "Doe mee door op de onderstaande knop te klikken.",
+      "EndDate": "Eind datum:",
+      "Result": {
+        "Title": "Een verloting is geëindigd.",
+        "Winner": "Winnaar: {0}"
+      }
+    }
+  },
+  "Notification": {
+    "Welcome": {
+      "Exception": "Er is iets misgegaan met de welkomstbericht voor je server `{0}`.[enter] Dit kan komen door het verwijderen en opnieuw aanmaken van het geconfigureerde kanaal.[enter] Ik heb de berichtgeving voor nu uitgeschakeld.[enter] Je kunt deze weer aanzetten door het configuratie commando opnieuw uit te voeren.",
+      "Invalid": {
+        "Enabled": "Welkomstberichtgeving is al actief in dit kanaal.",
+        "Disabled": "Welkomstberichtgeving is niet actief."
+      },
+      "Enabled": "Ik zal vanaf nu nieuwe leden verwelkomen in {0}.",
+      "Disabled": "welkomstberichten zijn nu uitgeschakeld. Je kunt nog steeds mijn normale commando uitvoeren om deze handmatig te activeren.",
+      "Message": {
+        "Invalid": "Het bericht mag niet leeg zijn.",
+        "Current": "Het welkomstbericht is:",
+        "Changed": "Het welkomstbericht is veranderd naar:"
+      },
+      "Image": {
+        "Invalid": "Ik kon geen afbeelding ophalen van deze link. Dit kan zijn wegens een fout format.",
+        "None": "Ik geef geen afbeelding weer bij het welkomstbericht.",
+        "Current": "Ik geef deze afbeelding weer bij het welkomstbericht.",
+        "Enabled": "Ik heb de afbeelding toegevoegd aan het welkomstbericht.",
+        "Disabled": "Ik stop met het tonen van de afbeelding bij het welkomstbericht."
+      }
+    }
+  },
+  "Info": {
+    "Support": "Vervelend om te horen dat je problemen met me hebt. Kom naar mijn supportserver 'https://discord.gg/YFqUMDT'. Misschien kan iemand je daar helpen.",
+    "Invite": "Je kunt me voor je server uitnodigen met deze link: https://discord.com/api/oauth2/authorize?client_id=286972781273546762&permissions=8&scope=bot%20applications.commands [enter]Als je hulp nodig hebt, kom naar mijn support server 'https://discord.gg/YFqUMDT'."
+  },
+  "Generic": {
+    "Exception": "Er is iets misgegaan. Kom alsjeblieft naar mijn support server (https://discord.gg/YFqUMDT) als het probleem zich blijft voordoen.",
+    "Invalid": {
+      "User": "Ik kon geen gebruiker vinden onder de naam `{0}`.",
+      "Role": "Ik kon geen rol vinden met de naam `{0}`.",
+      "Message": "Ik kan geen lege berichten sturen.",
+      "Argument": "Uhmm... I denk dat je ergens een foutje hebt gemaakt. Probeer `{0}help` als je de syntax bent vergeten.",
+      "Permission": "Je hebt niet de juiste permissies om dit te kunnen doen.",
+      "Command": "Sorry, ik denk dat je ergens een fout hebt gemaakt. Controleer of je de juiste syntax hebt gebruikt.",
+      "Execution": "Dat kan ik niet doen. {0}"
+    },
+    "Forever": "Voor altijd",
+    "None": "Geen"
+  }
+}

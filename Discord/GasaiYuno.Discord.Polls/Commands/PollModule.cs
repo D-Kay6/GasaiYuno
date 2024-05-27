@@ -44,15 +44,15 @@ public class PollModule : BaseInteractionModule<PollModule>
                 throw new InvalidOperationException("Cannot create a poll with only one or fewer options.");
 
             var embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle(Translation.Message("Automation.Poll.Title"));
+            embedBuilder.WithTitle(Localization.Translate("Automation.Poll.Title"));
             embedBuilder.WithDescription(modal.Description);
-            embedBuilder.WithFooter(Translation.Message("Automation.Poll.EndDate"));
+            embedBuilder.WithFooter(Localization.Translate("Automation.Poll.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
             var reference = Guid.NewGuid();
             var selectMenuBuilder = new SelectMenuBuilder()
                 .WithCustomId($"poll selection:{reference}")
-                .WithPlaceholder(Translation.Message(allowMultiple ? "Automation.Poll.Selector.Multiple" : "Automation.Poll.Selector.Single"))
+                .WithPlaceholder(Localization.Translate(allowMultiple ? "Automation.Poll.Selector.Multiple" : "Automation.Poll.Selector.Single"))
                 .WithMinValues(1)
                 .WithMaxValues(allowMultiple ? options.Length : 1);
             for (var i = 0; i < options.Length; i++)

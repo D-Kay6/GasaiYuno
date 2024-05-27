@@ -18,13 +18,13 @@ public abstract class BaseInteractionModule<TImplementor, TInteraction> : Intera
     public ILogger<TImplementor> Logger { get; init; }
 
     protected Server Server { get; private set; }
-    protected ITranslation Translation { get; set; }
+    protected ILocalization Localization { get; set; }
 
     /// <inheritdoc />
     public override async Task BeforeExecuteAsync(ICommandInfo command)
     {
         Server = await Mediator.Send(new GetServerRequest(Context.Guild.Id, Context.Guild.Name)).ConfigureAwait(false);
-        Translation = await Mediator.Send(new GetTranslationRequest(Server.Language)).ConfigureAwait(false);
+        Localization = await Mediator.Send(new GetTranslationRequest(Server.Language)).ConfigureAwait(false);
     }
 
     protected Task ConfirmAsync()

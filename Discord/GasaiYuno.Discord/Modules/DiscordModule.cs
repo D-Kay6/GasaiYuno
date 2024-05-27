@@ -10,6 +10,9 @@ using GasaiYuno.Discord.Services;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using Discord.Net.WebSockets;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Microsoft.Extensions.Caching.Memory;
 using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Modules;
@@ -55,11 +58,20 @@ public class DiscordModule : Module
         {
             DefaultTimeout = TimeSpan.FromMinutes(1)
         }).InstancePerDependency();
-        
-        builder.RegisterMediatR(Assembly.GetExecutingAssembly());
-        
+
+        builder.RegisterType<MemoryCacheOptions>().AsSelf().InstancePerDependency();
+        builder.RegisterType<MemoryCache>().As<IMemoryCache>().InstancePerDependency();
+
+        var mediatRConfig = MediatRConfigurationBuilder
+            .Create(Assembly.GetExecutingAssembly())
+            .WithAllOpenGenericHandlerTypesRegistered()
+            .Build();
+        builder.RegisterMediatR(mediatRConfig);
+
         builder.RegisterType<DiscordService>().As<IHostedService>();
         builder.RegisterType<LifetimeService>().As<ILifetimeService>().InstancePerLifetimeScope();
+        builder.RegisterType<CachingService>().As<ICachingService>().InstancePerLifetimeScope();
+        builder.RegisterType<LocalizationService>().As<ILocalizationService>().InstancePerLifetimeScope();
         builder.RegisterType<DiscordConnectionClient>().As<DiscordShardedClient>().AsSelf().WithParameter("token", Token).InstancePerLifetimeScope();
         builder.RegisterType<InteractionService>().AsSelf().InstancePerLifetimeScope();
         builder.RegisterType<InteractiveService>().AsSelf().InstancePerLifetimeScope();

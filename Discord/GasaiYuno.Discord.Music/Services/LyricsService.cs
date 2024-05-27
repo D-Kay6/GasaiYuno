@@ -16,10 +16,12 @@ public class LyricsService : ILyricsService
 
     public LyricsService(string token)
     {
-        _restClient = new RestClient("https://api.genius.com/")
+        var clientOptions = new RestClientOptions()
         {
-            Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(token, "Bearer")
+            Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(token, "Bearer"),
+            BaseUrl = new Uri("https://api.genius.com/")
         };
+        _restClient = new RestClient(clientOptions);
     }
 
     public async Task<ILyricsOption[]> Search(string song, int maxOptions = 10)

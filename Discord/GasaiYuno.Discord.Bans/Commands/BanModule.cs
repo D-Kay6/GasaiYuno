@@ -34,9 +34,9 @@ public class BanModule : BaseInteractionModule<BanModule>
         await user.BanAsync(days, reason).ConfigureAwait(false);
         var embedBuilder = new EmbedBuilder();
         embedBuilder.WithThumbnailUrl(user.GetAvatarUrl());
-        embedBuilder.AddField(Translation.Message("Moderation.Ban.User"), user.Mention);
-        embedBuilder.AddField(Translation.Message("Moderation.Ban.Duration"), endDate?.ToString("g") ?? Translation.Message("Generic.Forever"));
-        embedBuilder.AddField(Translation.Message("Moderation.Ban.Reason"), !string.IsNullOrEmpty(reason) ? reason : Translation.Message("Generic.None"));
+        embedBuilder.AddField(Localization.Translate("Moderation.Ban.User"), user.Mention);
+        embedBuilder.AddField(Localization.Translate("Moderation.Ban.Duration"), endDate?.ToString("g") ?? Localization.Translate("Generic.Forever"));
+        embedBuilder.AddField(Localization.Translate("Moderation.Ban.Reason"), !string.IsNullOrEmpty(reason) ? reason : Localization.Translate("Generic.None"));
 
         await RespondAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
     }

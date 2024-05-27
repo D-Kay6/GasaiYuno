@@ -50,7 +50,7 @@ internal class Program
         }
         finally
         {
-            Log.CloseAndFlush();
+            await Log.CloseAndFlushAsync();
         }
     }
 

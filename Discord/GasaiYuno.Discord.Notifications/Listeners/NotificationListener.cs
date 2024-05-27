@@ -41,7 +41,7 @@ internal class NotificationListener : IListener
         {
             var ownerDm = await user.Guild.Owner.CreateDMChannelAsync().ConfigureAwait(false);
             if (ownerDm != null)
-                await ownerDm.SendMessageAsync(translation.Message("Notification.Welcome.Exception", user.Guild.Name)).ConfigureAwait(false);
+                await ownerDm.SendMessageAsync(translation.Translate("Notification.Welcome.Exception", user.Guild.Name)).ConfigureAwait(false);
 
             return;
         }

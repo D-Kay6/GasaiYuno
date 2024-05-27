@@ -21,12 +21,10 @@ internal class TopGg : IEndpoint
                 NoCache = true,
                 NoStore = true
             },
+            Authenticator = new JwtAuthenticator(configuration.Token),
             BaseUrl = new Uri(configuration.Url)
         };
-        _client = new RestClient(clientOptions)
-        {
-            Authenticator = new JwtAuthenticator(configuration.Token)
-        };
+        _client = new RestClient(clientOptions);
     }
 
     /// <inheritdoc />

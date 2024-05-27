@@ -13,10 +13,10 @@ public class BirthdayModule : BaseInteractionModule<BirthdayModule>
     {
         if (user == null || user.IsBot)
         {
-            await RespondAsync(Translation.Message("Generic.Invalid.User", Context.Interaction.Data), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Generic.Invalid.User", Context.Interaction.Data), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
-        await RespondAsync(Translation.Message("Entertainment.Birthday", user.ToPossessive(), user.Nickname())).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Entertainment.Birthday", user.ToPossessive(), user.Nickname())).ConfigureAwait(false);
     }
 }

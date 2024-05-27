@@ -42,7 +42,7 @@ internal class ChatListener : IListener
 
         var translation = await _mediator.Send(new GetTranslationRequest(thread.Guild.Id)).ConfigureAwait(false);
         if (session.TimedOut)
-            await thread.SendMessageAsync(translation.Message("Entertainment.Chat.Timeout")).ConfigureAwait(false);
+            await thread.SendMessageAsync(translation.Translate("Entertainment.Chat.Timeout")).ConfigureAwait(false);
 
         await thread.ModifyAsync(x =>
         {

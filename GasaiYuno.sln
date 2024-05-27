@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GasaiYuno", "GasaiYuno\Gasa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Discord", "Discord", "{6EC58D46-BAA5-47A9-B1A8-24DE57F471A6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localization", "Localization", "{6E223105-638A-4CD5-9BDE-7D3AA22922A8}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GasaiYuno.Discord.Core", "Discord\GasaiYuno.Discord.Core\GasaiYuno.Discord.Core.csproj", "{8D68E910-A32C-47CE-BD30-FFCFF1C017B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GasaiYuno.Discord", "Discord\GasaiYuno.Discord\GasaiYuno.Discord.csproj", "{3EEAF895-3C57-4F2F-A61A-3808263941FB}"
@@ -52,6 +54,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GasaiYuno.Discord.Neko", "Discord\GasaiYuno.Discord.Neko\GasaiYuno.Discord.Neko.csproj", "{97D25BCA-9B1C-4389-95C8-C6AA7D0647E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GasaiYuno.Discord.AutoChannels", "Discord\GasaiYuno.Discord.AutoChannels\GasaiYuno.Discord.AutoChannels.csproj", "{EFB2B82B-7FDC-43EF-95CC-1235AF2B8267}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GasaiYuno.Localization.Editor", "Localization\GasaiYuno.Localization.Editor\GasaiYuno.Localization.Editor.csproj", "{D63DB656-B1E4-4A71-A038-BD0F8BDDF178}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{7D96C447-4093-4620-BB3A-28B2B6B73AE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GasaiYuno.Persistence.RavenDB", "Persistence\GasaiYuno.Persistence.RavenDB\GasaiYuno.Persistence.RavenDB.csproj", "{015FED71-DF79-4CD7-9370-EA57268C8B4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GasaiYuno.Persistence.Abstraction", "Persistence\GasaiYuno.Persistence.Abstraction\GasaiYuno.Persistence.Abstraction.csproj", "{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +141,18 @@ Global
 		{EFB2B82B-7FDC-43EF-95CC-1235AF2B8267}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFB2B82B-7FDC-43EF-95CC-1235AF2B8267}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFB2B82B-7FDC-43EF-95CC-1235AF2B8267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63DB656-B1E4-4A71-A038-BD0F8BDDF178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63DB656-B1E4-4A71-A038-BD0F8BDDF178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63DB656-B1E4-4A71-A038-BD0F8BDDF178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63DB656-B1E4-4A71-A038-BD0F8BDDF178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{015FED71-DF79-4CD7-9370-EA57268C8B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{015FED71-DF79-4CD7-9370-EA57268C8B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{015FED71-DF79-4CD7-9370-EA57268C8B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{015FED71-DF79-4CD7-9370-EA57268C8B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +181,9 @@ Global
 		{97D25BCA-9B1C-4389-95C8-C6AA7D0647E8} = {114D3FF0-8DE0-44B8-9991-8E0BD95EED64}
 		{05DCEF55-6AB0-45F3-9CB0-F240C25E188F} = {2E930AFE-8307-4720-B858-F37851CB5138}
 		{EFB2B82B-7FDC-43EF-95CC-1235AF2B8267} = {5F0AED35-CC92-4702-99A3-461A340B83C2}
+		{D63DB656-B1E4-4A71-A038-BD0F8BDDF178} = {6E223105-638A-4CD5-9BDE-7D3AA22922A8}
+		{015FED71-DF79-4CD7-9370-EA57268C8B4B} = {7D96C447-4093-4620-BB3A-28B2B6B73AE6}
+		{0DA3573A-DB0D-4881-82A1-6C9B48B0ED9E} = {7D96C447-4093-4620-BB3A-28B2B6B73AE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECC2482A-84DF-4A62-A069-2C5D22B102E6}

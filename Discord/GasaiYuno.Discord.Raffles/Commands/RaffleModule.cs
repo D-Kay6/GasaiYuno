@@ -39,8 +39,8 @@ public class RaffleModule : BaseInteractionModule<RaffleModule>
 
             var embedBuilder = new EmbedBuilder();
             embedBuilder.WithTitle(modal.Header);
-            embedBuilder.WithDescription($"{modal.Description}\n\n{Translation.Message("Automation.Raffle.Footer")}");
-            embedBuilder.WithFooter(Translation.Message("Automation.Raffle.EndDate"));
+            embedBuilder.WithDescription($"{modal.Description}\n\n{Localization.Translate("Automation.Raffle.Footer")}");
+            embedBuilder.WithFooter(Localization.Translate("Automation.Raffle.EndDate"));
             embedBuilder.WithTimestamp(DateTimeOffset.Now + duration);
 
             var reference = Guid.NewGuid();

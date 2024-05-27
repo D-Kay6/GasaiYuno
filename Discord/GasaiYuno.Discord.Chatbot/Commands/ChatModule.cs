@@ -25,11 +25,11 @@ public class ChatModule : BaseInteractionModule<ChatModule>
         var session = _sessionService.GetSession(SessionId);
         if (session != null)
         {
-            await RespondAsync(Translation.Message("Entertainment.Chat.Invalid.Exists", Server.Prefix), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Entertainment.Chat.Invalid.Exists", Server.Prefix), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
-        await RespondAsync(Translation.Message("Entertainment.Chat.Thread"), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Entertainment.Chat.Thread"), ephemeral: true).ConfigureAwait(false);
         var thread = await ((Context.Channel as SocketTextChannel)!).CreateThreadAsync($"Chat with {Context.User.Username}", ThreadType.PublicThread, ThreadArchiveDuration.OneHour).ConfigureAwait(false);
         await thread.AddUserAsync(Context.User as SocketGuildUser).ConfigureAwait(false);
         session = _sessionService.CreateSession(SessionId, Context.User.Id, thread);
@@ -40,7 +40,7 @@ public class ChatModule : BaseInteractionModule<ChatModule>
         }
         else
         {
-            await thread.SendMessageAsync(Translation.Message("Entertainment.Chat.Start")).ConfigureAwait(false);
+            await thread.SendMessageAsync(Localization.Translate("Entertainment.Chat.Start")).ConfigureAwait(false);
         }
     }
 
@@ -50,11 +50,11 @@ public class ChatModule : BaseInteractionModule<ChatModule>
         var session = _sessionService.GetSession(SessionId);
         if (session == null)
         {
-            await RespondAsync(Translation.Message("Entertainment.Chat.Invalid.None"), ephemeral: true).ConfigureAwait(false);
+            await RespondAsync(Localization.Translate("Entertainment.Chat.Invalid.None"), ephemeral: true).ConfigureAwait(false);
             return;
         }
 
-        await RespondAsync(Translation.Message("Entertainment.Chat.End"), ephemeral: true).ConfigureAwait(false);
+        await RespondAsync(Localization.Translate("Entertainment.Chat.End"), ephemeral: true).ConfigureAwait(false);
         session.Dispose();
     }
 }

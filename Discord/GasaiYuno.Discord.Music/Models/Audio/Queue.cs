@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Lavalink4NET.Player;
 
 namespace GasaiYuno.Discord.Music.Models.Audio;
 
@@ -7,7 +6,7 @@ namespace GasaiYuno.Discord.Music.Models.Audio;
 ///     A queue based off of <see cref="LinkedList{T}" />.
 /// </summary>
 /// <typeparam name="T"><see cref="LavalinkTrack" /></typeparam>
-public class Queue<T> : IEnumerable<T> where T : LavalinkTrack
+public class Queue<T> : IEnumerable<T> where T : TrackContext
 {
     /// <summary>
     ///     The <see cref="LinkedList{T}" /> that holds the queue.

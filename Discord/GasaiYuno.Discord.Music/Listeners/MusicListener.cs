@@ -4,7 +4,6 @@ using GasaiYuno.Discord.Core.Interfaces;
 using GasaiYuno.Discord.Core.Mediator.Requests;
 using GasaiYuno.Discord.Music.Models.Audio;
 using Lavalink4NET;
-using Lavalink4NET.DiscordNet;
 using Lavalink4NET.Events;
 using Lavalink4NET.Player;
 using MediatR;
@@ -54,16 +53,16 @@ internal class MusicListener : IListener
 
         try
         {
-            var player = _audioService.GetPlayer<MusicPlayer>(voiceChannel.Guild);
+            var player = _audioService.GetPlayer<MusicPlayer>(voiceChannel.Guild.Id);
             if (player == null) return;
             if (voiceChannel.ConnectedUsers.Count != 1) return;
             if (!voiceChannel.ConnectedUsers.First().Id.Equals(_client.CurrentUser.Id)) return;
 
             var translation = await _mediator.Send(new GetTranslationRequest(voiceChannel.Guild.Id)).ConfigureAwait(false);
             if (player.TextChannel != null)
-                await player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Channel.Stop")).ConfigureAwait(false);
+                await player.TextChannel.SendMessageAsync(translation.Translate("Entertainment.Music.Channel.Stop")).ConfigureAwait(false);
 
-            await player.StopAsync(true).ConfigureAwait(false);
+            await player.StopAsync().ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -78,8 +77,8 @@ internal class MusicListener : IListener
 
         var translation = await _mediator.Send(new GetTranslationRequest(eventArgs.Player.GuildId)).ConfigureAwait(false);
         var embedBuilder = new EmbedBuilder()
-            .WithTitle(translation.Message("Entertainment.Music.Track.Current"))
-            .WithDescription(translation.Message("Entertainment.Music.Track.Item", eventArgs.Player.CurrentTrack!.Title.Trim(), eventArgs.Player.CurrentTrack!.Duration));
+            .WithTitle(translation.Translate("Entertainment.Music.Track.Current"))
+            .WithDescription(translation.Translate("Entertainment.Music.Track.Item", eventArgs.Player.CurrentTrack!.Title.Trim(), eventArgs.Player.CurrentTrack!.Duration));
 
         await player.TextChannel.SendMessageAsync(embed: embedBuilder.Build()).ConfigureAwait(false);
     }
@@ -89,22 +88,15 @@ internal class MusicListener : IListener
         if (eventArgs.Player is not MusicPlayer player)
             return;
 
-        switch (eventArgs.Reason)
+        if (eventArgs.Reason == TrackEndReason.LoadFailed)
         {
-            case TrackEndReason.Stopped when player.Queue.Count == 0:
-                await player.StopAsync(true).ConfigureAwait(false);
-                break;
-            case TrackEndReason.Finished:
-                await PlayNextAsync(player).ConfigureAwait(false);
-                break;
-            case TrackEndReason.LoadFailed:
-                var translation = await _mediator.Send(new GetTranslationRequest(player.GuildId)).ConfigureAwait(false);
-                if (player.TextChannel != null)
-                    await player.TextChannel.SendMessageAsync(translation.Message("Entertainment.Music.Exception")).ConfigureAwait(false);
-
-                await PlayNextAsync(player).ConfigureAwait(false);
-                break;
+            var translation = await _mediator.Send(new GetTranslationRequest(player.GuildId)).ConfigureAwait(false);
+            if (player.TextChannel != null)
+                await player.TextChannel.SendMessageAsync(translation.Translate("Entertainment.Music.Exception")).ConfigureAwait(false);
         }
+
+        if (player.Queue.Count == 0)
+            await player.StopAsync().ConfigureAwait(false);
     }
 
     private async Task TrackStuckAsync(object sender, TrackStuckEventArgs eventArgs)
@@ -118,15 +110,17 @@ internal class MusicListener : IListener
 
     private async Task TrackExceptionAsync(object sender, TrackExceptionEventArgs eventArgs)
     {
-        _logger.LogError("Could not play track {@PlayableTrack}. Reason: {@Message}. Player {@Player}", eventArgs.Player.CurrentTrack, eventArgs.ErrorMessage, eventArgs.Player);
+        _logger.LogError("Could not play track {@PlayableTrack}. Error: {@Exception}. Player {@Player}", eventArgs.Player.CurrentTrack, eventArgs.ErrorMessage, eventArgs.Player);
         if (eventArgs.Player is not MusicPlayer player)
             return;
 
         var translation = await _mediator.Send(new GetTranslationRequest(eventArgs.Player.GuildId)).ConfigureAwait(false);
         if (player.TextChannel != null)
         {
-            var message = translation.Message("Entertainment.Music.Track.Exception.Message", player.CurrentTrack.Title);
-            if (!string.IsNullOrEmpty(eventArgs.ErrorMessage)) message += Environment.NewLine + translation.Message("Entertainment.Music.Track.Exception.Reason", eventArgs.ErrorMessage);
+            var message = translation.Translate("Entertainment.Music.Track.Exception.Message", player.CurrentTrack!.Title);
+            if (!string.IsNullOrEmpty(eventArgs.ErrorMessage))
+                message += Environment.NewLine + translation.Translate("Entertainment.Music.Track.Exception.Reason", eventArgs.ErrorMessage);
+
             await player.TextChannel.SendMessageAsync(message).ConfigureAwait(false);
         }
 
@@ -137,19 +131,15 @@ internal class MusicListener : IListener
     {
         try
         {
-            if (!player.Queue.TryPop(out var track))
-            {
-                if (player.Queue.Count != 0)
-                {
-                    _logger.LogError("Unable to get item from {@Player} {@Queue}", player, player.Queue);
-                    return;
-                }
-
-                await player.StopAsync(true).ConfigureAwait(false);
-                return;
-            }
-
-            await player.PlayAsync(track).ConfigureAwait(false);
+            await player.PlayNextAsync().ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException e)
+        {
+            _logger.LogError(e, "Player {@Player} got disposed while trying to play the next song", player);
+        }
+        catch (OperationCanceledException e)
+        {
+            _logger.LogError(e, "Player {@Player} got canceled while trying to play the next song", player);
         }
         catch (Exception e)
         {

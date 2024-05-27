@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using GasaiYuno.Discord.Localization.Interfaces;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using System.Reflection;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Module = Autofac.Module;
 
 namespace GasaiYuno.Discord.Localization;
@@ -10,8 +10,10 @@ internal class RegistrationModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterMediatR(Assembly.GetExecutingAssembly());
-
-        builder.RegisterType<LocalizationService>().As<ILocalization>().InstancePerLifetimeScope();
+        var mediatRConfig = MediatRConfigurationBuilder
+            .Create(Assembly.GetExecutingAssembly())
+            .WithAllOpenGenericHandlerTypesRegistered()
+            .Build();
+        builder.RegisterMediatR(mediatRConfig);
     }
 }

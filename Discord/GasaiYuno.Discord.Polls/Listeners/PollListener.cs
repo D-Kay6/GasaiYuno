@@ -62,11 +62,11 @@ internal class PollListener : IListener
                 var translation = await _mediator.Send(new GetTranslationRequest(poll.Server)).ConfigureAwait(false);
                 var maxScore = poll.Options.Max(x => x.Selectors.Count);
                 var winningOptions = poll.Options.Where(x => x.Selectors.Count == maxScore).Select(x => x.Value).ToList();
-                var selectedOptions = winningOptions.Any() ? string.Join("\n", winningOptions) : translation.Message("Automation.Poll.Result.None");
+                var selectedOptions = winningOptions.Any() ? string.Join("\n", winningOptions) : translation.Translate("Automation.Poll.Result.None");
 
                 var message = await channel.GetMessageAsync(poll.Message).ConfigureAwait(false);
                 var embedBuilder = new EmbedBuilder();
-                embedBuilder.WithTitle(translation.Message("Automation.Poll.Result.Title"));
+                embedBuilder.WithTitle(translation.Translate("Automation.Poll.Result.Title"));
                 embedBuilder.AddField(poll.Text, selectedOptions);
                 await channel.SendMessageAsync(embed: embedBuilder.Build(), messageReference: new MessageReference(message.Id, message.Channel.Id)).ConfigureAwait(false);
                 await _mediator.Publish(new RemovePollCommand(poll.Server, poll.Channel, poll.Message)).ConfigureAwait(false);
